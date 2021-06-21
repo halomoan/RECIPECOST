@@ -1,0 +1,49 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+	controllerName="halo.sap.mm.RECIPECOST.pages.controller.Recipes">
+	
+	<Table id="recipeTable"
+		inset="false"
+		items="{
+			path: '/ProductCollection',
+			sorter: {
+				path: 'Name'
+			}
+		}">
+		<headerToolbar>
+			<OverflowToolbar>
+				<content>
+					<Title text="{i18n>Recipe}" level="H2"/>
+					<ToolbarSpacer />
+						<Button
+							icon="sap-icon://add"
+							type="Transparent"
+							tooltip="Add Recipe"
+							press=".onAddRecipe"/>
+					<SearchField liveChange=".onSearch" width="100%" />
+				</content>
+			</OverflowToolbar>
+		</headerToolbar>
+		<columns>
+			<Column
+				width="12em">
+				<Text text="Image" />
+			</Column>
+			<Column
+				minScreenWidth="Tablet"
+				demandPopin="true">
+				<Text text="Recipe" />
+			</Column>
+		</columns>
+		<items>
+			<ColumnListItem>
+				<cells>
+					<Image src="https://plchldr.co/i/500x250" width="80px" />
+					<!--<Image src="{viewData>/pictureUrl}/{RecipeID}" width="80px" />-->
+					<ObjectIdentifier
+						title="{MainName}"
+						text="{RecipeID}"/>
+				</cells>
+			</ColumnListItem>
+		</items>
+	</Table>
+</mvc:View>

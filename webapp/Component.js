@@ -1,11 +1,11 @@
 sap.ui.define([
 	"sap/ui/core/UIComponent",
 	"sap/ui/Device",
-	"halo/sap/mmRECIPECOST/model/models"
+	"halo/sap/mm/RECIPECOST/model/models"
 ], function(UIComponent, Device, models) {
 	"use strict";
 
-	return UIComponent.extend("halo.sap.mmRECIPECOST.Component", {
+	return UIComponent.extend("halo.sap.mm.RECIPECOST.Component", {
 
 		metadata: {
 			manifest: "json"
@@ -22,6 +22,9 @@ sap.ui.define([
 
 			// set the device model
 			this.setModel(models.createDeviceModel(), "device");
+			
+			//init Router
+			this.getRouter().initialize();
 		}
 	});
 });

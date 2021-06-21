@@ -7,12 +7,16 @@
 
 		<title>RECIPECOST</title>
 
+	   <!-- src="../../resources/sap-ui-core.js" -->
+	   <!--sap-ui-mockserver-debug=true-->
 		<script id="sap-ui-bootstrap"
-			src="../../resources/sap-ui-core.js"
+			src="https://sapui5.hana.ondemand.com/resources/sap-ui-core.js"
 			data-sap-ui-libs="sap.m"
+			data-sap-ui-bindingSyntax="complex"
 			data-sap-ui-theme="sap_belize"
 			data-sap-ui-compatVersion="edge"
-			data-sap-ui-resourceroots='{"halo.sap.mmRECIPECOST": ""}'>
+			data-sap-ui-async="true"
+			data-sap-ui-resourceroots='{"halo.sap.mm.RECIPECOST": ""}'>
 		</script>
 
 		<link rel="stylesheet" type="text/css" href="css/style.css">
@@ -20,9 +24,10 @@
 		<script>
 			sap.ui.getCore().attachInit(function() {
 				new sap.m.Shell({
+					appWidthLimited: false,
 					app: new sap.ui.core.ComponentContainer({
 						height : "100%",
-						name : "halo.sap.mmRECIPECOST"
+						name : "halo.sap.mm.RECIPECOST"
 					})
 				}).placeAt("content");
 			});

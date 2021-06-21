@@ -1,0 +1,21 @@
+<core:FragmentDefinition xmlns="sap.ui.comp.valuehelpdialog" xmlns:core="sap.ui.core" xmlns:m="sap.m" xmlns:fb="sap.ui.comp.filterbar">
+	<ValueHelpDialog title="Material" ok=".onValueHelpOkPress" cancel=".onValueHelpCancelPress" afterClose=".onValueHelpAfterClose"
+		supportMultiselect="true" key="Matnr" descriptionKey="Maktx">
+		<filterBar>
+			<fb:FilterBar advancedMode="true" search=".onFilterBarSearch">
+				<fb:filterGroupItems>
+					<fb:FilterGroupItem groupName="__$INTERNAL$" name="Maktx" label="Material No" visibleInFilterBar="true">
+						<fb:control>
+							<m:Input name="Matnr"/>
+						</fb:control>
+					</fb:FilterGroupItem>
+					<fb:FilterGroupItem groupName="__$INTERNAL$" name="Matkltx" label="Group Name" visibleInFilterBar="true">
+						<fb:control>
+							<m:Input name="Matkltx"/>
+						</fb:control>
+					</fb:FilterGroupItem>
+				</fb:filterGroupItems>
+			</fb:FilterBar>
+		</filterBar>
+	</ValueHelpDialog>
+</core:FragmentDefinition>

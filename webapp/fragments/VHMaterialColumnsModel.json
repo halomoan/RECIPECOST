@@ -1,0 +1,40 @@
+{
+	"cols": [
+		{
+			"label": "Material ID",
+			"template": "Matnr",
+			"width": "7rem"
+		},
+		{
+			"label": "Name",
+			"template": "Maktx",
+			"width": "20rem"
+		},
+		{
+			"label": "Group",
+			"template": "Matkltx"
+		},
+		{
+			"label": "Curr",
+			"template": "Waers",
+			"width": "3rem"
+		},
+		{
+			"label": "Price",
+			"template": "Netpr",
+			"demandPopin": "true",
+			"hAlign": "End"
+		},
+		{
+			"label": "Per",
+			"template": "Peinh",
+			"hAlign": "End",
+			"width": "3rem"
+		},
+		{
+			"label": "Unit",
+			"template": "Bprme"
+		}
+		
+	]
+}

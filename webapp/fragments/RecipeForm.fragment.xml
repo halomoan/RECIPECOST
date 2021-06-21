@@ -1,0 +1,51 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:f="sap.ui.layout.form" xmlns:l="sap.ui.layout"
+	xmlns:core="sap.ui.core">
+	<Dialog id="addRecipeDialog" contentWidth="440px" contentHeight="450px" title="{i18n>RecipeForm}" icon="sap-icon://activity-items">
+		<NavContainer id="form1" class="customCSS">
+			<Page id="page1" class="sapUiResponsivePadding--header" showHeader="false" showNavButton="false">
+				<content>
+					<f:Form id="recipeForm" editable="true">
+						<f:title>
+							<core:Title text="Recipe"/>
+						</f:title>
+						<f:layout>
+							<f:ColumnLayout columnsM="2" columnsL="3" columnsXL="4"/>
+						</f:layout>
+						<f:formContainers>
+							<f:FormContainer>
+								<f:formElements>
+									<f:FormElement label="{i18n>NameOfRecipe}">
+										<f:fields>
+											<Input value="{form>/MainName}" autocomplete="false" valueState="{form>/v/MainName}" />
+										</f:fields>
+									</f:FormElement>
+									<f:FormElement label="{i18n>Location}">
+										<f:fields>
+											<ComboBox items="{ path: '/LocationSet', sorter: { path: 'text' } }" selectedKey="{form>/LocationID}" valueState="{form>/v/LocationID}">
+												<core:Item key="{key}" text="{text}"/>
+											</ComboBox>
+										</f:fields>
+									</f:FormElement>
+									<f:FormElement label="{i18n>PortionProduced}">
+										<f:fields>
+											<StepInput value="{form>/Produced}" min="1" displayValuePrecision="2" valueState="{form>/v/Produced}"></StepInput>
+										</f:fields>
+									</f:FormElement>
+								</f:formElements>
+							</f:FormContainer>
+						</f:formContainers>
+					</f:Form>
+				</content>
+			</Page>
+			<Page id="page2" class="sapUiResponsivePadding--header" showHeader="false" showNavButton="false">
+				<content></content>
+			</Page>
+		</NavContainer>
+		<beginButton>
+			<Button text="{i18n>Add}" press="onSaveRecipe"/>
+		</beginButton>
+		<endButton>
+			<Button text="{i18n>Cancel}" press="onCancelAddRecipe"/>
+		</endButton>
+	</Dialog>
+</core:FragmentDefinition>

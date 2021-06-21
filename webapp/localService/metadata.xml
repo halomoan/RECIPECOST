@@ -1,0 +1,67 @@
+<edmx:Edmx
+    xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx"
+    xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata"
+    xmlns:sap="http://www.sap.com/Protocols/SAPData" Version="1.0">
+    <edmx:DataServices m:DataServiceVersion="2.0">
+        <Schema
+            xmlns="http://schemas.microsoft.com/ado/2008/09/edm" Namespace="ZRECIPECOST_ODATA_SRV" xml:lang="en" sap:schema-version="1">
+            <EntityType Name="PlantMaterial" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="Plant"/>
+                    <PropertyRef Name="Material"/>
+                </Key>
+                <Property Name="Plant" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:label="Plant" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="Materialgroup" Type="Edm.String" Nullable="false" MaxLength="9" sap:unicode="false" sap:label="Material Group" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Material" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:label="Material" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="Materialgrouptext" Type="Edm.String" Nullable="false" MaxLength="60" sap:unicode="false" sap:label="Mat.Grp Desc. 2" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Materialname" Type="Edm.String" Nullable="false" MaxLength="40" sap:unicode="false" sap:label="Description" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Materialtype" Type="Edm.String" Nullable="false" MaxLength="4" sap:unicode="false" sap:label="Material type" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+            </EntityType>
+            <EntityType Name="SideGroupMenu" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="ID"/>
+                </Key>
+                <Property Name="ID" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Name" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Icon" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <NavigationProperty Name="SubMenus" Relationship="ZRECIPECOST_ODATA_SRV.SideGroupMenu_SideItemMenu" FromRole="FromRole_SideGroupMenu_SideItemMenu" ToRole="ToRole_SideGroupMenu_SideItemMenu"/>
+            </EntityType>
+            <EntityType Name="SideItemMenu" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="ID"/>
+                    <PropertyRef Name="GroupID"/>
+                </Key>
+                <Property Name="ID" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="GroupID" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Name" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Target" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Icon" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+            </EntityType>
+            <Association Name="SideGroupMenu_SideItemMenu" sap:content-version="1">
+                <End Type="ZRECIPECOST_ODATA_SRV.SideGroupMenu" Multiplicity="1" Role="FromRole_SideGroupMenu_SideItemMenu"/>
+                <End Type="ZRECIPECOST_ODATA_SRV.SideItemMenu" Multiplicity="*" Role="ToRole_SideGroupMenu_SideItemMenu"/>
+                <ReferentialConstraint>
+                    <Principal Role="FromRole_SideGroupMenu_SideItemMenu">
+                        <PropertyRef Name="ID"/>
+                    </Principal>
+                    <Dependent Role="ToRole_SideGroupMenu_SideItemMenu">
+                        <PropertyRef Name="GroupID"/>
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <EntityContainer Name="ZRECIPECOST_ODATA_SRV_Entities" m:IsDefaultEntityContainer="true" sap:supported-formats="atom json xlsx">
+                <EntitySet Name="PlantMaterialSet" EntityType="ZRECIPECOST_ODATA_SRV.PlantMaterial" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:content-version="1"/>
+                <EntitySet Name="SideGroupMenuSet" EntityType="ZRECIPECOST_ODATA_SRV.SideGroupMenu" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/>
+                <EntitySet Name="SideItemMenuSet" EntityType="ZRECIPECOST_ODATA_SRV.SideItemMenu" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/>
+                <AssociationSet Name="SideGroupMenuSet_SideItemMenuSet" Association="ZRECIPECOST_ODATA_SRV.SideGroupMenu_SideItemMenu" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="SideGroupMenuSet" Role="FromRole_SideGroupMenu_SideItemMenu"/>
+                    <End EntitySet="SideItemMenuSet" Role="ToRole_SideGroupMenu_SideItemMenu"/>
+                </AssociationSet>
+            </EntityContainer>
+            <atom:link
+                xmlns:atom="http://www.w3.org/2005/Atom" rel="self" href="./sap/ZRECIPECOST_ODATA_SRV/$metadata"/>
+                <atom:link
+                    xmlns:atom="http://www.w3.org/2005/Atom" rel="latest-version" href="./sap/ZRECIPECOST_ODATA_SRV/$metadata"/>
+                </Schema>
+            </edmx:DataServices>
+        </edmx:Edmx>

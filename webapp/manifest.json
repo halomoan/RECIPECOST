@@ -1,7 +1,7 @@
 {
 	"_version": "1.7.0",
 	"sap.app": {
-		"id": "halo.sap.mmRECIPECOST",
+		"id": "halo.sap.mm.RECIPECOST",
 		"type": "application",
 		"i18n": "i18n/i18n.properties",
 		"applicationVersion": {
@@ -10,11 +10,20 @@
 		"title": "{{appTitle}}",
 		"description": "{{appDescription}}",
 		"sourceTemplate": {
-			"id": "ui5template.basicSAPUI5ApplicationProject",
-			"version": "1.40.12"
+			"id": "servicecatalog.connectivityComponent",
+			"version": "0.0.0"
+		},
+		"dataSources": {
+			"ZRECIPECOST_ODATA_SRV": {
+				"uri": "/sap/opu/odata/sap/ZRECIPECOST_ODATA_SRV/",
+				"type": "OData",
+				"settings": {
+					"odataVersion": "2.0",
+					"localUri": "localService/metadata.xml"
+				}
+			}
 		}
 	},
-
 	"sap.ui": {
 		"technology": "UI5",
 		"icons": {
@@ -33,13 +42,11 @@
 		"supportedThemes": [
 			"sap_hcb",
 			"sap_belize"
-
 		]
 	},
-
 	"sap.ui5": {
 		"rootView": {
-			"viewName": "halo.sap.mmRECIPECOST.view.View1",
+			"viewName": "halo.sap.mm.RECIPECOST.view.App",
 			"type": "XML"
 		},
 		"dependencies": {
@@ -62,14 +69,61 @@
 			"i18n": {
 				"type": "sap.ui.model.resource.ResourceModel",
 				"settings": {
-					"bundleName": "halo.sap.mmRECIPECOST.i18n.i18n"
+					"bundleName": "halo.sap.mm.RECIPECOST.i18n.i18n"
 				}
+			},
+			"": {
+				"dataSource": "ZRECIPECOST_ODATA_SRV"
 			}
 		},
 		"resources": {
-			"css": [{
-				"uri": "css/style.css"
-			}]
+			"css": [
+				{
+					"uri": "css/style.css"
+				}
+			]
+		},
+		"routing": {
+			"config": {
+				"routerClass": "sap.m.routing.Router",
+				"viewType": "XML",
+				"viewPath": "halo.sap.mm.RECIPECOST.pages.view",
+				"controlId": "app",
+				"controlAggregation": "pages",
+				"async": true,
+				"bypassed": {
+					"target": "notFound"
+				}
+			},
+			"routes": [
+				{
+					"pattern": "recipes",
+					"name": "recipes",
+					"target": "recipes"
+				},
+				{
+					"pattern": "ingredientform",
+					"name": "ingredientform",
+					"target": "ingredientForm"
+				}
+			],
+			"targets": {
+				"recipes": {
+					"viewId": "recipes",
+					"viewName": "Recipes",
+					"viewLevel": 1
+				},
+				"ingredientForm": {
+					"viewId": "ingredientForm",
+					"viewName": "IngredientForm",
+					"viewLevel": 1
+				},
+				"notFound": {
+					"viewId": "notFound",
+					"viewName": "NotFound",
+					"transition": "show"
+				}
+			}
 		}
 	}
 }
