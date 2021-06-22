@@ -16,12 +16,12 @@
 								<f:formElements>
 									<f:FormElement label="{i18n>NameOfRecipe}">
 										<f:fields>
-											<Input value="{ path: 'form>/MainName', type: 'sap.ui.model.type.String', constraints: { minLength:10, maxLength: 50 } }" autocomplete="false" valueState="{form>/v/MainName}"/>
+											<Input value="{ path: 'form>/MainName', type: 'sap.ui.model.type.String', constraints: { minLength:5, maxLength: 50 } }" autocomplete="false" valueState="{form>/v/MainName}"/>
 										</f:fields>
 									</f:FormElement>
 									<f:FormElement label="{i18n>Location}">
 										<f:fields>
-											<ComboBox items="{ path: '/LocationSet', sorter: { path: 'text' } }" selectedKey="{path:'form>/LocationID', type: 'sap.ui.model.type.String', constraints: { minLength: 1 }}" valueState="{form>/v/LocationID}">
+											<ComboBox items="{ path: '/LocationSet', sorter: { path: 'text' } }" selectedKey="{path:'form>/LocationID', type: 'sap.ui.model.type.String', constraints: {  minLength:5, search: '^LOC*' }}" valueState="{form>/v/LocationID}">
 												<core:Item key="{key}" text="{text}"/>
 											</ComboBox>
 										</f:fields>

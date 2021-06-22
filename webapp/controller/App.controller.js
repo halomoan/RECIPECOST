@@ -20,9 +20,11 @@ sap.ui.define([
 			
 				
 			switch(sTarget){
-				case "RECIPES":			
+				case "G001:RECIPES":			
 					oRouter.navTo("recipes"); break;
-				case "RECIPEFORM":			
+				case "G001:LOCATION":
+					oRouter.navTo("recipeloc"); break;
+				case "G001:RECIPEFORM":			
 					oRouter.navTo("ingredientform"); break;
 				default:
 					oRouter.navTo("notFound");break;

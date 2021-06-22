@@ -46,6 +46,10 @@ sap.ui.define([
 				_oBundle = this.getResourceBundle();
 				
 			}.bind(this));
+			
+			
+			this.PurchOrgID = "C103";
+			this.PlantID = "PPHS";
 		},
 		
 		onAddRecipe: function(){
@@ -54,23 +58,23 @@ sap.ui.define([
 		},
 		onSaveRecipe: function(){
 			var oFormData = this.getView().getModel("form").getData();
-			sap.ui.getCore().getMessageManager().removeAllMessages();
+			var oThis = this;
+			
 			
 			if (this._validateRecipe(oFormData)) {
-				
-				
 				
 				MessageBox.confirm(_oBundle.getText("msgCfrmSaveRecipe"), {
 						actions: ["Save", MessageBox.Action.CANCEL],
 						emphasizedAction: "CANCEL",
 						onClose: function(sAction) {
-							
 							if (sAction === 'Save') {
-								this.byId("addRecipeDialog").close();
+								
+								oThis._saveRecipe(oFormData);
+								oThis.byId("addRecipeDialog").close();
 							} else {
-								this.byId("addRecipeDialog").close();
+								oThis.byId("addRecipeDialog").close();
 							}
-						},
+						}
 						
 				});
 				
@@ -82,22 +86,44 @@ sap.ui.define([
 		onMessagePopoverPress : function (oEvent) {
 			var oSource = oEvent.getSource();
 			
-			
-			
 			this.showPopOverFragment(this.getView(), oSource, this._formFragments, "halo.sap.mm.RECIPECOST.fragments.MessagePopover", this );         
 		},
 		
+		
+		_saveRecipe: function(oFormData){
+			var oModel = this.getModel();
+			var oData = {
+				"Werks" : this.PlantID,
+				"MainName": oFormData.MainName,
+				"LocationID": oFormData.LocationID,
+				"Produced": "" + oFormData.Produced
+				
+
+			};
+
+			oModel.create("/RecipeSet", oData, {
+				method: "POST",
+				success: function(data) {
+					MessageToast.show("Recipe Successfully Created");
+				},
+				error: function(e) {
+					MessageToast.show("Error Detected");
+				}
+			});
+
+		},
 		_validateRecipe: function(oFormData){
 		
 			var oMessage;
 			var status = true;
-			var _status = true;
+		
 			
+			sap.ui.getCore().getMessageManager().removeAllMessages();
 			
-			if (oFormData.MainName.length < 10) {
-				_status = false;
+			if (oFormData.MainName.length < 5) {
+					status = false;
 					oMessage = new Message({
-					message: "Empty Is not allowed",
+					message: "Empty Is not allowed. Minimum 5 characters",
 					type: MessageType.Error,
 					target: "/MainName",
 					processor: this.getView().getModel("form")
@@ -106,7 +132,7 @@ sap.ui.define([
 			}
 			
 			if (oFormData.LocationID.length < 1) {
-				_status = false;
+				status = false;
 				
 				oMessage = new Message({
 					message: "Empty Is not allowed",
@@ -116,9 +142,6 @@ sap.ui.define([
 				});
 				sap.ui.getCore().getMessageManager().addMessages(oMessage);
 			}
-			
-			status = oFormData.v.MainName !== ValueState.Error && oFormData.v.LocationID !== ValueState.Error &&  _status;
-			
 			
 			
 			return status;	

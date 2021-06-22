@@ -4,9 +4,9 @@
 	<Table id="recipeTable"
 		inset="false"
 		items="{
-			path: '/ProductCollection',
+			path: '/RecipeSet',
 			sorter: {
-				path: 'Name'
+				path: 'MainName'
 			}
 		}">
 		<headerToolbar>
@@ -28,20 +28,35 @@
 				width="12em">
 				<Text text="Image" />
 			</Column>
+			<Column valign="Center">
+				<Text text="Recipe" />
+			</Column>
 			<Column
 				minScreenWidth="Tablet"
 				demandPopin="true">
-				<Text text="Recipe" />
+				<Text text="Location" />
+			</Column>
+			<Column
+				minScreenWidth="Tablet"
+				demandPopin="true">
+				<Text text="Portion Produced" />
 			</Column>
 		</columns>
 		<items>
 			<ColumnListItem>
 				<cells>
-					<Image src="https://plchldr.co/i/500x250" width="80px" />
+					<Image src="https://plchldr.co/i/500x250" width="120px" height="80px" />
 					<!--<Image src="{viewData>/pictureUrl}/{RecipeID}" width="80px" />-->
 					<ObjectIdentifier
 						title="{MainName}"
 						text="{RecipeID}"/>
+						
+					<ObjectIdentifier
+						title="{text}"
+						text=""/>
+					<ObjectIdentifier
+						title="{Produced}"
+						text="Unit"/>
 				</cells>
 			</ColumnListItem>
 		</items>
