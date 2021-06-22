@@ -4,9 +4,11 @@ sap.ui.define([
 	"sap/m/MessageBox",
 	"sap/m/MessageToast",
 	"sap/ui/core/message/Message",
-	"sap/ui/core/library"
+	"sap/ui/core/library",
+	'sap/ui/model/Filter',
+	'sap/ui/model/FilterOperator'
 	
-], function(BaseController,JSONModel,MessageBox,MessageToast,Message,library) {
+], function(BaseController,JSONModel,MessageBox,MessageToast,Message,library,Filter,FilterOperator) {
 	"use strict";
 	var _oBundle;
 	// shortcut for sap.ui.core.ValueState
@@ -53,7 +55,16 @@ sap.ui.define([
 		},
 		
 		onAddRecipe: function(){
+			
+			
+			
 			this.showFormDialogFragment(this.getView(), this._formFragments, "halo.sap.mm.RECIPECOST.fragments.RecipeForm", this);
+			
+			// Filter Location List
+			var oLocList  = this.getView().byId("location");
+			var oLocBinding = oLocList.getBinding("items");
+			oLocBinding.filter([new Filter("Werks", FilterOperator.EQ, this.PlantID)], "Application");
+			
 
 		},
 		onSaveRecipe: function(){

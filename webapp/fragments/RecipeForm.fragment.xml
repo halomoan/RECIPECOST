@@ -21,8 +21,8 @@
 									</f:FormElement>
 									<f:FormElement label="{i18n>Location}">
 										<f:fields>
-											<ComboBox items="{ path: '/LocationSet', sorter: { path: 'text' } }" selectedKey="{path:'form>/LocationID', type: 'sap.ui.model.type.String', constraints: {  minLength:5, search: '^LOC*' }}" valueState="{form>/v/LocationID}">
-												<core:Item key="{key}" text="{text}"/>
+											<ComboBox id="location" items="{ path: '/LocationSet', sorter: { path: 'Text' } }" selectedKey="{path:'form>/LocationID', type: 'sap.ui.model.type.String', constraints: {  minLength:5 }}" valueState="{form>/v/LocationID}">
+												<core:Item key="{Locid}" text="{Text}"/>
 											</ComboBox>
 										</f:fields>
 									</f:FormElement>

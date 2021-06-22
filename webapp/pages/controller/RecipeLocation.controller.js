@@ -58,6 +58,9 @@ sap.ui.define([
 					});
 					oTable.setRowActionTemplate(oTemplate);
 					oTable.setRowActionCount(2);
+					
+				
+					
 				}.bind(this));
 
 				this.PurchOrgID = "C103";
@@ -104,8 +107,9 @@ sap.ui.define([
 						oThis._initForm();
 						MessageToast.show("Location Successfully Edited");
 					},
-					function(){
-						MessageToast.show("Error Detected");
+					function(e){
+						var oMessage= JSON.parse(e.responseText).error.message.value;
+    					MessageBox.error(oMessage);
 					});
 				}
 			}
@@ -158,13 +162,17 @@ sap.ui.define([
 		_deleteData: function(oData){
 			var oModel = this.getModel();
 			
-			oModel.update("/LocationSet(Werks='" + this.PlantID + "',Locid='" + oData.Locid + "')", oData,null,
-					function(){
-						MessageToast.show("Location Successfully Deleted");
-					},
-					function(){
-						MessageToast.show("Error Detected");
-					});
+			oModel.remove("/LocationSet(Werks='" + this.PlantID + "',Locid='" + oData.Locid + "')",{
+				method: "DELETE",
+				success: function(data){
+					MessageToast.show("Location Successfully Deleted");
+				},
+				error: function(e){
+					var oMessage= JSON.parse(e.responseText).error.message.value;
+    				MessageBox.error(oMessage);
+					
+				}
+			});
 		},
 		onTableRowAction: function(oEvent) {
 

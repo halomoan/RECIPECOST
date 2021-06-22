@@ -52,7 +52,7 @@
 						text="{RecipeID}"/>
 						
 					<ObjectIdentifier
-						title="{text}"
+						title="{LocationTxt}"
 						text=""/>
 					<ObjectIdentifier
 						title="{Produced}"

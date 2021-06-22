@@ -12,7 +12,7 @@
 	                    visible="{= ${message>/}.length > 0 }"
 	                    type="Emphasized"
 	                    press="onMessagePopoverPress" />
-					<Button icon="sap-icon://new" press="onNew"/>
+					<Button icon="sap-icon://add-document" press="onNew"/>
 					<Button icon="sap-icon://save" press="onSave"/>
 				</Toolbar>
 			</f:toolbar>
