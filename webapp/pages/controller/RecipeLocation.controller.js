@@ -22,23 +22,15 @@ sap.ui.define([
 				var oViewData = {
 					"Mode": ""
 				};
-				var oFormData = {
-					"Werks": "",
-					"Locid": "",
-					"Text": "",
-					"v": {
-						"Werks": "None",
-						"Locid": "None",
-						"Text": "None"
-					}
-				};
+				
+				
 				var oView = this.getView();
 
 				var oViewModel = new JSONModel(oViewData);
 				this.setModel(oViewModel, "viewData");
-				var oFormModel = new JSONModel(oFormData);
-				oFormModel.setDefaultBindingMode(sap.ui.model.BindingMode.TwoWay);
-				this.setModel(oFormModel, "form");
+				
+				
+				this._initForm();
 
 				// set message model
 				var oMessageManager = sap.ui.getCore().getMessageManager();
@@ -73,19 +65,7 @@ sap.ui.define([
 		},
 
 		onNew: function() {
-				var oFormModel = this.getModel("form");
-				var oFormData = {
-					"Werks": "",
-					"Locid": "",
-					"Text": "",
-					"v": {
-						"Werks": "None",
-						"Locid": "None",
-						"Text": "None"
-					}
-				};
-
-				oFormModel.setProperty("/", oFormData);
+				this._initForm();
 
 				var oViewModel = this.getModel("viewData");
 				oViewModel.setProperty("/Mode", "New");
@@ -95,7 +75,7 @@ sap.ui.define([
 
 		onSave: function() {
 			var oModel = this.getModel();
-			
+			var oThis = this;
 			
 			var oFormModel = this.getModel("form"),
 				oFormData = oFormModel.getData();
@@ -111,6 +91,7 @@ sap.ui.define([
 					oModel.create("/LocationSet", oData, {
 						method: "POST",
 						success: function(data) {
+							oThis._initForm();
 							MessageToast.show("Location Successfully Created");
 						},
 						error: function(e) {
@@ -120,16 +101,40 @@ sap.ui.define([
 				} else {
 					oModel.update("/LocationSet(Werks='" + this.PlantID + "',Locid='" + oFormData.Locid + "')", oData,null,
 					function(){
+						oThis._initForm();
 						MessageToast.show("Location Successfully Edited");
 					},
 					function(){
-							MessageToast.show("Error Detected");
+						MessageToast.show("Error Detected");
 					});
 				}
 			}
 
 		},
 
+		_initForm: function(){
+			var oFormModel = this.getModel("form");
+			
+			var oFormData = {
+					"Werks": "",
+					"Locid": "",
+					"Text": "",
+					"v": {
+						"Werks": "None",
+						"Locid": "None",
+						"Text": "None"
+					}
+			};
+			
+			if (oFormModel) {
+				oFormModel.setProperty("/", oFormData);
+			} else {
+				oFormModel = new JSONModel(oFormData);
+				oFormModel.setDefaultBindingMode(sap.ui.model.BindingMode.TwoWay);
+				this.setModel(oFormModel, "form");
+				
+			}
+		},
 		_validateForm: function(oFormData) {
 
 			var oMessage;
@@ -150,28 +155,52 @@ sap.ui.define([
 
 			return status;
 		},
-
+		_deleteData: function(oData){
+			var oModel = this.getModel();
+			
+			oModel.update("/LocationSet(Werks='" + this.PlantID + "',Locid='" + oData.Locid + "')", oData,null,
+					function(){
+						MessageToast.show("Location Successfully Deleted");
+					},
+					function(){
+						MessageToast.show("Error Detected");
+					});
+		},
 		onTableRowAction: function(oEvent) {
 
+		
 			var oRow = oEvent.getParameter("row");
+			var oData = oRow.getBindingContext().getObject();
 			var oItem = oEvent.getParameter("item");
-
+			var oViewModel = this.getModel("viewData");
+			
 			if (oItem.getText() === "Edit") {
 				var oFormModel = this.getModel("form"),
 					oFormData = oFormModel.getData();
-				var oData = oRow.getBindingContext().getObject();
+				
 				oFormData.Werks = oData.Werks;
 				oFormData.Locid = oData.Locid;
 				oFormData.Text = oData.Text;
 
 				oFormModel.setProperty("/", oFormData);
-
-				var oViewModel = this.getModel("viewData");
 				oViewModel.setProperty("/Mode", "Edit");
 
 			} else {
-				var oViewModel = this.getModel("viewData");
-				oViewModel.setProperty("/Mode", "Delete");
+				
+				var oThis = this;
+				oViewModel.setProperty("/Mode", "");
+				
+				MessageBox.confirm(_oBundle.getText("msgCfrmDelLocation"), {
+						actions: [MessageBox.Action.YES, MessageBox.Action.CANCEL],
+						emphasizedAction: "CANCEL",
+						onClose: function(sAction) {
+							if (sAction === 'YES') {
+							
+								oThis._deleteData(oData);
+								
+							}
+					}
+			});	
 			}
 
 			//MessageToast.show("Item " + (oItem.getText() || oItem.getType()) + " pressed for product with id " +

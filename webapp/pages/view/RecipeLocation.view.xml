@@ -29,6 +29,11 @@
 										<f:ColumnElementData cellsSmall="3" cellsLarge="1" />
 									</layoutData>
 								</Input>
+								<Text text="/" textAlign="Center">
+									<layoutData>
+										<f:ColumnElementData cellsSmall="1" cellsLarge="1" />
+									</layoutData>
+								</Text>
 								<Input value="{ path: 'form>/Text' }" visible="true" valueState="{form>/v/Text}"/>
 							
 							</f:fields>
