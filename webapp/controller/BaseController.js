@@ -41,13 +41,15 @@ sap.ui.define([
 		},
 		
 		
-		
+		getFragmentByName: function(_formFragments,sFragmentName) {
+			return _formFragments[sFragmentName];
+		},
 		getFormFragment: function (oView, _formFragments, sFragmentName,oThis) {
 			var oFormFragment = _formFragments[sFragmentName];
 		
 			if (oFormFragment) {
-				
 				return oFormFragment;
+				
 			}
 		
 			oFormFragment = sap.ui.xmlfragment(oView.getId(), sFragmentName,oThis);
@@ -58,7 +60,7 @@ sap.ui.define([
 		},
 		
 		showPopOverFragment : function(oView,oSource, _formFragments,sFragmentName,oThis) {
-			this.getFormFragment(oView, _formFragments,sFragmentName,oThis).openBy(oSource);
+			return this.getFormFragment(oView, _formFragments,sFragmentName,oThis).openBy(oSource);
 		},
 
 		showFormDialogFragment : function (oView, _formFragments,sFragmentName,oThis) {

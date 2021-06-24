@@ -122,12 +122,7 @@ sap.ui.define([
 			var oFormData = {
 					"Werks": "",
 					"Locid": "",
-					"Text": "",
-					"v": {
-						"Werks": "None",
-						"Locid": "None",
-						"Text": "None"
-					}
+					"Text": ""
 			};
 			
 			if (oFormModel) {

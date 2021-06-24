@@ -6,7 +6,7 @@
 		items="{
 			path: '/RecipeSet',
 			sorter: {
-				path: 'MainName'
+				path: 'Name'
 			}
 		}">
 		<headerToolbar>
@@ -45,10 +45,10 @@
 		<items>
 			<ColumnListItem>
 				<cells>
-					<Image src="https://plchldr.co/i/500x250" width="120px" height="80px" />
+					<Image src="https://plchldr.co/i/500x250" width="120px" height="80px" press="onSelectImage"/>
 					<!--<Image src="{viewData>/pictureUrl}/{RecipeID}" width="80px" />-->
 					<ObjectIdentifier
-						title="{MainName}"
+						title="{Name}"
 						text="{RecipeID}"/>
 						
 					<ObjectIdentifier

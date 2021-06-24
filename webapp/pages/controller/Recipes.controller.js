@@ -21,18 +21,14 @@ sap.ui.define([
 		_formFragments: {},
 		
 		onInit: function() {
-			var oFormData = {
-				"MainName" : "",
-				"LocationID": "",
-				"Produced": 1.0,
-				"v": {
-					"MainName": "None",
-					"LocationID": "None",
-					"Produced": "None"
-				}
-			};
 			
 			var oView = this.getView();
+	
+			var oFormData = {
+				"Name" : "",
+				"LocationID": "",
+				"Produced": 1.0
+			};
 			
 			var oFormModel = new JSONModel(oFormData);
 			oFormModel.setDefaultBindingMode(sap.ui.model.BindingMode.TwoWay);
@@ -100,12 +96,27 @@ sap.ui.define([
 			this.showPopOverFragment(this.getView(), oSource, this._formFragments, "halo.sap.mm.RECIPECOST.fragments.MessagePopover", this );         
 		},
 		
+		onSelectImage: function(oEvent){
+			var oSource = oEvent.getSource();
+			var oParent = oSource.getParent();
+			var sPath = oParent.getBindingContext().getPath();
 		
+			this.showPopOverFragment(this.getView(), oSource, this._formFragments, "halo.sap.mm.RECIPECOST.fragments.ImageUploadPopover", this ); 
+			
+		
+			this.byId("ImagePopover").bindElement({path: sPath});
+		
+		},
+		
+		onImgUploaderClose: function(){
+			var oPopOver = this.getFragmentByName(this._formFragments,"halo.sap.mm.RECIPECOST.fragments.ImageUploadPopover");
+			oPopOver.close();
+		},
 		_saveRecipe: function(oFormData){
 			var oModel = this.getModel();
 			var oData = {
 				"Werks" : this.PlantID,
-				"MainName": oFormData.MainName,
+				"Name": oFormData.Name,
 				"LocationID": oFormData.LocationID,
 				"Produced": "" + oFormData.Produced
 				
@@ -131,12 +142,12 @@ sap.ui.define([
 			
 			sap.ui.getCore().getMessageManager().removeAllMessages();
 			
-			if (oFormData.MainName.length < 5) {
+			if (oFormData.Name.length < 5) {
 					status = false;
 					oMessage = new Message({
 					message: "Empty Is not allowed. Minimum 5 characters",
 					type: MessageType.Error,
-					target: "/MainName",
+					target: "/Name",
 					processor: this.getView().getModel("form")
 				});
 				sap.ui.getCore().getMessageManager().addMessages(oMessage);
