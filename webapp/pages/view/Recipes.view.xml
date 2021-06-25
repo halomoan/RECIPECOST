@@ -29,33 +29,40 @@
 				<Text text="Image" />
 			</Column>
 			<Column valign="Center">
-				<Text text="Recipe" />
+				<Text text="{i18n>Recipe}" />
 			</Column>
 			<Column
 				minScreenWidth="Tablet"
 				demandPopin="true">
-				<Text text="Location" />
+				<Text text="{i18n>Group}" />
 			</Column>
 			<Column
 				minScreenWidth="Tablet"
 				demandPopin="true">
-				<Text text="Portion Produced" />
+				<Text text="{i18n>Location}" />
+			</Column>
+			<Column
+				minScreenWidth="Tablet"
+				demandPopin="true">
+				<Text text="{i18n>Quantity}" />
 			</Column>
 		</columns>
 		<items>
 			<ColumnListItem>
 				<cells>
-					<Image src="https://plchldr.co/i/500x250" width="120px" height="80px" press="onSelectImage"/>
+					<Image src="{/RecipePhotoSet(Werks='PPHS',RecipeID='051MBHHZ7JKRIABKKBNWTM',VersionID='0000')/$value}" width="120px" height="80px" press="onSelectImage"/>
 					<!--<Image src="{viewData>/pictureUrl}/{RecipeID}" width="80px" />-->
 					<ObjectIdentifier
 						title="{Name}"
 						text="{RecipeID}"/>
-						
+					<ObjectIdentifier
+						title="{GroupTxt}"
+						text=""/>	
 					<ObjectIdentifier
 						title="{LocationTxt}"
 						text=""/>
 					<ObjectIdentifier
-						title="{Produced}"
+						title="{Quantity}"
 						text="Unit"/>
 				</cells>
 			</ColumnListItem>

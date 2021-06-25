@@ -9,13 +9,14 @@
 		placement="Right" >
 		<VBox>
 		<u:FileUploader
-			name="myFileUpload"
+			id="ImageUploader"
 			uploadUrl="upload/"
 			tooltip="Upload your file to the local server"
+			fileType="png,jpg"
 			uploadComplete="onUploadComplete"/>
 		<Button
-			text="Upload File"
-			press="onUploadFile"/>
+			text="Upload Image"
+			press="onUploadImage"/>
 		</VBox>
 		<endButton>
 			<Button text="{i18n>Close}" press="onImgUploaderClose" />

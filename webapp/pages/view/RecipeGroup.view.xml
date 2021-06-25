@@ -45,7 +45,7 @@
 		<t:Table id="grouptbl" rows="{/RecipeGroupSet}" selectionMode="MultiToggle" visibleRowCount="7" paste="onPaste" ariaLabelledBy="title">
 			<t:extension>
 				<OverflowToolbar style="Clear">
-					<Title id="title" text="{i18n>Group}"/>
+					<Title text="{i18n>Group}"/>
 				</OverflowToolbar>
 			</t:extension>
 			<t:columns>

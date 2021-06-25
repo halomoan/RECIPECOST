@@ -26,8 +26,9 @@ sap.ui.define([
 	
 			var oFormData = {
 				"Name" : "",
+				"GroupID": "",
 				"LocationID": "",
-				"Produced": 1.0
+				"Quantity": 1.0
 			};
 			
 			var oFormModel = new JSONModel(oFormData);
@@ -61,7 +62,11 @@ sap.ui.define([
 			var oLocBinding = oLocList.getBinding("items");
 			oLocBinding.filter([new Filter("Werks", FilterOperator.EQ, this.PlantID)], "Application");
 			
-
+			// Filter Location List
+			var oGroupList  = this.getView().byId("group");
+			var oGroupBinding = oGroupList.getBinding("items");
+			oGroupBinding.filter([new Filter("Werks", FilterOperator.EQ, this.PlantID)], "Application");
+			
 		},
 		onSaveRecipe: function(){
 			var oFormData = this.getView().getModel("form").getData();
@@ -108,6 +113,30 @@ sap.ui.define([
 		
 		},
 		
+		onUploadImage:function(){
+			var oUploader = this.byId("ImageUploader");
+			
+			var sPath = this.byId("ImagePopover").getBindingContext().getPath();
+			
+			sPath = sPath.replace("RecipeSet", "RecipeVersionSet") + "/Photo";
+			
+			//console.log(sPath);
+			
+			if (!oUploader.getValue()) {
+				MessageToast.show("Choose a file first");
+				return;
+			}
+			
+			oUploader.setUploadUrl(sPath);
+			
+			oUploader.checkFileReadable().then(function() {
+				oUploader.upload();
+			}, function(error) {
+				MessageToast.show("The file cannot be read. It may have changed.");
+			}).then(function() {
+				oUploader.clear();
+			});
+		},
 		onImgUploaderClose: function(){
 			var oPopOver = this.getFragmentByName(this._formFragments,"halo.sap.mm.RECIPECOST.fragments.ImageUploadPopover");
 			oPopOver.close();
@@ -117,8 +146,9 @@ sap.ui.define([
 			var oData = {
 				"Werks" : this.PlantID,
 				"Name": oFormData.Name,
+				"GroupID": oFormData.GroupID,
 				"LocationID": oFormData.LocationID,
-				"Produced": "" + oFormData.Produced
+				"Quantity": "" + oFormData.Quantity
 				
 
 			};
@@ -148,6 +178,18 @@ sap.ui.define([
 					message: "Empty Is not allowed. Minimum 5 characters",
 					type: MessageType.Error,
 					target: "/Name",
+					processor: this.getView().getModel("form")
+				});
+				sap.ui.getCore().getMessageManager().addMessages(oMessage);
+			}
+			
+			if (oFormData.GroupID.length < 1) {
+				status = false;
+				
+				oMessage = new Message({
+					message: "Empty Is not allowed",
+					type: MessageType.Error,
+					target: "/GroupID",
 					processor: this.getView().getModel("form")
 				});
 				sap.ui.getCore().getMessageManager().addMessages(oMessage);
