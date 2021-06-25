@@ -107,6 +107,11 @@
 					"target": "recipeloc"
 				},
 				{
+					"pattern": "recipegroup",
+					"name": "recipegroup",
+					"target": "recipegroup"
+				},
+				{
 					"pattern": "ingredientform",
 					"name": "ingredientform",
 					"target": "ingredientForm"
@@ -121,6 +126,11 @@
 				"recipeloc": {
 					"viewId": "recipieloc",
 					"viewName": "RecipeLocation",
+					"viewLevel": 1
+				},
+				"recipegroup": {
+					"viewId": "recipiegroup",
+					"viewName": "RecipeGroup",
 					"viewLevel": 1
 				},
 				"ingredientForm": {

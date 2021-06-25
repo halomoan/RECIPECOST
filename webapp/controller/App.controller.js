@@ -5,7 +5,7 @@ sap.ui.define([
 
 	return BaseController.extend("halo.sap.mm.RECIPECOST.controller.App", {
 		onInit: function() {
-			
+			this._oRouter =  this.getRouter();
 		},
 		
 		onSideMenuSelect: function(oEvent){
@@ -13,22 +13,30 @@ sap.ui.define([
 				oCtx = oItem.getBindingContext(),
 				//sMenu = oItem.getText(),
 				sTarget = oItem.getTarget();
-				
-		
-			var oRouter = this.getRouter();
-			
 			
 				
 			switch(sTarget){
 				case "G001:RECIPES":			
-					oRouter.navTo("recipes"); break;
-				case "G001:LOCATION":
-					oRouter.navTo("recipeloc"); break;
-				case "G001:RECIPEFORM":			
-					oRouter.navTo("ingredientform"); break;
+					this._oRouter.navTo("recipes"); break;
 				default:
-					oRouter.navTo("notFound");break;
+					this._oRouter.navTo("notFound");break;
 			}
 		},
+		
+		onFixMenuSelect: function(oEvent){
+			var oItem = oEvent.getParameter("item"),
+				sTarget = oItem.getTarget();
+		
+					
+			switch(sTarget){
+				case "GROUP":			
+					this._oRouter.navTo("recipegroup"); break;
+				case "LOCATION":
+					this._oRouter.navTo("recipeloc"); break;
+				default:
+					this._oRouter.navTo("notFound");break;
+			}		
+					
+		}
 	});
 });

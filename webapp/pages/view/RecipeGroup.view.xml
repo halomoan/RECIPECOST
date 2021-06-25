@@ -1,0 +1,67 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:f="sap.ui.layout.form" xmlns:t="sap.ui.table"
+	xmlns:l="sap.ui.layout" controllerName="halo.sap.mm.RECIPECOST.pages.controller.RecipeGroup">
+	<l:VerticalLayout class="sapUiContentPadding">
+		<f:Form id="groupForm" editable="true">
+			<f:toolbar>
+				<Toolbar>
+					<Title text="{i18n>Group}"/>
+					<ToolbarSpacer/>
+					   <Button
+	                    icon="sap-icon://alert"
+	                    text="{= ${message>/}.length }"
+	                    visible="{= ${message>/}.length > 0 }"
+	                    type="Emphasized"
+	                    press="onMessagePopoverPress" />
+					<Button icon="sap-icon://add-document" press="onNew"/>
+					<Button icon="sap-icon://save" press="onSave"/>
+				</Toolbar>
+			</f:toolbar>
+			<f:layout>
+				<f:ColumnLayout columnsM="2" columnsL="3" columnsXL="4"/>
+			</f:layout>
+			<f:formContainers>
+				<f:FormContainer>
+					<f:formElements>
+						<f:FormElement label="{i18n>ID} / {i18n>Group}">
+							<f:fields>
+								<Input value="{ path: 'form>/Groupid' }" enabled="false">
+										<layoutData>
+										<f:ColumnElementData cellsSmall="3" cellsLarge="1" />
+									</layoutData>
+								</Input>
+								<Text text="/" textAlign="Center">
+									<layoutData>
+										<f:ColumnElementData cellsSmall="1" cellsLarge="1" />
+									</layoutData>
+								</Text>
+								<Input value="{ path: 'form>/Text' }" visible="true"/>
+							
+							</f:fields>
+						</f:FormElement>
+					</f:formElements>
+				</f:FormContainer>
+			</f:formContainers>
+		</f:Form>
+		<t:Table id="grouptbl" rows="{/RecipeGroupSet}" selectionMode="MultiToggle" visibleRowCount="7" paste="onPaste" ariaLabelledBy="title">
+			<t:extension>
+				<OverflowToolbar style="Clear">
+					<Title id="title" text="{i18n>Group}"/>
+				</OverflowToolbar>
+			</t:extension>
+			<t:columns>
+				<t:Column width="10rem">
+					<Label text="{i18n>ID}"/>
+					<t:template>
+						<Text text="{Groupid}" wrapping="false"/>
+					</t:template>
+				</t:Column>
+					<t:Column width="20rem">
+					<Label text="{i18n>Text}"/>
+					<t:template>
+						<Text text="{Text}" wrapping="false"/>
+					</t:template>
+				</t:Column>
+			</t:columns>
+		</t:Table>
+	</l:VerticalLayout>
+</mvc:View>

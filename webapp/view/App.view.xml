@@ -15,14 +15,13 @@
 			<tnt:SideNavigation id="sideNavigation" itemSelect="onSideMenuSelect" >
 				<tnt:NavigationList items="{/SideGroupMenuSet}">
 					<tnt:NavigationListItem items="{SubMenus}" text="{Name}" icon="{Icon}" >
-						<tnt:NavigationListItem text="{Name}" target="{GroupID}:{Target}"/>
+						<tnt:NavigationListItem text="{Name}" target="{GroupID}:{Target}"  icon="{Icon}"/>
 					</tnt:NavigationListItem>
 				</tnt:NavigationList>
 				<tnt:fixedItem>
-					<tnt:NavigationList>
-						<tnt:NavigationListItem text="Item 1" icon="sap-icon://employee"/>
-						<tnt:NavigationListItem text="Item 2" icon="sap-icon://building"/>
-						<tnt:NavigationListItem text="Item 3" icon="sap-icon://card"/>
+					<tnt:NavigationList itemSelect="onFixMenuSelect">
+						<tnt:NavigationListItem text="{i18n>Location}" target="LOCATION" icon="sap-icon://map"/>
+						<tnt:NavigationListItem text="{i18n>Group}" target="GROUP"  icon="sap-icon://course-program"/>
 					</tnt:NavigationList>
 				</tnt:fixedItem>
 			</tnt:SideNavigation>
