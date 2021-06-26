@@ -10,7 +10,7 @@
 						
 					</ComboBox>
 					<Button icon="sap-icon://add" type="Transparent" tooltip="Add Recipe" press=".onAddRecipe"/>
-					<SearchField liveChange=".onSearch" width="100%"/>
+					<SearchField change=".onSearchRecipe" width="100%"/>
 				</content>
 			</OverflowToolbar>
 		</headerToolbar>

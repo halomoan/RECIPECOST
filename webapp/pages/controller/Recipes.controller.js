@@ -35,6 +35,10 @@ sap.ui.define([
 			this.PurchOrgID = "C103";
 			this.PlantID = "PPHS";
 
+			this.oFilterWerks = new Filter("Werks", FilterOperator.EQ, this.PlantID);
+			this.aFilterRecipe = [this.oFilterWerks]; 
+			                    
+			
 			var oFormModel = new JSONModel(oFormData);
 			oFormModel.setDefaultBindingMode(sap.ui.model.BindingMode.TwoWay);
 			this.setModel(oFormModel, "form");
@@ -60,7 +64,7 @@ sap.ui.define([
 
 			oGroupList.bindAggregation("items", {
 				path: "/RecipeGroupSet",
-				filters: [new Filter("Werks", FilterOperator.EQ, this.PlantID)],
+				filters: this.aFilterRecipe,
 				sorter: new Sorter({path: 'Text', descending: true}),
 				template: new sap.ui.core.ListItem({
 					text: "{Text}",
@@ -74,7 +78,7 @@ sap.ui.define([
 			
 			oTable.bindAggregation("items", {
 				path: "/RecipeSet",
-				filters: [new Filter("Werks", FilterOperator.EQ, this.PlantID)],
+				filters: this.aFilterRecipe,
 				sorter: new Sorter({path: 'Name', descending: true}),
 				template: oTemplate
 			});
@@ -88,13 +92,13 @@ sap.ui.define([
 			// Filter Location List
 			var oLocList = this.getView().byId("location");
 			var oLocBinding = oLocList.getBinding("items");
-			oLocBinding.filter([new Filter("Werks", FilterOperator.EQ, this.PlantID)], "Application");
+			oLocBinding.filter(this.aFilterRecipe, "Application");
 
 			// Filter Location List
 			var oGroupList = this.getView().byId("group");
 			oGroupList.bindAggregation("items", {
 					path: "/RecipeGroupSet",
-					filters: [new Filter("Werks", FilterOperator.EQ, this.PlantID)],
+					filters: this.aFilterRecipe,
 					sorter: new Sorter({path: 'Text', descending: true}),
 					template: new sap.ui.core.ListItem({
 						text: "{Text}",
@@ -132,6 +136,25 @@ sap.ui.define([
 			}
 		},
 		
+		onSearchRecipe: function(oEvent){
+			var aFilters = [];
+			var sQuery = oEvent.getSource().getValue();
+			if (sQuery && sQuery.length > 0) {
+				var filter = new Filter("Name", FilterOperator.Contains,sQuery);
+				aFilters.push(filter);
+			}
+			
+			for (var i = 0; i < this.aFilterRecipe.length; i++) {
+					aFilters.push(this.aFilterRecipe[i]);
+			}
+			
+
+			// update list binding
+			var oTable = this.byId("recipeTable");
+			var oBinding = oTable.getBinding("items");
+			oBinding.filter(aFilters, "Application");
+		},
+		
 		onGroupChanged: function(oEvent){
 			var selKey = oEvent.getParameter("selectedItem").getKey();
 			
@@ -140,8 +163,8 @@ sap.ui.define([
 			aFilter.push(new Filter("Werks", FilterOperator.EQ,  this.PlantID));
 			aFilter.push(new Filter("GroupID", FilterOperator.EQ,  selKey));
 			
-			var oList = this.byId("recipeTable");
-			var oBinding = oList.getBinding("items");
+			var oTable = this.byId("recipeTable");
+			var oBinding = oTable.getBinding("items");
 			oBinding.filter(aFilter);
 			
 			
