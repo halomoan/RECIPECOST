@@ -47,6 +47,26 @@ sap.ui.define([
 			var oMessageManager = sap.ui.getCore().getMessageManager();
 			oView.setModel(oMessageManager.getMessageModel(), "message");
 			oMessageManager.registerObject(oView, true);
+			
+			
+			//GroupBy functions
+			this.mGroupFunctions = {
+				LocationTxt: function(oContext) {
+					var name = oContext.getProperty("LocationTxt");
+					return {
+						key: name,
+						text: name
+					};
+				},
+				GroupTxt: function(oContext) {
+					var name = oContext.getProperty("GroupTxt");
+					return {
+						key: name,
+						text: name
+					};
+				}
+			
+			};
 
 			this.getOwnerComponent().getModel().metadataLoaded().then(function() {
 				this._init();
@@ -60,21 +80,9 @@ sap.ui.define([
 			var oView = this.getView();
 			_oBundle = this.getResourceBundle();
 
-			var oGroupList = oView.byId("byGroup");
-
-			oGroupList.bindAggregation("items", {
-				path: "/RecipeGroupSet",
-				filters: this.aFilterRecipe,
-				sorter: new Sorter({path: 'Text', descending: true}),
-				template: new sap.ui.core.ListItem({
-					text: "{Text}",
-					key: "{Groupid}"
-				})
-			});
-			
 			var oTable = oView.byId("recipeTable");
-		
 			var oTemplate = oTable.getBindingInfo("items").template;
+			
 			
 			oTable.bindAggregation("items", {
 				path: "/RecipeSet",
@@ -135,6 +143,11 @@ sap.ui.define([
 				MessageToast.show(_oBundle.getText("msgErrFormError"));
 			}
 		},
+		onSelectRecipe: function(oEvent){
+			var oItem = oEvent.getSource();
+			var oBindingContext = oItem.getBindingContext();
+			console.log(oBindingContext.getPath());
+		},
 		
 		onSearchRecipe: function(oEvent){
 			var aFilters = [];
@@ -148,20 +161,22 @@ sap.ui.define([
 					aFilters.push(this.aFilterRecipe[i]);
 			}
 			
-
-			// update list binding
-			var oTable = this.byId("recipeTable");
-			var oBinding = oTable.getBinding("items");
-			oBinding.filter(aFilters, "Application");
+			this._ApplyFiltersAndSorting(aFilters,[]);
+		
 		},
 		
+	
 		onGroupChanged: function(oEvent){
-			var selKey = oEvent.getParameter("selectedItem").getKey();
+			var oItem = oEvent.getParameter("selectedItem");
 			
 			var aFilter = [];
 			
 			aFilter.push(new Filter("Werks", FilterOperator.EQ,  this.PlantID));
-			aFilter.push(new Filter("GroupID", FilterOperator.EQ,  selKey));
+			if (oItem) {
+				var selKey = oItem.getKey();
+				aFilter.push(new Filter("GroupID", FilterOperator.EQ,  selKey));
+			}
+			
 			
 			var oTable = this.byId("recipeTable");
 			var oBinding = oTable.getBinding("items");
@@ -288,6 +303,73 @@ sap.ui.define([
 		onCancelAddRecipe: function() {
 			this.byId("addRecipeDialog").close();
 		},
+		
+		onSettingDialog: function(){
+			this.showFormDialogFragment(this.getView(),this._formFragments,"halo.sap.mm.RECIPECOST.fragments.RecipeSettingDialog", this);
+			
+			// Group List
+			var oGroupList = this.byId("VSFGroup");
+			oGroupList.bindAggregation("items", {
+					path: "/RecipeGroupSet",
+					filters: this.aFilterRecipe,
+					sorter: new Sorter({path: 'Text', descending: true}),
+					template: new sap.m.ViewSettingsItem({
+						text: "{Text}",
+						key: "GroupID___EQ___" + "{Groupid}" + "___X"
+					})
+			});
+			
+		},
+		onSettingConfirm: function(oEvent){
+			var mParams = oEvent.getParameters();
+		
+			var sPath = mParams.sortItem.getKey(),
+				bDescending = mParams.sortDescending,
+				aSorters = [],
+				vGroup;
+			var aFilters = [];
+			
+			
+			console.log(mParams.groupItem);
+			if (mParams.groupItem) {
+				sPath = mParams.groupItem.getKey();
+				
+				bDescending = mParams.groupDescending;
+				vGroup = this.mGroupFunctions[sPath];
+				aSorters.push(new Sorter(sPath, bDescending, vGroup));
+				// apply the selected group settings
+			
+			} else {
+				aSorters.push(new Sorter(sPath, bDescending));	
+			}
+			
+			mParams.filterItems.forEach(function(oItem) {
+				var aSplit = oItem.getKey().split("___"),
+					fPath = aSplit[0],
+					sOperator = aSplit[1],
+					sValue1 = aSplit[2],
+					sValue2 = aSplit[3],
+					oFilter = new Filter(fPath, sOperator, sValue1, sValue2);
+				aFilters.push(oFilter);
+			});
+
+
+			this._ApplyFiltersAndSorting(aFilters,aSorters);
+			
+			
+		},
+		
+		
+		_ApplyFiltersAndSorting: function(aFilters,aSorters){
+			
+			// update list binding
+			var oTable = this.byId("recipeTable");
+			var oBinding = oTable.getBinding("items");
+			if (oBinding) {
+				oBinding.filter(aFilters).sort(aSorters);
+			}
+		},
+		
 		onExit: function() {
 
 			this.removeFragment(this._formFragments);

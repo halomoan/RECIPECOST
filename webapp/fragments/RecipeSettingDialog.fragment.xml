@@ -1,0 +1,23 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core">
+	<ViewSettingsDialog
+		confirm="onSettingConfirm">
+		<sortItems>
+			<ViewSettingsItem text="{i18n>Name}" key="Name" selected="true" />
+			<ViewSettingsItem text="{i18n>Location}" key="LocationTxt" />
+			<ViewSettingsItem text="{i18n>RecipeGroup}" key="GroupTxt" />
+			<ViewSettingsItem text="{i18n>Cost}" key="Price" />
+		</sortItems>
+		<groupItems>
+			<ViewSettingsItem text="{i18n>Location}" key="LocationTxt" />
+			<ViewSettingsItem text="{i18n>RecipeGroup}" key="GroupTxt" />
+		</groupItems>
+		<filterItems>
+			<ViewSettingsFilterItem id="VSFGroup" text="{i18n>Group}" key="Groupid">
+				<items>
+				</items>
+			</ViewSettingsFilterItem>			
+		</filterItems>
+	</ViewSettingsDialog>
+</core:FragmentDefinition>
