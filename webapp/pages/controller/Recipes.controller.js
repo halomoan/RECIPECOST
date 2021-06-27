@@ -329,8 +329,6 @@ sap.ui.define([
 				vGroup;
 			var aFilters = [];
 			
-			
-			console.log(mParams.groupItem);
 			if (mParams.groupItem) {
 				sPath = mParams.groupItem.getKey();
 				
@@ -355,7 +353,6 @@ sap.ui.define([
 
 
 			this._ApplyFiltersAndSorting(aFilters,aSorters);
-			
 			
 		},
 		
