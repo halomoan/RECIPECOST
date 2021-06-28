@@ -24,7 +24,13 @@ sap.ui.define([
 		onInit: function() {
 
 			var oView = this.getView();
-
+			
+			var oViewModel = new JSONModel({
+				"IsFiltered" : false
+			});
+			
+			oView.setModel(oViewModel,"viewData");
+	
 			var oFormData = {
 				"Name": "",
 				"GroupID": "",
@@ -36,7 +42,7 @@ sap.ui.define([
 			this.PlantID = "PPHS";
 
 			this.oFilterWerks = new Filter("Werks", FilterOperator.EQ, this.PlantID);
-			this.aFilterRecipe = [this.oFilterWerks]; 
+			this.aFilterDefault = [this.oFilterWerks]; 
 			                    
 			
 			var oFormModel = new JSONModel(oFormData);
@@ -86,7 +92,7 @@ sap.ui.define([
 			
 			oTable.bindAggregation("items", {
 				path: "/RecipeSet",
-				filters: this.aFilterRecipe,
+				filters: this.aFilterDefault,
 				sorter: new Sorter({path: 'Name', descending: true}),
 				template: oTemplate
 			});
@@ -100,13 +106,13 @@ sap.ui.define([
 			// Filter Location List
 			var oLocList = this.getView().byId("location");
 			var oLocBinding = oLocList.getBinding("items");
-			oLocBinding.filter(this.aFilterRecipe, "Application");
+			oLocBinding.filter(this.aFilterDefault, "Application");
 
 			// Filter Location List
 			var oGroupList = this.getView().byId("group");
 			oGroupList.bindAggregation("items", {
 					path: "/RecipeGroupSet",
-					filters: this.aFilterRecipe,
+					filters: this.aFilterDefault,
 					sorter: new Sorter({path: 'Text', descending: true}),
 					template: new sap.ui.core.ListItem({
 						text: "{Text}",
@@ -157,34 +163,32 @@ sap.ui.define([
 				aFilters.push(filter);
 			}
 			
-			for (var i = 0; i < this.aFilterRecipe.length; i++) {
-					aFilters.push(this.aFilterRecipe[i]);
-			}
+		
 			
 			this._ApplyFiltersAndSorting(aFilters,[]);
 		
 		},
 		
 	
-		onGroupChanged: function(oEvent){
-			var oItem = oEvent.getParameter("selectedItem");
+		// onGroupChanged: function(oEvent){
+		// 	var oItem = oEvent.getParameter("selectedItem");
 			
-			var aFilter = [];
+		// 	var aFilter = [];
 			
-			aFilter.push(new Filter("Werks", FilterOperator.EQ,  this.PlantID));
-			if (oItem) {
-				var selKey = oItem.getKey();
-				aFilter.push(new Filter("GroupID", FilterOperator.EQ,  selKey));
-			}
+		// 	aFilter.push(new Filter("Werks", FilterOperator.EQ,  this.PlantID));
+		// 	if (oItem) {
+		// 		var selKey = oItem.getKey();
+		// 		aFilter.push(new Filter("GroupID", FilterOperator.EQ,  selKey));
+		// 	}
 			
 			
-			var oTable = this.byId("recipeTable");
-			var oBinding = oTable.getBinding("items");
-			oBinding.filter(aFilter);
+		// 	var oTable = this.byId("recipeTable");
+		// 	var oBinding = oTable.getBinding("items");
+		// 	oBinding.filter(aFilter);
 			
 			
 
-		},
+		// },
 		
 		onMessagePopoverPress: function(oEvent) {
 			var oSource = oEvent.getSource();
@@ -212,7 +216,6 @@ sap.ui.define([
 
 			sPath = sPath.replace("RecipeSet", "RecipeVersionSet") + "/Photo";
 
-			//console.log(sPath);
 
 			if (!oUploader.getValue()) {
 				MessageToast.show("Choose a file first");
@@ -311,7 +314,7 @@ sap.ui.define([
 			var oGroupList = this.byId("VSFGroup");
 			oGroupList.bindAggregation("items", {
 					path: "/RecipeGroupSet",
-					filters: this.aFilterRecipe,
+					filters: this.aFilterDefault,
 					sorter: new Sorter({path: 'Text', descending: true}),
 					template: new sap.m.ViewSettingsItem({
 						text: "{Text}",
@@ -351,13 +354,27 @@ sap.ui.define([
 				aFilters.push(oFilter);
 			});
 
-
+		
 			this._ApplyFiltersAndSorting(aFilters,aSorters);
 			
 		},
 		
 		
 		_ApplyFiltersAndSorting: function(aFilters,aSorters){
+			
+			var oViewModel = this.getModel("viewData");
+			if (aFilters.length < 1){
+				oViewModel.setProperty("/IsFiltered", false);
+			} else {
+				oViewModel.setProperty("/IsFiltered", true);
+			}
+			
+			//Apply Default Filters
+			for (var i = 0; i < this.aFilterDefault.length; i++) {
+				aFilters.push(this.aFilterDefault[i]);
+			}
+			
+			
 			
 			// update list binding
 			var oTable = this.byId("recipeTable");
