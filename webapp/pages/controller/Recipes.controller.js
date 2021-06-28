@@ -26,7 +26,8 @@ sap.ui.define([
 			var oView = this.getView();
 			
 			var oViewModel = new JSONModel({
-				"IsFiltered" : false
+				"IsFiltered" : false,
+				"ShowDelete" : false
 			});
 			
 			oView.setModel(oViewModel,"viewData");
@@ -97,8 +98,31 @@ sap.ui.define([
 				template: oTemplate
 			});
 			
+			oTable.attachSelectionChange(this.onItemSelected, this);
 		},
-
+		
+		onItemSelected: function(oEvent){
+			var arrItems = oEvent.getSource().getSelectedItems();
+			var oViewModel = this.getModel("viewData");
+			
+			if (arrItems.length > 0 ){
+				oViewModel.setProperty("/ShowDelete",true);
+			} else{
+				oViewModel.setProperty("/ShowDelete",false);
+			}
+		},
+		
+		onDeleteRecipe: function(){
+			
+			var oTable = this.getView().byId("recipeTable");
+			var arrItems = oTable.getSelectedItems();
+			
+			for(var i = 0 ; i < arrItems.length; i++){
+				var oData = arrItems[i].getBindingContext().getObject();
+				
+			}
+			
+		},
 		onAddRecipe: function() {
 
 			this.showFormDialogFragment(this.getView(), this._formFragments, "halo.sap.mm.RECIPECOST.fragments.RecipeForm", this);

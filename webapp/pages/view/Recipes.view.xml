@@ -9,10 +9,13 @@
 				</core:Icon>
 				<ToolbarSpacer/>
 				
+				<Button text="{i18n>Delete}" type="Transparent" tooltip="Delete Recipe" press=".onDeleteRecipe" visible="{viewData>/ShowDelete}"/>
+				
 				<SearchField change="onSearchRecipe">
 					<layoutData><OverflowToolbarLayoutData maxWidth="300px" shrinkable="true" priority="NeverOverflow"/></layoutData>
 				</SearchField>
 				<Button text="{i18n>Add}" type="Transparent" tooltip="Add Recipe" press=".onAddRecipe"/>
+				
 				<OverflowToolbarButton tooltip="More" type="Transparent" text="More" icon="sap-icon://overflow" press=".onSettingDialog"/>
 			</OverflowToolbar>
 		</headerToolbar>
