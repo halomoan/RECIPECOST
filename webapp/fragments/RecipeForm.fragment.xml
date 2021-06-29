@@ -47,12 +47,7 @@
             <Toolbar
                 id="otbFooter">
 
-                <Button
-                    icon="sap-icon://alert"
-                    text="{= ${message>/}.length }"
-                    visible="{= ${message>/}.length > 0 }"
-                    type="Emphasized"
-                    press="onMessagePopoverPress" />
+               
 				<ToolbarSpacer/>
 				<Button text="{i18n>Add}" press="onSaveRecipe"/>	
 				<Button text="{i18n>Cancel}" press="onCancelAddRecipe"/>

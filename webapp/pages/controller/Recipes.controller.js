@@ -105,6 +105,8 @@ sap.ui.define([
 			var arrItems = oEvent.getSource().getSelectedItems();
 			var oViewModel = this.getModel("viewData");
 			
+			sap.ui.getCore().getMessageManager().removeAllMessages();
+			
 			if (arrItems.length > 0 ){
 				oViewModel.setProperty("/ShowDelete",true);
 			} else{
@@ -113,15 +115,54 @@ sap.ui.define([
 		},
 		
 		onDeleteRecipe: function(){
-			
+			var oThis = this;
 			var oTable = this.getView().byId("recipeTable");
 			var arrItems = oTable.getSelectedItems();
+			
+			if (arrItems.length > 0){
+				MessageBox.confirm(_oBundle.getText("msgCfrmDeleteRecipe"), {
+					actions: ["Delete", MessageBox.Action.CANCEL],
+					emphasizedAction: "CANCEL",
+					onClose: function(sAction) {
+						if (sAction === 'Delete') {
+							oThis._deleteRecipe(arrItems);
+						} 
+					}
+
+				});
+			}
+		
+			
+		},
+		
+		_deleteRecipe: function(arrItems){
+			
+			var oModel = this.getModel();
+			
+			sap.ui.getCore().getMessageManager().removeAllMessages();
 			
 			for(var i = 0 ; i < arrItems.length; i++){
 				var oData = arrItems[i].getBindingContext().getObject();
 				
+				oModel.remove("/RecipeSet(Werks='"+oData.Werks+"',RecipeID='" + oData.RecipeID + "')", {
+			    method: "DELETE",
+			    success: function(data) {
+			    },
+			    error: function(e) {
+			     	var sMsg = JSON.parse(e.responseText).error.message.value;
+    				
+    				var oMessage = new Message({
+						message: sMsg,
+						type: MessageType.Error,
+						target: "",
+						processor: ""
+					});
+					sap.ui.getCore().getMessageManager().addMessages(oMessage);
+			    }
+			   });
+				
+				
 			}
-			
 		},
 		onAddRecipe: function() {
 

@@ -7,6 +7,12 @@
 				<core:Icon src="sap-icon://filter" class="size1" color="#031E48" visible="{viewData>/IsFiltered}">
 					
 				</core:Icon>
+				 <Button
+                    icon="sap-icon://alert"
+                    text="{= ${message>/}.length }"
+                    visible="{= ${message>/}.length > 0 }"
+                    type="Emphasized"
+                    press="onMessagePopoverPress" />
 				<ToolbarSpacer/>
 				
 				<Button text="{i18n>Delete}" type="Transparent" tooltip="Delete Recipe" press=".onDeleteRecipe" visible="{viewData>/ShowDelete}"/>
