@@ -138,31 +138,63 @@ sap.ui.define([
 		_deleteRecipe: function(arrItems){
 			
 			var oModel = this.getModel();
-			
+
 			sap.ui.getCore().getMessageManager().removeAllMessages();
+
 			
+			oModel.setDeferredGroups(["batchRecipeDelete"]);
 			for(var i = 0 ; i < arrItems.length; i++){
 				var oData = arrItems[i].getBindingContext().getObject();
 				
-				oModel.remove("/RecipeSet(Werks='"+oData.Werks+"',RecipeID='" + oData.RecipeID + "')", {
-			    method: "DELETE",
-			    success: function(data) {
-			    },
-			    error: function(e) {
-			     	var sMsg = JSON.parse(e.responseText).error.message.value;
-    				
-    				var oMessage = new Message({
-						message: sMsg,
-						type: MessageType.Error,
-						target: "",
-						processor: ""
-					});
-					sap.ui.getCore().getMessageManager().addMessages(oMessage);
-			    }
-			   });
-				
-				
+				oModel.callFunction("/Func_RecipeDelete", {
+					method: "POST",
+					batchGroupId: "batchRecipeDelete",
+					changeSetId: i,
+					urlParameters: {
+					"Werks" : oData.Werks,
+					"RecipeID" :  oData.RecipeID
+					
+					}
+				});
 			}
+			
+			//Submitting the function import batch call
+			oModel.submitChanges({
+				batchGroupId: "batchRecipeDelete", //Same as the batch group id used previously
+				success: function (oResponse) {
+					
+					var arrResponses = oResponse.__batchResponses;
+					var bHasError = false;
+					
+					for( i = 0; i < arrResponses.length; i++){
+						var oResponseData = arrResponses[i].__changeResponses[0].data;
+						if (oResponseData.Type === 'E') {
+							bHasError = true;
+							var oMessage = new Message({
+									message: oResponseData.Message,
+									type: MessageType.Error,
+									target: "",
+									processor: ""
+							});
+							sap.ui.getCore().getMessageManager().addMessages(oMessage);
+								
+						}
+					}
+					if (bHasError){
+						MessageBox.error( _oBundle.getText("msgErrRecipeDelete"), {
+				          styleClass: "sapUiSizeCompact" 
+				        });
+					}
+					
+					this.getView().byId("recipeTable").getBinding("items").refresh();
+				}.bind(this),
+				error: function (e) {
+					MessageToast.show("Error");
+					//var sMsg = JSON.parse(e.responseText).error.message.value;
+				}	
+    			
+			});
+				
 		},
 		onAddRecipe: function() {
 
@@ -286,8 +318,8 @@ sap.ui.define([
 				MessageToast.show("Choose a file first");
 				return;
 			}
-
-			oUploader.setUploadUrl(sPath);
+			
+			oUploader.setUploadUrl("/sap/opu/odata/sap/zrecipecost_odata_srv" + sPath);
 
 			oUploader.checkFileReadable().then(function() {
 				oUploader.upload();

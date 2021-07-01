@@ -48,9 +48,8 @@
 		<items>
 			<ColumnListItem  vAlign="Middle" type="Navigation" press="onSelectRecipe">
 				<cells>
-					<Image src="{= 'http://decap01.h800.local:8080/sap/opu/odata/sap/zrecipecost_odata_srv/RecipePhotoSet(Werks=\'' + ${Werks} + '\',RecipeID=\'' + ${RecipeID} + '\')/$value' }" width="120px" height="80px"
+					<Image src="{= '/sap/opu/odata/sap/zrecipecost_odata_srv/RecipePhotoSet(Werks=\'' + ${Werks} + '\',RecipeID=\'' + ${RecipeID} + '\')/$value' }" width="120px" height="80px"
 						press="onSelectImage"/>
-					<!--<Image src="{viewData>/pictureUrl}/{RecipeID}" width="80px" />-->
 					<ObjectIdentifier title="{Name}" text="{RecipeID}"/>
 					<ObjectIdentifier title="{GroupTxt}" text=""/>
 					<ObjectIdentifier title="{LocationTxt}" text=""/>
