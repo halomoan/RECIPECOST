@@ -8,11 +8,13 @@
 		class="sapUiContentPadding"
 		placement="Right" >
 		<VBox>
+			<Image src="{= 'http://decap01.h800.local:8080/sap/opu/odata/sap/zrecipecost_odata_srv/RecipePhotoSet(Werks=\'' + ${Werks} + '\',RecipeID=\'' + ${RecipeID} + '\')/$value' }"/>
 		<u:FileUploader
 			id="ImageUploader"
 			uploadUrl="upload/"
 			tooltip="Upload your file to the local server"
 			fileType="png,jpg"
+			width="100%"
 			uploadComplete="onUploadComplete"/>
 		<Button
 			text="Upload Image"
