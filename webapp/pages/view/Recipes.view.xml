@@ -48,7 +48,7 @@
 		<items>
 			<ColumnListItem  vAlign="Middle" type="Navigation" press="onSelectRecipe">
 				<cells>
-					<Image src="{/RecipePhotoSet(Werks='PPHS',RecipeID='051MBHHZ7JKRIABKKBNWTM',VersionID='0000')/$value}" width="120px" height="80px"
+					<Image src="{= '/RecipePhotoSet(Werks=\'' + ${Werks} + '\',RecipeID=\'' + ${RecipeID} + '\')/$value' }" width="120px" height="80px"
 						press="onSelectImage"/>
 					<!--<Image src="{viewData>/pictureUrl}/{RecipeID}" width="80px" />-->
 					<ObjectIdentifier title="{Name}" text="{RecipeID}"/>
