@@ -14,15 +14,16 @@
                     type="Emphasized"
                     press="onMessagePopoverPress" />
 				<ToolbarSpacer/>
-				
-				<Button text="{i18n>Delete}" type="Transparent" tooltip="Delete Recipe" press=".onDeleteRecipe" visible="{viewData>/ShowDelete}"/>
+				<Button text="{i18n>Add}" type="Transparent" tooltip="Add Recipe" press=".onAddRecipe"/>
+				<Button text="{i18n>Edit}" type="Transparent" tooltip="Edit Recipe" press=".onEditRecipe" visible="{viewData>/IsListSelected}"/>
+				<Button text="{i18n>Delete}" type="Transparent" tooltip="Delete Recipe" press=".onDeleteRecipe" visible="{viewData>/IsListSelected}"/>
 				
 				<SearchField change="onSearchRecipe">
 					<layoutData><OverflowToolbarLayoutData maxWidth="300px" shrinkable="true" priority="NeverOverflow"/></layoutData>
 				</SearchField>
-				<Button text="{i18n>Add}" type="Transparent" tooltip="Add Recipe" press=".onAddRecipe"/>
 				
-				<OverflowToolbarButton tooltip="More" type="Transparent" text="More" icon="sap-icon://overflow" press=".onSettingDialog"/>
+				
+				<OverflowToolbarButton tooltip="More" type="Transparent" text="More" icon="sap-icon://group-2" press=".onSettingDialog"/>
 			</OverflowToolbar>
 		</headerToolbar>
 		<columns>

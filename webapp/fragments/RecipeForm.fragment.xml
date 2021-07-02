@@ -1,12 +1,12 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:f="sap.ui.layout.form" xmlns:l="sap.ui.layout"
 	xmlns:core="sap.ui.core">
-	<Dialog id="addRecipeDialog" contentWidth="540px" contentHeight="450px" title="{i18n>RecipeForm}" icon="sap-icon://activity-items">
+	<Dialog id="addRecipeDialog" contentWidth="540px" contentHeight="450px" title="{= ${viewData>/IsMultiSelected} ?  ${i18n>RecipeForm} + ' (' + ${i18n>Multiple} +')' : ${i18n>RecipeForm} }" icon="sap-icon://activity-items">
 		<NavContainer id="form1" class="customCSS">
 			<Page id="page1" class="sapUiResponsivePadding--header" showHeader="false" showNavButton="false">
 				<content>
 					<f:Form id="recipeForm" editable="true">
 						<f:title>
-							<core:Title text="Recipe"/>
+							<core:Title text="{= ${viewData>/IsMultiSelected} ? ${i18n>Recipe} : ${i18n>Recipe} (${i81n>Multiple})}"/>
 						</f:title>
 						<f:layout>
 							<f:ColumnLayout columnsM="2" columnsL="3" columnsXL="4"/>
@@ -16,7 +16,7 @@
 								<f:formElements>
 									<f:FormElement label="{i18n>NameOfRecipe}">
 										<f:fields>
-											<Input value="{ path: 'form>/Name', type: 'sap.ui.model.type.String', constraints: { minLength:5, maxLength: 50 } }" autocomplete="false"/>
+											<Input value="{ path: 'form>/Name', type: 'sap.ui.model.type.String', constraints: { minLength:5, maxLength: 50 } }" autocomplete="false" enabled="{= ! ${viewData>/IsMultiSelected} }"/>
 										</f:fields>
 									</f:FormElement>
 									<f:FormElement label="{i18n>Group}">
@@ -49,8 +49,8 @@
 
                
 				<ToolbarSpacer/>
-				<Button text="{i18n>Add}" press="onSaveRecipe"/>	
-				<Button text="{i18n>Cancel}" press="onCancelAddRecipe"/>
+				<Button text="{i18n>Add}" press=".onSaveRecipe"/>	
+				<Button text="{i18n>Cancel}" press=".onCancelRecipe"/>
             </Toolbar>
         </footer>
 			</Page>

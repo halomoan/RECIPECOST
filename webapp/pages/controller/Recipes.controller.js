@@ -27,7 +27,9 @@ sap.ui.define([
 			
 			var oViewModel = new JSONModel({
 				"IsFiltered" : false,
-				"ShowDelete" : false
+				"IsListSelected": false,
+				"IsMultiSelected" : false,
+				"Mode": ""
 			});
 			
 			oView.setModel(oViewModel,"viewData");
@@ -106,18 +108,30 @@ sap.ui.define([
 			var oViewModel = this.getModel("viewData");
 			
 			sap.ui.getCore().getMessageManager().removeAllMessages();
-			
 			if (arrItems.length > 0 ){
-				oViewModel.setProperty("/ShowDelete",true);
+				oViewModel.setProperty("/IsListSelected",true);
+				
+				if (arrItems.length > 1 ){
+					
+					oViewModel.setProperty("/IsMultiSelected",true);
+				} else{
+					oViewModel.setProperty("/IsMultiSelected",false);
+				}
+			
 			} else{
-				oViewModel.setProperty("/ShowDelete",false);
+				oViewModel.setProperty("/IsListSelected",false);
 			}
+			
+			
 		},
 		
 		onDeleteRecipe: function(){
-			var oThis = this;
+			
 			var oTable = this.getView().byId("recipeTable");
 			var arrItems = oTable.getSelectedItems();
+			var oViewModel = this.getModel("viewData");
+			oViewModel.setProperty("/Mode","Delete");
+			
 			
 			if (arrItems.length > 0){
 				MessageBox.confirm(_oBundle.getText("msgCfrmDeleteRecipe"), {
@@ -125,9 +139,9 @@ sap.ui.define([
 					emphasizedAction: "CANCEL",
 					onClose: function(sAction) {
 						if (sAction === 'Delete') {
-							oThis._deleteRecipe(arrItems);
+							this._deleteRecipe(arrItems);
 						} 
-					}
+					}.bind(this)
 
 				});
 			}
@@ -197,9 +211,13 @@ sap.ui.define([
 				
 		},
 		onAddRecipe: function() {
-
+			var oViewModel = this.getModel("viewData");
+			oViewModel.setProperty("/Mode","Add");
+			
 			this.showFormDialogFragment(this.getView(), this._formFragments, "halo.sap.mm.RECIPECOST.fragments.RecipeForm", this);
-
+			
+			
+		
 			// Filter Location List
 			var oLocList = this.getView().byId("location");
 			var oLocBinding = oLocList.getBinding("items");
@@ -216,29 +234,73 @@ sap.ui.define([
 						key: "{Groupid}"
 					})
 			});
-			//var oGroupBinding = oGroupList.getBinding("items");
-			//oGroupBinding.filter([new Filter("Werks", FilterOperator.EQ, this.PlantID)], "Application");
+		
 
 		},
 		
+		onEditRecipe: function(){
+			var oViewModel = this.getModel("viewData");
+			oViewModel.setProperty("/Mode","Edit");
+			
+			var oTable = this.getView().byId("recipeTable");
+			var arrItems = oTable.getSelectedItems();
+			if (arrItems.length === 1){
+				var oFormModel = this.getModel("form");
+				var oFormData = oFormModel.getData();
+				var oListData = arrItems[0].getBindingContext().getObject();
+				oFormData.Name = oListData.Name;
+				oFormData.GroupID = oListData.GroupID;
+				oFormData.LocationID = oListData.LocationID;
+				oFormData.Quantity = oListData.Quantity;
+				oFormModel.setProperty("/",oFormData);
+			}
+			
+			
+			this.showFormDialogFragment(this.getView(), this._formFragments, "halo.sap.mm.RECIPECOST.fragments.RecipeForm", this);
+			
+			
+			
+			// Filter Location List
+			var oLocList = this.getView().byId("location");
+			var oLocBinding = oLocList.getBinding("items");
+			oLocBinding.filter(this.aFilterDefault, "Application");
+
+			// Filter Location List
+			var oGroupList = this.getView().byId("group");
+			oGroupList.bindAggregation("items", {
+					path: "/RecipeGroupSet",
+					filters: this.aFilterDefault,
+					sorter: new Sorter({path: 'Text', descending: true}),
+					template: new sap.ui.core.ListItem({
+						text: "{Text}",
+						key: "{Groupid}"
+					})
+			});
+			
+		},
 		onSaveRecipe: function() {
 			var oFormData = this.getView().getModel("form").getData();
-			var oThis = this;
+			var oViewModel = this.getModel("viewData");
+			var bMultiple = oViewModel.getProperty("/IsMultipleSelected");
+			var sMode = oViewModel.getProperty("/Mode");
 
-			if (this._validateRecipe(oFormData)) {
+			if (this._validateRecipe(oFormData,bMultiple)) {
 
 				MessageBox.confirm(_oBundle.getText("msgCfrmSaveRecipe"), {
 					actions: ["Save", MessageBox.Action.CANCEL],
 					emphasizedAction: "CANCEL",
 					onClose: function(sAction) {
 						if (sAction === 'Save') {
-
-							oThis._saveRecipe(oFormData);
-							oThis.byId("addRecipeDialog").close();
+							if (sMode === "Add") {
+								this._addRecipe(oFormData);
+							} else {
+								this._editRecipe(oFormData);
+							}
+							this.byId("addRecipeDialog").close();
 						} else {
-							oThis.byId("addRecipeDialog").close();
+							this.byId("addRecipeDialog").close();
 						}
-					}
+					}.bind(this)
 
 				});
 
@@ -333,7 +395,7 @@ sap.ui.define([
 			var oPopOver = this.getFragmentByName(this._formFragments, "halo.sap.mm.RECIPECOST.fragments.ImageUploadPopover");
 			oPopOver.close();
 		},
-		_saveRecipe: function(oFormData) {
+		_addRecipe: function(oFormData) {
 			var oModel = this.getModel();
 			var oData = {
 				"Werks": this.PlantID,
@@ -355,22 +417,93 @@ sap.ui.define([
 			});
 
 		},
-		_validateRecipe: function(oFormData) {
+		
+		_editRecipe: function(oFormData) {
+			var oModel = this.getModel();
+			var oTable = this.getView().byId("recipeTable");
+			var arrItems = oTable.getSelectedItems();
+			
+			
+			sap.ui.getCore().getMessageManager().removeAllMessages();
+			
+			oModel.setDeferredGroups(["batchRecipeUpdate"]);
+			for(var i = 0 ; i < arrItems.length; i++){
+				var oData = arrItems[i].getBindingContext().getObject();
+				var sData = JSON.stringify({
+					"Name": oFormData.Name,
+					"GroupID": oFormData.GroupID,
+					"LocationID": oFormData.LocationID,
+					"Quantity": "" + oFormData.Quantity
+				});
+				
+				oModel.callFunction("/Func_RecipeEdit", {
+					method: "POST",
+					batchGroupId: "batchRecipeUpdate",
+					changeSetId: i,
+					urlParameters: {
+					"Werks" : oData.Werks,
+					"RecipeID" :  oData.RecipeID,
+					"RecipeData": "'" + sData + "'"
+					}
+				});
+			}
+			
+			//Submitting the function import batch call
+			oModel.submitChanges({
+				batchGroupId: "batchRecipeUpdate", //Same as the batch group id used previously
+				success: function (oResponse) {
+					
+					var arrResponses = oResponse.__batchResponses;
+					var bHasError = false;
+					
+					for( i = 0; i < arrResponses.length; i++){
+						var oResponseData = arrResponses[i].__changeResponses[0].data;
+						if (oResponseData.Type === 'E') {
+							bHasError = true;
+							var oMessage = new Message({
+									message: oResponseData.Message,
+									type: MessageType.Error,
+									target: "",
+									processor: ""
+							});
+							sap.ui.getCore().getMessageManager().addMessages(oMessage);
+								
+						}
+					}
+					if (bHasError){
+						MessageBox.error( _oBundle.getText("msgErrRecipeDelete"), {
+				          styleClass: "sapUiSizeCompact" 
+				        });
+					}
+					
+					this.getView().byId("recipeTable").getBinding("items").refresh();
+				}.bind(this),
+				error: function (e) {
+					MessageToast.show("Error");
+					//var sMsg = JSON.parse(e.responseText).error.message.value;
+				}	
+    			
+			});
+	
+
+		},
+		_validateRecipe: function(oFormData,bMultiple) {
 
 			var oMessage;
 			var status = true;
 
 			sap.ui.getCore().getMessageManager().removeAllMessages();
-
-			if (oFormData.Name.length < 5) {
-				status = false;
-				oMessage = new Message({
-					message: "Empty Is not allowed. Minimum 5 characters",
-					type: MessageType.Error,
-					target: "/Name",
-					processor: this.getView().getModel("form")
-				});
-				sap.ui.getCore().getMessageManager().addMessages(oMessage);
+			if (! bMultiple) {
+				if (oFormData.Name.length < 5) {
+					status = false;
+					oMessage = new Message({
+						message: "Empty Is not allowed. Minimum 5 characters",
+						type: MessageType.Error,
+						target: "/Name",
+						processor: this.getView().getModel("form")
+					});
+					sap.ui.getCore().getMessageManager().addMessages(oMessage);
+				}
 			}
 
 			if (oFormData.GroupID.length < 1) {
@@ -400,7 +533,7 @@ sap.ui.define([
 			return status;
 		},
 
-		onCancelAddRecipe: function() {
+		onCancelRecipe: function() {
 			this.byId("addRecipeDialog").close();
 		},
 		
