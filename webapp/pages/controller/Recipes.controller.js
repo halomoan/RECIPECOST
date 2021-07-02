@@ -281,8 +281,9 @@ sap.ui.define([
 		onSaveRecipe: function() {
 			var oFormData = this.getView().getModel("form").getData();
 			var oViewModel = this.getModel("viewData");
-			var bMultiple = oViewModel.getProperty("/IsMultipleSelected");
+			var bMultiple = oViewModel.getProperty("/IsMultiSelected");
 			var sMode = oViewModel.getProperty("/Mode");
+			
 
 			if (this._validateRecipe(oFormData,bMultiple)) {
 
@@ -419,71 +420,41 @@ sap.ui.define([
 		},
 		
 		_editRecipe: function(oFormData) {
+			
 			var oModel = this.getModel();
 			var oTable = this.getView().byId("recipeTable");
 			var arrItems = oTable.getSelectedItems();
+			var mParameters = { 
+					method: "PUT", 
+					groupId:"batchRecipeUpdate", 
+					success:function(odata, resp){ console.log(resp); },
+					error: function(odata, resp) { console.log(resp); }
+				
+			};
 			
 			
 			sap.ui.getCore().getMessageManager().removeAllMessages();
 			
+			oModel.setUseBatch(true);
 			oModel.setDeferredGroups(["batchRecipeUpdate"]);
+			
+			
 			for(var i = 0 ; i < arrItems.length; i++){
 				var oData = arrItems[i].getBindingContext().getObject();
-				var sData = JSON.stringify({
-					"Name": oFormData.Name,
-					"GroupID": oFormData.GroupID,
-					"LocationID": oFormData.LocationID,
-					"Quantity": "" + oFormData.Quantity
-				});
+				if (arrItems.length === 1) {
+					oData.Name = oFormData.Name;
+				}
+ 				oData.GroupID = oFormData.GroupID;
+				oData.LocationID = oFormData.LocationID;
+				oData.Quantity = "" +  oFormData.Quantity;
 				
-				oModel.callFunction("/Func_RecipeEdit", {
-					method: "POST",
-					batchGroupId: "batchRecipeUpdate",
-					changeSetId: i,
-					urlParameters: {
-					"Werks" : oData.Werks,
-					"RecipeID" :  oData.RecipeID,
-					"RecipeData": "'" + sData + "'"
-					}
-				});
+				oModel.update("/RecipeSet(Werks='" + oData.Werks + "',RecipeID='" + oData.RecipeID + "')" , oData,mParameters);
+				
 			}
 			
+			
 			//Submitting the function import batch call
-			oModel.submitChanges({
-				batchGroupId: "batchRecipeUpdate", //Same as the batch group id used previously
-				success: function (oResponse) {
-					
-					var arrResponses = oResponse.__batchResponses;
-					var bHasError = false;
-					
-					for( i = 0; i < arrResponses.length; i++){
-						var oResponseData = arrResponses[i].__changeResponses[0].data;
-						if (oResponseData.Type === 'E') {
-							bHasError = true;
-							var oMessage = new Message({
-									message: oResponseData.Message,
-									type: MessageType.Error,
-									target: "",
-									processor: ""
-							});
-							sap.ui.getCore().getMessageManager().addMessages(oMessage);
-								
-						}
-					}
-					if (bHasError){
-						MessageBox.error( _oBundle.getText("msgErrRecipeDelete"), {
-				          styleClass: "sapUiSizeCompact" 
-				        });
-					}
-					
-					this.getView().byId("recipeTable").getBinding("items").refresh();
-				}.bind(this),
-				error: function (e) {
-					MessageToast.show("Error");
-					//var sMsg = JSON.parse(e.responseText).error.message.value;
-				}	
-    			
-			});
+			oModel.submitChanges(mParameters);
 	
 
 		},
@@ -493,8 +464,13 @@ sap.ui.define([
 			var status = true;
 
 			sap.ui.getCore().getMessageManager().removeAllMessages();
-			if (! bMultiple) {
-				if (oFormData.Name.length < 5) {
+			
+			
+			if (bMultiple) {
+				return true;
+			}	
+			
+			if (oFormData.Name.length < 5) {
 					status = false;
 					oMessage = new Message({
 						message: "Empty Is not allowed. Minimum 5 characters",
@@ -503,8 +479,8 @@ sap.ui.define([
 						processor: this.getView().getModel("form")
 					});
 					sap.ui.getCore().getMessageManager().addMessages(oMessage);
-				}
 			}
+			
 
 			if (oFormData.GroupID.length < 1) {
 				status = false;

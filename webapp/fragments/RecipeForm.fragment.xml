@@ -6,7 +6,7 @@
 				<content>
 					<f:Form id="recipeForm" editable="true">
 						<f:title>
-							<core:Title text="{= ${viewData>/IsMultiSelected} ? ${i18n>Recipe} : ${i18n>Recipe} (${i81n>Multiple})}"/>
+							<core:Title text="{= ${viewData>/Mode} === 'Add' ? ${i18n>New} : ${i18n>Edit} }"/>
 						</f:title>
 						<f:layout>
 							<f:ColumnLayout columnsM="2" columnsL="3" columnsXL="4"/>
@@ -35,7 +35,7 @@
 									</f:FormElement>
 									<f:FormElement label="{i18n>PortionProduced}">
 										<f:fields>
-											<StepInput value="{form>/Produced}" min="1" displayValuePrecision="2"></StepInput>
+											<StepInput value="{form>/Quantity}" min="1" displayValuePrecision="2"></StepInput>
 										</f:fields>
 									</f:FormElement>
 								</f:formElements>
@@ -49,7 +49,7 @@
 
                
 				<ToolbarSpacer/>
-				<Button text="{i18n>Add}" press=".onSaveRecipe"/>	
+				<Button text="{= ${viewData>/Mode} === 'Add' ? ${i18n>Add} : ${i18n>Edit} }" press=".onSaveRecipe"/>	
 				<Button text="{i18n>Cancel}" press=".onCancelRecipe"/>
             </Toolbar>
         </footer>
