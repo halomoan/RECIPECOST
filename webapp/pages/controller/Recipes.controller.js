@@ -427,8 +427,43 @@ sap.ui.define([
 			var mParameters = { 
 					method: "PUT", 
 					groupId:"batchRecipeUpdate", 
-					success:function(odata, resp){ console.log(resp); },
-					error: function(odata, resp) { console.log(resp); }
+					success:function(oResponse){
+						
+					// var arrResponses = oResponse.__batchResponses;
+					// var bHasError = false;
+					
+					// for( var i = 0; i < arrResponses.length; i++){
+					// 	var oResponseData = arrResponses[i].__changeResponses[0].data;
+					// 	if (oResponseData.Type === 'E') {
+					// 		bHasError = true;
+					// 		var oMessage = new Message({
+					// 				message: oResponseData.Message,
+					// 				type: MessageType.Error,
+					// 				target: "",
+					// 				processor: ""
+					// 		});
+					// 		sap.ui.getCore().getMessageManager().addMessages(oMessage);
+								
+					// 	}
+					// }
+					// if (bHasError){
+					// 	MessageBox.error( _oBundle.getText("msgErrRecipeDelete"), {
+				 //         styleClass: "sapUiSizeCompact" 
+				 //       });
+					// }
+					
+					},
+					error: function(e) { 
+						var sMsg = JSON.parse(e.responseText).error.message.value;
+						var oMessage = new Message({
+									message: sMsg,
+									type: MessageType.Error,
+									target: "",
+									processor: ""
+							});
+						sap.ui.getCore().getMessageManager().addMessages(oMessage);
+						MessageToast.show("Error Detected");
+					}
 				
 			};
 			
