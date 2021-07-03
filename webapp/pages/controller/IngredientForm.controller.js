@@ -12,27 +12,38 @@ sap.ui.define([
 
 	
 		onInit: function() {
-			var oViewData = {
+			var oViewModel = new JSONModel({
 				"isFullScreen" : false
 			
-			};
-			this.getView().setModel(new JSONModel(oViewData), "viewData");
+			});
+			this.getView().setModel(oViewModel, "viewData");
 			
 			this.oIngredientModel = new JSONModel(sap.ui.require.toUrl("halo/sap/mm/RECIPECOST/model") + "/ingredient.json");
 			this.getView().setModel(this.oIngredientModel, "form");
 			
 			this.oColModel = new JSONModel(sap.ui.require.toUrl("halo/sap/mm/RECIPECOST/fragments/") + "/VHMaterialColumnsModel.json");
-			
-			
-			this.PurchOrg = "C103";
-			this.Plant = "PPHS";
-			this.MatType = "FOOD";
+		
 			
 			this.oFilterPurchOrg = new Filter("Ekorg", FilterOperator.EQ, this.PurchOrg); // Filter Material Type
 			this.oFilterPlant = new Filter("Werks", FilterOperator.EQ, this.Plant); // Filter Plant
 			this.oFilterMatType = new Filter("Mtart", FilterOperator.EQ, this.MatType); // Filter Material Type
 			
 			this.aFilters = [this.oFilterPurchOrg,this.oFilterPlant,this.oFilterMatType];
+			
+			this._oRouter =  this.getRouter();
+			this._oRouter.getRoute("ingredientform").attachPatternMatched(this.__onRouteMatched, this);
+		},
+		
+		__onRouteMatched: function(oEvent){
+			var oArguments = oEvent.getParameter("arguments");
+			this.PurchOrgID = oArguments.Ekorg;
+			this.PlantID = oArguments.Werks;
+			this.RecipeID = oArguments.RecipeID;
+			
+			this.getView().bindElement("/RecipeSet(Werks='" + this.PlantID + "',RecipeID='" + this.RecipeID + "')");
+		},
+		onNavBack: function(){
+			this._oRouter.navTo("recipes");
 		},
 
 		onVHMaterialRequested: function(){
@@ -196,7 +207,9 @@ sap.ui.define([
 		},
 		
 		onExit: function() {
+			this._oRouter.detachRouteMatched(this.__onRouteMatched, this);
 			this._oValueHelpDialog.destroy();
+			
 		}
 
 	});

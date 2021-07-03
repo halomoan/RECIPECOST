@@ -4,19 +4,14 @@ sap.ui.define([
 	"sap/m/MessageBox",
 	"sap/m/MessageToast",
 	"sap/ui/core/message/Message",
-	"sap/ui/core/library",
 	'sap/ui/model/Filter',
 	'sap/ui/model/FilterOperator',
 	'sap/ui/model/Sorter'
 
-], function(BaseController, JSONModel, MessageBox, MessageToast, Message, library, Filter, FilterOperator,Sorter) {
+], function(BaseController, JSONModel, MessageBox, MessageToast, Message,  Filter, FilterOperator,Sorter) {
 	"use strict";
 	var _oBundle;
-	// shortcut for sap.ui.core.ValueState
-	var ValueState = library.ValueState;
 
-	// shortcut for sap.ui.core.MessageType
-	var MessageType = library.MessageType;
 	return BaseController.extend("halo.sap.mm.RECIPECOST.pages.controller.Recipes", {
 
 		_formFragments: {},
@@ -81,7 +76,8 @@ sap.ui.define([
 				this._init();
 
 			}.bind(this));
-
+			
+			this._oRouter =  this.getRouter();
 		},
 		
 		_init: function(){
@@ -186,7 +182,7 @@ sap.ui.define([
 							bHasError = true;
 							var oMessage = new Message({
 									message: oResponseData.Message,
-									type: MessageType.Error,
+									type: "Error",
 									target: "",
 									processor: ""
 							});
@@ -311,15 +307,22 @@ sap.ui.define([
 		},
 		onSelectRecipe: function(oEvent){
 			var oItem = oEvent.getSource();
-			var oBindingContext = oItem.getBindingContext();
-			console.log(oBindingContext.getPath());
+			var oListItem = oItem.getBindingContext().getObject();
+			
+			this._oRouter.navTo("ingredientform", { Ekorg: oListItem.Ekorg, Werks: oListItem.Werks, RecipeID: oListItem.RecipeID });
 		},
 		
 		onSearchRecipe: function(oEvent){
 			var aFilters = [];
 			var sQuery = oEvent.getSource().getValue();
-			if (sQuery && sQuery.length > 0) {
-				var filter = new Filter("Name", FilterOperator.Contains,sQuery);
+			if (sQuery && sQuery.length > 0) {				
+				var filter = new Filter({
+					filters: [
+						new Filter("RecipeID", FilterOperator.Contains,sQuery),
+						new Filter("Name", FilterOperator.Contains,sQuery)
+					],
+    				and: false
+				});
 				aFilters.push(filter);
 			}
 			
@@ -401,6 +404,7 @@ sap.ui.define([
 			var oData = {
 				"Werks": this.PlantID,
 				"Name": oFormData.Name,
+				"Ekorg" : this.PurchOrgID,
 				"GroupID": oFormData.GroupID,
 				"LocationID": oFormData.LocationID,
 				"Quantity": "" + oFormData.Quantity
@@ -438,7 +442,7 @@ sap.ui.define([
 					// 		bHasError = true;
 					// 		var oMessage = new Message({
 					// 				message: oResponseData.Message,
-					// 				type: MessageType.Error,
+					// 				type: "Error",
 					// 				target: "",
 					// 				processor: ""
 					// 		});
@@ -457,7 +461,7 @@ sap.ui.define([
 						var sMsg = JSON.parse(e.responseText).error.message.value;
 						var oMessage = new Message({
 									message: sMsg,
-									type: MessageType.Error,
+									type: "Error",
 									target: "",
 									processor: ""
 							});
@@ -479,9 +483,16 @@ sap.ui.define([
 				if (arrItems.length === 1) {
 					oData.Name = oFormData.Name;
 				}
- 				oData.GroupID = oFormData.GroupID;
-				oData.LocationID = oFormData.LocationID;
-				oData.Quantity = "" +  oFormData.Quantity;
+				if (oFormData.GroupID) {
+ 					oData.GroupID = oFormData.GroupID;
+				}
+				if (oFormData.LocationID){
+					oData.LocationID = oFormData.LocationID;
+				}
+				if (oFormData.Quantity) {
+					oData.Quantity = "" +  oFormData.Quantity;
+				}
+				oData.Ekorg =  this.PurchOrgID;
 				
 				oModel.update("/RecipeSet(Werks='" + oData.Werks + "',RecipeID='" + oData.RecipeID + "')" , oData,mParameters);
 				
@@ -509,7 +520,7 @@ sap.ui.define([
 					status = false;
 					oMessage = new Message({
 						message: "Empty Is not allowed. Minimum 5 characters",
-						type: MessageType.Error,
+						type: "Error",
 						target: "/Name",
 						processor: this.getView().getModel("form")
 					});
@@ -522,7 +533,7 @@ sap.ui.define([
 
 				oMessage = new Message({
 					message: "Empty Is not allowed",
-					type: MessageType.Error,
+					type: "Error",
 					target: "/GroupID",
 					processor: this.getView().getModel("form")
 				});
@@ -534,7 +545,7 @@ sap.ui.define([
 
 				oMessage = new Message({
 					message: "Empty Is not allowed",
-					type: MessageType.Error,
+					type: "Error",
 					target: "/LocationID",
 					processor: this.getView().getModel("form")
 				});
@@ -560,6 +571,18 @@ sap.ui.define([
 					template: new sap.m.ViewSettingsItem({
 						text: "{Text}",
 						key: "GroupID___EQ___" + "{Groupid}" + "___X"
+					})
+			});
+			
+			// Group List
+			var oLocationList = this.byId("VSFLocation");
+			oLocationList.bindAggregation("items", {
+					path: "/LocationSet",
+					filters: this.aFilterDefault,
+					sorter: new Sorter({path: 'Text', descending: true}),
+					template: new sap.m.ViewSettingsItem({
+						text: "{Text}",
+						key: "LocationID___EQ___" + "{Locationid}" + "___X"
 					})
 			});
 			

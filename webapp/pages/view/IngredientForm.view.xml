@@ -1,68 +1,74 @@
-<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:l="sap.ui.layout"
-	xmlns:t="sap.ui.table"
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:t="sap.ui.table"
 	controllerName="halo.sap.mm.RECIPECOST.pages.controller.IngredientForm">
-	<l:DynamicSideContent id="DynamicSideContent" class="sapUiDSCExplored sapUiContentPadding" containerQuery="true"
-		sideContentFallDown="BelowM" breakpointChanged="handleBreakpointChangeEvent" showSideContent="false">
-		
-			<t:Table
-				rows="{form>/Ingredients}"
-				selectionMode="MultiToggle"
-				visibleRowCount="15"
-				paste="onPaste"
-				ariaLabelledBy="title">
+	<l:DynamicSideContent id="DynamicSideContent" class="sapUiDSCExplored" containerQuery="true" sideContentFallDown="BelowM"
+		breakpointChanged="handleBreakpointChangeEvent" showSideContent="false">
+		<Page title="{Name}"
+			class="sapUiContentPadding sapUiResponsivePadding--header sapUiResponsivePadding--subHeader sapUiResponsivePadding--content sapUiResponsivePadding--footer"
+			showNavButton="true" navButtonPress=".onNavBack">
+			<headerContent>
+				<Button icon="sap-icon://action" tooltip="Share"/>
+			</headerContent>
+			<l:BlockLayout>
+				<l:BlockLayoutRow>
+					<l:BlockLayoutCell width="2">
+						<Text text="Donec bibendum diam nibh, sit amet ornare ante fermentum sed. Ut vulputate justo at orci sollicitudin."/>
+					</l:BlockLayoutCell>
+					<l:BlockLayoutCell class="sapUiNoContentPadding">
+						<FlexBox alignItems="Start" justifyContent="End">
+							<Image
+								src="{= '/sap/opu/odata/sap/zrecipecost_odata_srv/RecipePhotoSet(Werks=\'' + ${Werks} + '\',RecipeID=\'' + ${RecipeID} + '\')/$value' }"
+								press="onSelectImage"/>
+						</FlexBox>
+					</l:BlockLayoutCell>
+				</l:BlockLayoutRow>
+			</l:BlockLayout>
+			<t:Table rows="{form>/Ingredients}" selectionMode="MultiToggle" visibleRowCount="15" paste="onPaste" ariaLabelledBy="title">
 				<t:extension>
 					<OverflowToolbar style="Clear">
+						<!--<Button icon="sap-icon://nav-back" type="Transparent" tooltip="{i18n>Back}" press=".onNavBack"/>-->
 						<Title id="title" text="{i18n>Ingredient}"/>
 						<ToolbarSpacer/>
-						<Button
-							icon="sap-icon://add"
-							type="Transparent"
-							tooltip="Add Material(s)"
-							press=".onVHMaterialRequested"/>
+						<Button icon="sap-icon://add" type="Transparent" tooltip="Add Material(s)" press=".onVHMaterialRequested"/>
 					</OverflowToolbar>
 				</t:extension>
 				<t:columns>
 					<t:Column width="7rem">
-						<Label text="Material No." />
+						<Label text="Material No."/>
 						<t:template>
-							<Text text="{form>Matnr}" wrapping="false" />
+							<Text text="{form>Matnr}" wrapping="false"/>
 						</t:template>
 					</t:Column>
 					<t:Column width="20rem">
-						<Label text="Material." />
+						<Label text="Material."/>
 						<t:template>
-							<Text text="{form>Maktx}" wrapping="false" />
+							<Text text="{form>Maktx}" wrapping="false"/>
 						</t:template>
 					</t:Column>
-					
 					<t:Column width="8rem" hAlign="End">
 						<t:multiLabels>
 							<Label text=""/>
 							<Label text="Qty Used" textAlign="Center" width="100%"/>
 						</t:multiLabels>
 						<t:template>
-							<Text text="{form>TPeinh} {form>Bprme}" wrapping="false" />
+							<Text text="{form>TPeinh} {form>Bprme}" wrapping="false"/>
 						</t:template>
 					</t:Column>
-					
 					<t:Column width="8rem" hAlign="End">
 						<t:multiLabels>
 							<Label text=""/>
 							<Label text="Qty Purchased" textAlign="Center" width="100%"/>
 						</t:multiLabels>
 						<t:template>
-							<Text text="{form>Peinh} {form>Bprme}" wrapping="false" />
+							<Text text="{form>Peinh} {form>Bprme}" wrapping="false"/>
 						</t:template>
 					</t:Column>
-				
 					<t:Column width="10rem" hAlign="End" headerSpan="2,1">
 						<t:multiLabels>
 							<Label text="Date" textAlign="Center" width="100%"/>
 							<Label text="Unit Cost" textAlign="Center" width="100%"/>
 						</t:multiLabels>
-						
 						<t:template>
-							<Text text="{form>Netpr} {form>Waers}" wrapping="false" />
+							<Text text="{form>Netpr} {form>Waers}" wrapping="false"/>
 						</t:template>
 					</t:Column>
 					<t:Column width="10rem" hAlign="End" headerSpan="2,1">
@@ -70,20 +76,18 @@
 							<Label text="Date" textAlign="Center" width="100%"/>
 							<Label text="Total Cost" textAlign="Center" width="100%"/>
 						</t:multiLabels>
-						
 						<t:template>
-							<Text text="{form>TNetpr} {form>Waers}" wrapping="false" />
+							<Text text="{form>TNetpr} {form>Waers}" wrapping="false"/>
 						</t:template>
 					</t:Column>
-					
 					<t:Column width="10rem">
-						<Label text="Last PO no." />
+						<Label text="Last PO no."/>
 						<t:template>
-							<Text text="{form>Ebeln}" wrapping="false" />
+							<Text text="{form>Ebeln}" wrapping="false"/>
 						</t:template>
 					</t:Column>
-					
 				</t:columns>
 			</t:Table>
+		</Page>
 	</l:DynamicSideContent>
 </mvc:View>

@@ -17,7 +17,11 @@
 			<ViewSettingsFilterItem id="VSFGroup" text="{i18n>Group}" key="Groupid">
 				<items>
 				</items>
-			</ViewSettingsFilterItem>			
+			</ViewSettingsFilterItem>
+			<ViewSettingsFilterItem id="VSFLocation" text="{i18n>Location}" key="Locationid">
+				<items>
+				</items>
+			</ViewSettingsFilterItem>
 		</filterItems>
 	</ViewSettingsDialog>
 </core:FragmentDefinition>

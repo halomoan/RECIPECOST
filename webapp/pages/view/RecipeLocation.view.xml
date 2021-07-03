@@ -24,7 +24,7 @@
 					<f:formElements>
 						<f:FormElement label="{i18n>ID} / {i18n>Location}">
 							<f:fields>
-								<Input value="{ path: 'form>/Locid' }" enabled="false">
+								<Input value="{ path: 'form>/LocationID' }" enabled="false">
 										<layoutData>
 										<f:ColumnElementData cellsSmall="3" cellsLarge="1" />
 									</layoutData>
@@ -52,7 +52,7 @@
 				<t:Column width="10rem">
 					<Label text="{i18n>ID}"/>
 					<t:template>
-						<Text text="{Locid}" wrapping="false"/>
+						<Text text="{LocationID}" wrapping="false"/>
 					</t:template>
 				</t:Column>
 					<t:Column width="20rem">

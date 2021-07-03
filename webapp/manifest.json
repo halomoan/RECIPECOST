@@ -112,7 +112,7 @@
 					"target": "recipegroup"
 				},
 				{
-					"pattern": "ingredientform",
+					"pattern": "ingredientform/{Ekorg}/{Werks}/{RecipeID}",
 					"name": "ingredientform",
 					"target": "ingredientForm"
 				}

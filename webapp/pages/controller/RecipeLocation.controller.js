@@ -86,11 +86,11 @@ sap.ui.define([
 			if (this._validateForm(oFormData)) {
 				var oData = {
 					"Werks": this.PlantID,
-					"Locid": oFormData.Locid,
+					"LocationID": oFormData.LocationID,
 					"Text": oFormData.Text
 				};
 
-				if (oFormData.Locid === "") {
+				if (oFormData.LocationID === "") {
 					oModel.create("/LocationSet", oData, {
 						method: "POST",
 						success: function(data) {
@@ -102,7 +102,7 @@ sap.ui.define([
 						}
 					});
 				} else {
-					oModel.update("/LocationSet(Werks='" + this.PlantID + "',Locid='" + oFormData.Locid + "')", oData,null,
+					oModel.update("/LocationSet(Werks='" + this.PlantID + "',LocationID='" + oFormData.LocationID + "')", oData,null,
 					function(){
 						oThis._initForm();
 						MessageToast.show("Location Successfully Edited");
@@ -121,7 +121,7 @@ sap.ui.define([
 			
 			var oFormData = {
 					"Werks": "",
-					"Locid": "",
+					"LocationID": "",
 					"Text": ""
 			};
 			
@@ -157,7 +157,7 @@ sap.ui.define([
 		_deleteData: function(oData){
 			var oModel = this.getModel();
 			
-			oModel.remove("/LocationSet(Werks='" + this.PlantID + "',Locid='" + oData.Locid + "')",{
+			oModel.remove("/LocationSet(Werks='" + this.PlantID + "',LocationID='" + oData.LocationID + "')",{
 				method: "DELETE",
 				success: function(data){
 					MessageToast.show("Location Successfully Deleted");
@@ -182,7 +182,7 @@ sap.ui.define([
 					oFormData = oFormModel.getData();
 				
 				oFormData.Werks = oData.Werks;
-				oFormData.Locid = oData.Locid;
+				oFormData.LocationID = oData.LocationID;
 				oFormData.Text = oData.Text;
 
 				oFormModel.setProperty("/", oFormData);
@@ -207,7 +207,7 @@ sap.ui.define([
 			}
 
 			//MessageToast.show("Item " + (oItem.getText() || oItem.getType()) + " pressed for product with id " +
-			//	this.getView().getModel().getProperty("Locid", oRow.getBindingContext()));
+			//	this.getView().getModel().getProperty("Locationid", oRow.getBindingContext()));
 		},
 
 		onMessagePopoverPress: function(oEvent) {

@@ -37,6 +37,23 @@ sap.ui.define([
 					this._oRouter.navTo("notFound");break;
 			}		
 					
+		},
+		onToggleSideNavPress: function(oEvent) {
+			var oToolPage = this.byId("toolPage");
+			var bSideExpanded = oToolPage.getSideExpanded();
+
+			this._setToggleButtonTooltip(bSideExpanded);
+
+			oToolPage.setSideExpanded(!oToolPage.getSideExpanded());
+		},
+		
+		_setToggleButtonTooltip: function(bLarge) {
+			var oToggleButton = this.byId('sideNavigationToggleButton');
+			if (bLarge) {
+				oToggleButton.setTooltip('Expand');
+			} else {
+				oToggleButton.setTooltip('Collapse');
+			}
 		}
 	});
 });
