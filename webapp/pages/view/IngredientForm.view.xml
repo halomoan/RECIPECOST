@@ -1,5 +1,5 @@
-<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:t="sap.ui.table"
-	controllerName="halo.sap.mm.RECIPECOST.pages.controller.IngredientForm">
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:f="sap.ui.layout.form" xmlns:l="sap.ui.layout"
+	xmlns:t="sap.ui.table" controllerName="halo.sap.mm.RECIPECOST.pages.controller.IngredientForm">
 	<l:DynamicSideContent id="DynamicSideContent" class="sapUiDSCExplored" containerQuery="true" sideContentFallDown="BelowM"
 		breakpointChanged="handleBreakpointChangeEvent" showSideContent="false">
 		<Page title="{Name}"
@@ -10,14 +10,30 @@
 			</headerContent>
 			<l:BlockLayout>
 				<l:BlockLayoutRow>
-					<l:BlockLayoutCell width="2">
-						<Text text="Donec bibendum diam nibh, sit amet ornare ante fermentum sed. Ut vulputate justo at orci sollicitudin."/>
+					<l:BlockLayoutCell width="2" class="sapUiNoContentPadding">
+						<f:Form id="ingrdtHeader" editable="true">
+							<f:layout>
+								<f:ColumnLayout columnsM="2" columnsL="3" columnsXL="4"/>
+							</f:layout>
+							<f:formContainers>
+								<f:FormContainer>
+									<f:formElements>
+										<f:FormElement label="{i18n>NameOfRecipe}">
+											<f:fields>
+												<Input value="{ path: 'form>/Name', type: 'sap.ui.model.type.String', constraints: { minLength:5, maxLength: 50 } }" autocomplete="false"
+													enabled="{= ! ${viewData>/IsMultiSelected} }"/>
+											</f:fields>
+										</f:FormElement>
+									</f:formElements>
+								</f:FormContainer>
+							</f:formContainers>
+						</f:Form>
 					</l:BlockLayoutCell>
 					<l:BlockLayoutCell class="sapUiNoContentPadding">
 						<FlexBox alignItems="Start" justifyContent="End">
 							<Image
 								src="{= '/sap/opu/odata/sap/zrecipecost_odata_srv/RecipePhotoSet(Werks=\'' + ${Werks} + '\',RecipeID=\'' + ${RecipeID} + '\')/$value' }"
-								press="onSelectImage"/>
+								width="300px" height="200px" press="onSelectImage"/>
 						</FlexBox>
 					</l:BlockLayoutCell>
 				</l:BlockLayoutRow>
@@ -87,6 +103,9 @@
 						</t:template>
 					</t:Column>
 				</t:columns>
+				<t:footer>
+					<Label text="Total"/>
+				</t:footer>
 			</t:Table>
 		</Page>
 	</l:DynamicSideContent>

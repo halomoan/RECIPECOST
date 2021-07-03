@@ -24,11 +24,7 @@ sap.ui.define([
 			this.oColModel = new JSONModel(sap.ui.require.toUrl("halo/sap/mm/RECIPECOST/fragments/") + "/VHMaterialColumnsModel.json");
 		
 			
-			this.oFilterPurchOrg = new Filter("Ekorg", FilterOperator.EQ, this.PurchOrg); // Filter Material Type
-			this.oFilterPlant = new Filter("Werks", FilterOperator.EQ, this.Plant); // Filter Plant
-			this.oFilterMatType = new Filter("Mtart", FilterOperator.EQ, this.MatType); // Filter Material Type
-			
-			this.aFilters = [this.oFilterPurchOrg,this.oFilterPlant,this.oFilterMatType];
+		
 			
 			this._oRouter =  this.getRouter();
 			this._oRouter.getRoute("ingredientform").attachPatternMatched(this.__onRouteMatched, this);
@@ -39,6 +35,13 @@ sap.ui.define([
 			this.PurchOrgID = oArguments.Ekorg;
 			this.PlantID = oArguments.Werks;
 			this.RecipeID = oArguments.RecipeID;
+			this.MatType = "FOOD";
+			
+			this.oFilterPurchOrg = new Filter("Ekorg", FilterOperator.EQ, this.PurchOrgID); // Filter Material Type
+			this.oFilterPlant = new Filter("Werks", FilterOperator.EQ, this.PlantID); // Filter Plant
+			this.oFilterMatType = new Filter("Mtart", FilterOperator.EQ, this.MatType); // Filter Material Type
+			
+			this.aFilters = [this.oFilterPurchOrg,this.oFilterPlant,this.oFilterMatType];
 			
 			this.getView().bindElement("/RecipeSet(Werks='" + this.PlantID + "',RecipeID='" + this.RecipeID + "')");
 		},
