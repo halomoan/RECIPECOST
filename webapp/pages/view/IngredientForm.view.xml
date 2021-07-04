@@ -1,6 +1,6 @@
 <mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:f="sap.ui.layout.form" xmlns:l="sap.ui.layout"
 	xmlns:t="sap.ui.table" controllerName="halo.sap.mm.RECIPECOST.pages.controller.IngredientForm">
-	<l:DynamicSideContent id="DynamicSideContent" class="sapUiDSCExplored" containerQuery="true" sideContentFallDown="BelowM"
+	<l:DynamicSideContent id="DynamicSideContent" class="sapUiSizeCompact" containerQuery="true" sideContentFallDown="BelowM"
 		breakpointChanged="handleBreakpointChangeEvent" showSideContent="false">
 		<Page title="{Name}"
 			class="sapUiContentPadding sapUiResponsivePadding--header sapUiResponsivePadding--subHeader sapUiResponsivePadding--content sapUiResponsivePadding--footer"
@@ -38,7 +38,7 @@
 					</l:BlockLayoutCell>
 				</l:BlockLayoutRow>
 			</l:BlockLayout>
-			<t:Table rows="{form>/Ingredients}" selectionMode="MultiToggle" visibleRowCount="15" paste="onPaste" ariaLabelledBy="title">
+			<t:Table rows="{form>/Ingredients}" selectionMode="None" visibleRowCount="15" paste="onPaste" ariaLabelledBy="title">
 				<t:extension>
 					<OverflowToolbar style="Clear">
 						<!--<Button icon="sap-icon://nav-back" type="Transparent" tooltip="{i18n>Back}" press=".onNavBack"/>-->
@@ -60,16 +60,16 @@
 							<Text text="{form>Maktx}" wrapping="false"/>
 						</t:template>
 					</t:Column>
-					<t:Column width="8rem" hAlign="End">
+					<t:Column width="10rem" hAlign="End">
 						<t:multiLabels>
 							<Label text=""/>
 							<Label text="Qty Used" textAlign="Center" width="100%"/>
 						</t:multiLabels>
 						<t:template>
-							<Text text="{form>TPeinh} {form>Bprme}" wrapping="false"/>
+							<Input value="{form>TPeinh}" description="{form>Bprme}" visible="{= ${form>TPeinh} !== null }"/>
 						</t:template>
 					</t:Column>
-					<t:Column width="8rem" hAlign="End">
+					<t:Column width="10rem" hAlign="End">
 						<t:multiLabels>
 							<Label text=""/>
 							<Label text="Qty Purchased" textAlign="Center" width="100%"/>
@@ -84,16 +84,19 @@
 							<Label text="Unit Cost" textAlign="Center" width="100%"/>
 						</t:multiLabels>
 						<t:template>
-							<Text text="{form>Netpr} {form>Waers}" wrapping="false"/>
+							<Text text="{form>Netpr} {form>Waers}" wrapping="false" visible="{= ${form>Netpr} !== null }"/>
 						</t:template>
 					</t:Column>
-					<t:Column width="10rem" hAlign="End" headerSpan="2,1">
+					<t:Column width="10rem" headerSpan="2,1">
 						<t:multiLabels>
 							<Label text="Date" textAlign="Center" width="100%"/>
 							<Label text="Total Cost" textAlign="Center" width="100%"/>
 						</t:multiLabels>
 						<t:template>
-							<Text text="{form>TNetpr} {form>Waers}" wrapping="false"/>
+							<FlexBox alignItems="Start" justifyContent="End">
+								<Text text="{form>TNetpr} {form>Waers}" wrapping="false" visible="{= ${form>Waers} !== '%' }"/>
+								<Input value="{form>TNetpr}" description="{form>Waers}" visible="{= ${form>Waers} === '%' }"/>
+							</FlexBox>
 						</t:template>
 					</t:Column>
 					<t:Column width="10rem">

@@ -7,7 +7,9 @@ sap.ui.define([
 	'sap/ui/model/FilterOperator'
 ], function(BaseController,JSONModel,ColumnListItem,Token,Filter,FilterOperator) {
 	"use strict";
-
+	
+	var _oBundle;
+	
 	return BaseController.extend("halo.sap.mm.RECIPECOST.pages.controller.IngredientForm", {
 
 	
@@ -44,6 +46,8 @@ sap.ui.define([
 			this.aFilters = [this.oFilterPurchOrg,this.oFilterPlant,this.oFilterMatType];
 			
 			this.getView().bindElement("/RecipeSet(Werks='" + this.PlantID + "',RecipeID='" + this.RecipeID + "')");
+			
+			_oBundle = this.getResourceBundle();
 		},
 		onNavBack: function(){
 			this._oRouter.navTo("recipes");
@@ -167,20 +171,104 @@ sap.ui.define([
 		onValueHelpOkPress: function (oEvent) {
 			var oIngredientModel = this.getModel("form"),
 				oIngredientData = oIngredientModel.getData().Ingredients;
-				
+
+						
 			var aTokens = oEvent.getParameter("tokens");
 			
 			//console.log(oIngredientData,aTokens);
 			
 			if (aTokens.length) {	
 				
+				//remove subtotal
+				if (oIngredientData.length > 1){
+					oIngredientData.splice(oIngredientData.length - 7,7);				
+				}
 				for(var i = 0; i < aTokens.length; i++){
 					var oObject = aTokens[i].data();
 					var oMaterial = oObject.row;
-					oIngredientData.push(oMaterial);
+					var bExist = oIngredientData.find(ele => {
+						return ele.Matnr === oMaterial.Matnr;
+					})
+					if (!bExist) {
+						oIngredientData.push(oMaterial);
+					}
 				}
 				oIngredientModel.setProperty("/Ingredients",oIngredientData);	
 			}
+			
+			oIngredientData.push({
+				"Matnr": null,
+				"Maktx": null,
+				"TPeinh": null,
+				"Bprme" :null,
+				"Peinh": null,
+				"Netpr":null,
+				"Waers":null,
+				"TNetpr":null
+			});
+			
+			oIngredientData.push({
+				"Matnr": null,
+				"Maktx": _oBundle.getText("SubTotal"),
+				"TPeinh": null,
+				"Bprme" : null,
+				"Peinh": null,
+				"Netpr": null,
+				"Waers": "SGD",
+				"TNetpr":"1000.00"
+			});
+			oIngredientData.push({
+				"Matnr": null,
+				"Maktx": _oBundle.getText("AddMisc"),
+				"TPeinh": null,
+				"Bprme" : null,
+				"Peinh": null,
+				"Netpr": null,
+				"Waers": "%",
+				"TNetpr":"0.00"
+			});
+			oIngredientData.push({
+				"Matnr": null,
+				"Maktx": _oBundle.getText("TotalRecipeCost"),
+				"TPeinh": null,
+				"Bprme" : null,
+				"Peinh": null,
+				"Netpr": null,
+				"Waers": "SGD",
+				"TNetpr":"0.00"
+			});
+			
+			oIngredientData.push({
+				"Matnr": null,
+				"Maktx": _oBundle.getText("CostPerPortion"),
+				"TPeinh": null,
+				"Bprme" : null,
+				"Peinh": null,
+				"Netpr": null,
+				"Waers": "SGD",
+				"TNetpr":"0.00"
+			});
+			oIngredientData.push({
+				"Matnr": null,
+				"Maktx": _oBundle.getText("UnitSellingPrice"),
+				"TPeinh": null,
+				"Bprme" : null,
+				"Peinh": null,
+				"Netpr": null,
+				"Waers": "SGD",
+				"TNetpr":"0.00"
+			});
+			oIngredientData.push({
+				"Matnr": null,
+				"Maktx": _oBundle.getText("Cost%PerPortion"),
+				"TPeinh": null,
+				"Bprme" : null,
+				"Peinh": null,
+				"Netpr": null,
+				"Waers": "% ",
+				"TNetpr":"0.00"
+			});
+			oIngredientModel.setProperty("/Ingredients",oIngredientData);
 			
 			this._oValueHelpDialog.close();
 		},
