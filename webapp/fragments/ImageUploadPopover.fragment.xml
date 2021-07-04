@@ -6,7 +6,7 @@
 		id="ImagePopover"
 		title="{i18n>ImageOf} {Name}"
 		class="sapUiContentPadding"
-		placement="Right" >
+		placement="{viewData>/ImagePopUpPos}">
 		<VBox>
 			<Image src="{= '/sap/opu/odata/sap/zrecipecost_odata_srv/RecipePhotoSet(Werks=\'' + ${Werks} + '\',RecipeID=\'' + ${RecipeID} + '\')/$value' }"/>
 		<u:FileUploader

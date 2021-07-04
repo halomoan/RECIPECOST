@@ -11,23 +11,12 @@
 			<l:BlockLayout>
 				<l:BlockLayoutRow>
 					<l:BlockLayoutCell width="2" class="sapUiNoContentPadding">
-						<f:Form id="ingrdtHeader" editable="true">
-							<f:layout>
-								<f:ColumnLayout columnsM="2" columnsL="3" columnsXL="4"/>
-							</f:layout>
-							<f:formContainers>
-								<f:FormContainer>
-									<f:formElements>
-										<f:FormElement label="{i18n>NameOfRecipe}">
-											<f:fields>
-												<Input value="{ path: 'form>/Name', type: 'sap.ui.model.type.String', constraints: { minLength:5, maxLength: 50 } }" autocomplete="false"
-													enabled="{= ! ${viewData>/IsMultiSelected} }"/>
-											</f:fields>
-										</f:FormElement>
-									</f:formElements>
-								</f:FormContainer>
-							</f:formContainers>
-						</f:Form>
+						<l:VerticalLayout>
+						<Title text="{i18n>NameOfRecipe} : {Name}" titleStyle="H1" class="sapUiSmallMarginBottom"/>
+						<Title text="{i18n>PortionProduced} : {Quantity} Unit"/>
+						<Title text="{i18n>Location} : {LocationTxt} Unit"/>
+						<Title text="{i18n>CreatedBy} : {CreatedBy}"/>
+						</l:VerticalLayout>
 					</l:BlockLayoutCell>
 					<l:BlockLayoutCell class="sapUiNoContentPadding">
 						<FlexBox alignItems="Start" justifyContent="End">
@@ -66,7 +55,7 @@
 							<Label text="Qty Used" textAlign="Center" width="100%"/>
 						</t:multiLabels>
 						<t:template>
-							<Input value="{form>TPeinh}" description="{form>Bprme}" visible="{= ${form>TPeinh} !== null }"/>
+							<Input value="{ path: 'form>TPeinh', type:'sap.ui.model.type.Integer' }" description="{form>Bprme}" visible="{= ${form>TPeinh} !== null }"/>
 						</t:template>
 					</t:Column>
 					<t:Column width="10rem" hAlign="End">
@@ -95,7 +84,7 @@
 						<t:template>
 							<FlexBox alignItems="Start" justifyContent="End">
 								<Text text="{form>TNetpr} {form>Waers}" wrapping="false" visible="{= ${form>Waers} !== '%' }"/>
-								<Input value="{form>TNetpr}" description="{form>Waers}" visible="{= ${form>Waers} === '%' }"/>
+								<Input value="{ path: 'form>AddMisc', type:'sap.ui.model.type.Integer'}" description="{form>Waers}" visible="{= ${form>Waers} === '%' }"/>
 							</FlexBox>
 						</t:template>
 					</t:Column>
@@ -106,9 +95,9 @@
 						</t:template>
 					</t:Column>
 				</t:columns>
-				<t:footer>
-					<Label text="Total"/>
-				</t:footer>
+				<!--<t:footer>-->
+				<!--	<Label text="Total"/>-->
+				<!--</t:footer>-->
 			</t:Table>
 		</Page>
 	</l:DynamicSideContent>

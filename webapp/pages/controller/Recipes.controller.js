@@ -21,6 +21,7 @@ sap.ui.define([
 			var oView = this.getView();
 			
 			var oViewModel = new JSONModel({
+				"ImagePopUpPos": "Right",
 				"IsFiltered" : false,
 				"IsListSelected": false,
 				"IsMultiSelected" : false,

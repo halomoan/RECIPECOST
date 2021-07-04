@@ -4,18 +4,22 @@ sap.ui.define([
 	'sap/m/ColumnListItem',
 	'sap/m/Token',
 	'sap/ui/model/Filter',
-	'sap/ui/model/FilterOperator'
-], function(BaseController,JSONModel,ColumnListItem,Token,Filter,FilterOperator) {
+	'sap/ui/model/FilterOperator',
+	"sap/m/MessageBox",
+	"sap/m/MessageToast",
+], function(BaseController,JSONModel,ColumnListItem,Token,Filter,FilterOperator,MessageBox,MessageToast) {
 	"use strict";
 	
 	var _oBundle;
 	
 	return BaseController.extend("halo.sap.mm.RECIPECOST.pages.controller.IngredientForm", {
 
-	
+		_formFragments: {},
+
 		onInit: function() {
 			var oViewModel = new JSONModel({
-				"isFullScreen" : false
+				"isFullScreen" : false,
+				"ImagePopUpPos": "Left",
 			
 			});
 			this.getView().setModel(oViewModel, "viewData");
@@ -197,6 +201,7 @@ sap.ui.define([
 			}
 			
 			oIngredientData.push({
+				"ID" : "spacer",
 				"Matnr": null,
 				"Maktx": null,
 				"TPeinh": null,
@@ -208,6 +213,7 @@ sap.ui.define([
 			});
 			
 			oIngredientData.push({
+				"ID" : "SubTotal",
 				"Matnr": null,
 				"Maktx": _oBundle.getText("SubTotal"),
 				"TPeinh": null,
@@ -218,6 +224,7 @@ sap.ui.define([
 				"TNetpr":"1000.00"
 			});
 			oIngredientData.push({
+				"ID" : "AddMisc",
 				"Matnr": null,
 				"Maktx": _oBundle.getText("AddMisc"),
 				"TPeinh": null,
@@ -228,6 +235,7 @@ sap.ui.define([
 				"TNetpr":"0.00"
 			});
 			oIngredientData.push({
+				"ID" : "TotRecipeCost",
 				"Matnr": null,
 				"Maktx": _oBundle.getText("TotalRecipeCost"),
 				"TPeinh": null,
@@ -239,6 +247,7 @@ sap.ui.define([
 			});
 			
 			oIngredientData.push({
+				"ID" : "CostPerPortion",
 				"Matnr": null,
 				"Maktx": _oBundle.getText("CostPerPortion"),
 				"TPeinh": null,
@@ -249,6 +258,7 @@ sap.ui.define([
 				"TNetpr":"0.00"
 			});
 			oIngredientData.push({
+				"ID" : "UnitSeelingPrice",
 				"Matnr": null,
 				"Maktx": _oBundle.getText("UnitSellingPrice"),
 				"TPeinh": null,
@@ -259,6 +269,7 @@ sap.ui.define([
 				"TNetpr":"0.00"
 			});
 			oIngredientData.push({
+				"ID" : "Cost%PerPortion",
 				"Matnr": null,
 				"Maktx": _oBundle.getText("Cost%PerPortion"),
 				"TPeinh": null,
@@ -297,9 +308,49 @@ sap.ui.define([
 			});
 		},
 		
+		onSelectImage: function(oEvent) {
+			var oSource = oEvent.getSource();
+			var oParent = oSource.getParent();
+			var sPath = oParent.getBindingContext().getPath();
+
+			this.showPopOverFragment(this.getView(), oSource, this._formFragments, "halo.sap.mm.RECIPECOST.fragments.ImageUploadPopover", this);
+
+			this.byId("ImagePopover").bindElement({
+				path: sPath
+			});
+
+		},
+		onUploadImage: function() {
+			var oUploader = this.byId("ImageUploader");
+
+			var sPath = this.byId("ImagePopover").getBindingContext().getPath();
+
+			sPath = sPath.replace("RecipeSet", "RecipeVersionSet") + "/Photo";
+
+
+			if (!oUploader.getValue()) {
+				MessageToast.show("Choose a file first");
+				return;
+			}
+			
+			oUploader.setUploadUrl("/sap/opu/odata/sap/zrecipecost_odata_srv" + sPath);
+
+			oUploader.checkFileReadable().then(function() {
+				oUploader.upload();
+			}, function(error) {
+				MessageToast.show("The file cannot be read. It may have changed.");
+			}).then(function() {
+				oUploader.clear();
+			});
+		},
+		onImgUploaderClose: function() {
+			var oPopOver = this.getFragmentByName(this._formFragments, "halo.sap.mm.RECIPECOST.fragments.ImageUploadPopover");
+			oPopOver.close();
+		},
 		onExit: function() {
 			this._oRouter.detachRouteMatched(this.__onRouteMatched, this);
 			this._oValueHelpDialog.destroy();
+			this.removeFragment(this._formFragments);
 			
 		}
 
