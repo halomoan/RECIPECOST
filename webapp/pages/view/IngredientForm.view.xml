@@ -27,10 +27,9 @@
 					</l:BlockLayoutCell>
 				</l:BlockLayoutRow>
 			</l:BlockLayout>
-			<t:Table rows="{form>/Ingredients}" selectionMode="None" visibleRowCount="15" paste="onPaste" ariaLabelledBy="title">
+			<t:Table rows="{Ingredients>/Items}" selectionMode="None" visibleRowCount="15" paste="onPaste" ariaLabelledBy="title">
 				<t:extension>
 					<OverflowToolbar style="Clear">
-						<!--<Button icon="sap-icon://nav-back" type="Transparent" tooltip="{i18n>Back}" press=".onNavBack"/>-->
 						<Title id="title" text="{i18n>Ingredient}"/>
 						<ToolbarSpacer/>
 						<Button icon="sap-icon://add" type="Transparent" tooltip="Add Material(s)" press=".onVHMaterialRequested"/>
@@ -40,13 +39,13 @@
 					<t:Column width="7rem">
 						<Label text="Material No."/>
 						<t:template>
-							<Text text="{form>Matnr}" wrapping="false"/>
+							<Text text="{Ingredients>Matnr}" wrapping="false"/>
 						</t:template>
 					</t:Column>
 					<t:Column width="20rem">
 						<Label text="Material."/>
 						<t:template>
-							<Text text="{form>Maktx}" wrapping="false"/>
+							<Text text="{Ingredients>Maktx}" wrapping="false"/>
 						</t:template>
 					</t:Column>
 					<t:Column width="10rem" hAlign="End">
@@ -55,7 +54,8 @@
 							<Label text="Qty Used" textAlign="Center" width="100%"/>
 						</t:multiLabels>
 						<t:template>
-							<Input value="{ path: 'form>TPeinh', type:'sap.ui.model.type.Integer' }" description="{form>Bprme}" visible="{= ${form>TPeinh} !== null }"/>
+							<Input value="{ parts: [{path: 'Ingredients>TPeinh'}, {path: 'Ingredients>Bprme'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: false } }" description="{Ingredients>Bprme}" visible="{= ${Ingredients>ID} === undefined }" change=".onQtyChanged"/>
+							
 						</t:template>
 					</t:Column>
 					<t:Column width="10rem" hAlign="End">
@@ -64,7 +64,7 @@
 							<Label text="Qty Purchased" textAlign="Center" width="100%"/>
 						</t:multiLabels>
 						<t:template>
-							<Text text="{form>Peinh} {form>Bprme}" wrapping="false"/>
+							<Text text="{Ingredients>Peinh} {Ingredients>Bprme}" wrapping="false"/>
 						</t:template>
 					</t:Column>
 					<t:Column width="10rem" hAlign="End" headerSpan="2,1">
@@ -73,7 +73,7 @@
 							<Label text="Unit Cost" textAlign="Center" width="100%"/>
 						</t:multiLabels>
 						<t:template>
-							<Text text="{form>Netpr} {form>Waers}" wrapping="false" visible="{= ${form>Netpr} !== null }"/>
+							<Text text="{Ingredients>Netpr/Curr} {Ingredients>Waers}" wrapping="false" visible="{= ${Ingredients>Netpr/Curr} !== null }"/>
 						</t:template>
 					</t:Column>
 					<t:Column width="10rem" headerSpan="2,1">
@@ -83,15 +83,17 @@
 						</t:multiLabels>
 						<t:template>
 							<FlexBox alignItems="Start" justifyContent="End">
-								<Text text="{form>TNetpr} {form>Waers}" wrapping="false" visible="{= ${form>Waers} !== '%' }"/>
-								<Input value="{ path: 'form>AddMisc', type:'sap.ui.model.type.Integer'}" description="{form>Waers}" visible="{= ${form>Waers} === '%' }"/>
+								<Text text="{Ingredients>TNetpr/Curr} {Ingredients>Waers}" wrapping="false" visible="{= ${Ingredients>Matnr} !== null || ${Ingredients>ID} === 'readonly'  }"/>
+								<Input value="{ parts: [{path: 'Ingredients>AddMisc/Curr'}, {path: 'Ingredients>Waers'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: false } }" description="{Ingredients>Waers}" visible="{= ${Ingredients>ID} === 'AddMisc' }" change="onAddMiscChanged"/>
+								<Input value="{ parts: [{path: 'Ingredients>SellPrice/Curr'}, {path: 'Ingredients>Waers'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: false } }" description="{Ingredients>Waers}" visible="{= ${Ingredients>ID} === 'UnitSellPrice' }" change="onUnitSellPriceChanged"/>
+								
 							</FlexBox>
 						</t:template>
 					</t:Column>
-					<t:Column width="10rem">
+					<t:Column width="10rem" hAlign="Center">
 						<Label text="Last PO no."/>
 						<t:template>
-							<Text text="{form>Ebeln}" wrapping="false"/>
+							<Text text="{Ingredients>Ebeln}" wrapping="false"/>
 						</t:template>
 					</t:Column>
 				</t:columns>
