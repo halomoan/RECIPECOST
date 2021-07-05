@@ -9,13 +9,8 @@ sap.ui.define([
 	"use strict";
 
 	var _oBundle;
-	// shortcut for sap.ui.core.ValueState
-	var ValueState = library.ValueState;
 
-	// shortcut for sap.ui.core.MessageType
-	var MessageType = library.MessageType;
-
-	return BaseController.extend("halo.sap.mm.RECIPECOST.pages.controller.RecipeGroup", {
+	return BaseController.extend("halo.sap.mm.RECIPECOST.pages.controller.PlantToPurchOrg", {
 
 		_formFragments: {},
 		onInit: function() {
@@ -39,7 +34,7 @@ sap.ui.define([
 
 			this.getOwnerComponent().getModel().metadataLoaded().then(function() {
 				_oBundle = this.getResourceBundle();
-				var oTable = this.byId("grouptbl");
+				var oTable = this.byId("planttbl");
 				var oTemplate = new sap.ui.table.RowAction({
 					items: [
 						new sap.ui.table.RowActionItem({
@@ -58,64 +53,14 @@ sap.ui.define([
 				oTable.setRowActionCount(2);
 
 			}.bind(this));
-
-			this.PurchOrgID = "C103";
-			this.PlantID = "PPHS";
-		},
-
-		onNew: function() {
-			this._initForm();
-
-			var oViewModel = this.getModel("viewData");
-			oViewModel.setProperty("/Mode", "New");
-		},
-
-		onSave: function() {
-			var oModel = this.getModel();
-			var oThis = this;
-
-			var oFormModel = this.getModel("form"),
-				oFormData = oFormModel.getData();
-
-			if (this._validateForm(oFormData)) {
-				var oData = {
-					"Werks": this.PlantID,
-					"Groupid": oFormData.Groupid,
-					"Text": oFormData.Text
-				};
-
-				if (oFormData.Groupid === "") {
-					oModel.create("/RecipeGroupSet", oData, {
-						method: "POST",
-						success: function(data) {
-							oThis._initForm();
-							MessageToast.show("Group Successfully Created");
-						},
-						error: function(e) {
-							MessageToast.show("Error Detected");
-						}
-					});
-				} else {
-					oModel.update("/RecipeGroupSet(Werks='" + this.PlantID + "',Groupid='" + oFormData.Groupid + "')", oData, null,
-						function() {
-							oThis._initForm();
-							MessageToast.show("Group Successfully Edited");
-						},
-						function(e) {
-							var oMessage = JSON.parse(e.responseText).error.message.value;
-							MessageBox.error(oMessage);
-						});
-				}
-			}
-
 		},
 
 		_initForm: function() {
 			var oFormModel = this.getModel("form");
 
 			var oFormData = {
-				"Werks": "",
-				"Groupid": "",
+				"PlantID": "",
+				"Ekorg": "",
 				"Text": ""
 			};
 
@@ -128,41 +73,7 @@ sap.ui.define([
 
 			}
 		},
-		_validateForm: function(oFormData) {
 
-			var oMessage;
-			var status = true;
-
-			sap.ui.getCore().getMessageManager().removeAllMessages();
-
-			if (oFormData.Text.length < 1) {
-				status = false;
-				oMessage = new Message({
-					message: "Empty Is not allowed.",
-					type: MessageType.Error,
-					target: "/Text",
-					processor: this.getView().getModel("form")
-				});
-				sap.ui.getCore().getMessageManager().addMessages(oMessage);
-			}
-
-			return status;
-		},
-		_deleteData: function(oData) {
-			var oModel = this.getModel();
-
-			oModel.remove("/RecipeGroupSet(Werks='" + this.PlantID + "',Groupid='" + oData.Groupid + "')", {
-				method: "DELETE",
-				success: function(data) {
-					MessageToast.show("Group Successfully Deleted");
-				},
-				error: function(e) {
-					var oMessage = JSON.parse(e.responseText).error.message.value;
-					MessageBox.error(oMessage);
-
-				}
-			});
-		},
 		onTableRowAction: function(oEvent) {
 
 			var oRow = oEvent.getParameter("row");
@@ -186,7 +97,7 @@ sap.ui.define([
 				var oThis = this;
 				oViewModel.setProperty("/Mode", "");
 
-				MessageBox.confirm(_oBundle.getText("msgCfrmDelLocation"), {
+				MessageBox.confirm(_oBundle.getText("msgCfrmDelPlant"), {
 					actions: [MessageBox.Action.YES, MessageBox.Action.CANCEL],
 					emphasizedAction: "CANCEL",
 					onClose: function(sAction) {
@@ -202,15 +113,15 @@ sap.ui.define([
 			//MessageToast.show("Item " + (oItem.getText() || oItem.getType()) + " pressed for product with id " +
 			//	this.getView().getModel().getProperty("Groupid", oRow.getBindingContext()));
 		},
-
+		
 		onMessagePopoverPress: function(oEvent) {
 			var oSource = oEvent.getSource();
 
 			this.showPopOverFragment(this.getView(), oSource, this._formFragments, "halo.sap.mm.RECIPECOST.fragments.MessagePopover", this);
 		},
-
+		
 		onExit: function() {
-			this.removeFragment(this._formFragments);
+
 		}
 
 	});

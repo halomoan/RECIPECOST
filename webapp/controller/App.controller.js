@@ -10,14 +10,16 @@ sap.ui.define([
 		
 		onSideMenuSelect: function(oEvent){
 			var oItem = oEvent.getParameter("item"),
-				oCtx = oItem.getBindingContext(),
+				//oCtx = oItem.getBindingContext(),
 				//sMenu = oItem.getText(),
 				sTarget = oItem.getTarget();
 			
-				
+			console.log(sTarget);
 			switch(sTarget){
 				case "G001:RECIPES":			
 					this._oRouter.navTo("recipes"); break;
+				case "SAPG1:PLANT":			
+					this._oRouter.navTo("planttopurchorg"); break;
 				default:
 					this._oRouter.navTo("notFound");break;
 			}
@@ -33,6 +35,7 @@ sap.ui.define([
 					this._oRouter.navTo("recipegroup"); break;
 				case "LOCATION":
 					this._oRouter.navTo("recipeloc"); break;
+					
 				default:
 					this._oRouter.navTo("notFound");break;
 			}		

@@ -23,7 +23,7 @@
 						<FlexBox alignItems="Start" justifyContent="End">
 							<Image
 								src="{= '/sap/opu/odata/sap/zrecipecost_odata_srv/RecipePhotoSet(Werks=\'' + ${Werks} + '\',RecipeID=\'' + ${RecipeID} + '\')/$value' }"
-								width="300px" height="200px" press="onSelectImage"/>
+								width="300px" height="180px" press="onSelectImage"/>
 						</FlexBox>
 					</l:BlockLayoutCell>
 				</l:BlockLayoutRow>
@@ -60,7 +60,7 @@
 							<Label text="Qty Used" textAlign="Center" width="100%"/>
 						</t:multiLabels>
 						<t:template>
-							<Input value="{ parts: [{path: 'Ingredients>TPeinh'}, {path: 'Ingredients>Bprme'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: false } }" description="{Ingredients>Bprme}" visible="{= ${Ingredients>ID} === undefined }" change=".onQtyChanged"/>
+							<Input textAlign="End" value="{ parts: [{path: 'Ingredients>TPeinh'}, {path: 'Ingredients>Bprme'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: false } }" description="{Ingredients>Bprme}" visible="{= ${Ingredients>ID} === undefined }" change=".onQtyChanged"/>
 							
 						</t:template>
 					</t:Column>
@@ -90,8 +90,8 @@
 						<t:template>
 							<FlexBox alignItems="Start" justifyContent="End">
 								<Text text="{Ingredients>TNetpr/Curr} {Ingredients>Waers}" wrapping="false" visible="{= ${Ingredients>Matnr} !== null || ${Ingredients>ID} === 'readonly'  }"/>
-								<Input value="{ parts: [{path: 'Ingredients>AddMisc/Curr'}, {path: 'Ingredients>Waers'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: false } }" description="{Ingredients>Waers}" visible="{= ${Ingredients>ID} === 'AddMisc' }" change="onAddMiscChanged"/>
-								<Input value="{ parts: [{path: 'Ingredients>SellPrice/Curr'}, {path: 'Ingredients>Waers'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: false } }" description="{Ingredients>Waers}" visible="{= ${Ingredients>ID} === 'UnitSellPrice' }" change="onUnitSellPriceChanged"/>
+								<Input textAlign="End" value="{ parts: [{path: 'Ingredients>AddMisc/Curr'}, {path: 'Ingredients>Waers'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: false } }" description="{Ingredients>Waers}" visible="{= ${Ingredients>ID} === 'AddMisc' }" change="onAddMiscChanged"/>
+								<Input textAlign="End" value="{ parts: [{path: 'Ingredients>SellPrice/Curr'}, {path: 'Ingredients>Waers'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: false } }" description="{Ingredients>Waers}" visible="{= ${Ingredients>ID} === 'UnitSellPrice' }" change="onUnitSellPriceChanged"/>
 								
 							</FlexBox>
 						</t:template>

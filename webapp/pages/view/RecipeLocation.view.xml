@@ -3,7 +3,7 @@
 	<l:VerticalLayout class="sapUiContentPadding">
 		<f:Form id="locationForm" editable="true">
 			<f:toolbar>
-				<Toolbar id="TB1">
+				<Toolbar>
 					<Title text="{i18n>Location}"/>
 					<ToolbarSpacer/>
 					   <Button

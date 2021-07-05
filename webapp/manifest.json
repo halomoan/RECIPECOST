@@ -112,6 +112,11 @@
 					"target": "recipegroup"
 				},
 				{
+					"pattern": "planttopurchorg",
+					"name": "planttopurchorg",
+					"target": "planttopurchorg"
+				},
+				{
 					"pattern": "ingredientform/{Ekorg}/{Werks}/{RecipeID}",
 					"name": "ingredientform",
 					"target": "ingredientForm"
@@ -131,6 +136,11 @@
 				"recipegroup": {
 					"viewId": "recipiegroup",
 					"viewName": "RecipeGroup",
+					"viewLevel": 1
+				},
+				"planttopurchorg": {
+					"viewId": "planttopurchorg",
+					"viewName": "PlantToPurchOrg",
 					"viewLevel": 1
 				},
 				"ingredientForm": {
