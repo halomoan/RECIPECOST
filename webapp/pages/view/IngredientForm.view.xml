@@ -35,6 +35,11 @@
 						<Button icon="sap-icon://add" type="Transparent" tooltip="Add Material(s)" press=".onVHMaterialRequested"/>
 					</OverflowToolbar>
 				</t:extension>
+				
+				<t:rowSettingsTemplate>
+					<t:RowSettings highlight="{Ingredients>Status}" highlightText="{StatusText}"/>
+				</t:rowSettingsTemplate>
+				
 				<t:columns>
 					<t:Column width="7rem">
 						<Label text="Material No."/>
@@ -90,6 +95,31 @@
 							</FlexBox>
 						</t:template>
 					</t:Column>
+					
+					<t:Column width="10rem" hAlign="End" headerSpan="2,1">
+						<t:multiLabels>
+							<Label text="Date" textAlign="Center" width="100%"/>
+							<Label text="Unit Cost" textAlign="Center" width="100%"/>
+						</t:multiLabels>
+						<t:template>
+							<Text text="{Ingredients>Netpr/Prev1} {Ingredients>Waers}" wrapping="false" visible="{= ${Ingredients>Netpr/Prev1} !== null }"/>
+						</t:template>
+					</t:Column>
+					<t:Column width="10rem" headerSpan="2,1">
+						<t:multiLabels>
+							<Label text="Date" textAlign="Center" width="100%"/>
+							<Label text="Total Cost" textAlign="Center" width="100%"/>
+						</t:multiLabels>
+						<t:template>
+							<FlexBox alignItems="Start" justifyContent="End">
+								<Text text="{Ingredients>TNetpr/Prev1} {Ingredients>Waers}" wrapping="false" visible="{= ${Ingredients>Matnr} !== null || ${Ingredients>ID} === 'readonly'  }"/>
+								<Text text="{Ingredients>AddMisc/Prev1} {Ingredients>Waers}" visible="{= ${Ingredients>ID} === 'AddMisc' }"/>
+								<Text text="{Ingredients>SellPrice/Prev1} {Ingredients>Waers}" visible="{= ${Ingredients>ID} === 'UnitSellPrice' }"/>
+							</FlexBox>
+						</t:template>
+					</t:Column>
+					
+					
 					<t:Column width="10rem" hAlign="Center">
 						<Label text="Last PO no."/>
 						<t:template>

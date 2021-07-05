@@ -204,7 +204,8 @@ sap.ui.define([
 						"Waers": oObject.Waers,
 						"Ebeln": oObject.Ebeln,
 						"TPeinh": null,
-						"TNetpr": {Curr: 0.00, Prev1: 0.00}
+						"TNetpr": {Curr: 0.00, Prev1: 0.00},
+						"Status": "Success"
 					}
 					
 					var bExist = oIngredientData.find(ele => {
