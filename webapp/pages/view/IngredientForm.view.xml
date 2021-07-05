@@ -12,7 +12,8 @@
 				<l:BlockLayoutRow>
 					<l:BlockLayoutCell width="2" class="sapUiNoContentPadding">
 						<l:VerticalLayout>
-						<Title text="{i18n>NameOfRecipe} : {Name}" titleStyle="H1" class="sapUiSmallMarginBottom"/>
+						<Title text="{i18n>NameOfRecipe} : {Name}" titleStyle="H1" />
+						<Label text="{i18n>ID} : {RecipeID}" class="sapUiSmallMarginBottom"/>
 						<Title text="{i18n>PortionProduced} : {Quantity} Unit"/>
 						<Title text="{i18n>Location} : {LocationTxt} Unit"/>
 						<Title text="{i18n>CreatedBy} : {CreatedBy}"/>
@@ -37,7 +38,7 @@
 				</t:extension>
 				
 				<t:rowSettingsTemplate>
-					<t:RowSettings highlight="{Ingredients>Status}" highlightText="{StatusText}"/>
+					<t:RowSettings highlight="{Ingredients>Status}"/>
 				</t:rowSettingsTemplate>
 				
 				<t:columns>

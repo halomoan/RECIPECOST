@@ -6,7 +6,8 @@
 				<content>
 					<f:Form id="recipeForm" editable="true">
 						<f:title>
-							<core:Title text="{= ${viewData>/Mode} === 'Add' ? ${i18n>New} : ${i18n>Edit} }"/>
+							<!--<core:Title text="{= ${viewData>/Mode} === 'Add' ? ${i18n>New} : ${i18n>Edit} }"/>-->
+							<core:Title text="{viewData>/Mode} {i18n>Recipe}"/>
 						</f:title>
 						<f:layout>
 							<f:ColumnLayout columnsM="2" columnsL="3" columnsXL="4"/>
@@ -29,7 +30,7 @@
 									<f:FormElement label="{i18n>Location}">
 										<f:fields>
 											<ComboBox id="location" items="{ path: '/LocationSet', sorter: { path: 'Text' } }" selectedKey="{path:'form>/LocationID', type: 'sap.ui.model.type.String', constraints: {  minLength:5 }}">
-												<core:Item key="{Locid}" text="{Text}"/>
+												<core:Item key="{LocationID}" text="{Text}"/>
 											</ComboBox>
 										</f:fields>
 									</f:FormElement>
@@ -49,7 +50,7 @@
 
                
 				<ToolbarSpacer/>
-				<Button text="{= ${viewData>/Mode} === 'Add' ? ${i18n>Add} : ${i18n>Edit} }" press=".onSaveRecipe"/>	
+				<Button text="{viewData>/Mode}" press=".onSaveRecipe"/>	
 				<Button text="{i18n>Cancel}" press=".onCancelRecipe"/>
             </Toolbar>
         </footer>

@@ -205,7 +205,7 @@ sap.ui.define([
 						"Ebeln": oObject.Ebeln,
 						"TPeinh": null,
 						"TNetpr": {Curr: 0.00, Prev1: 0.00},
-						"Status": "Success"
+						"Status": "Warning"
 					}
 					
 					var bExist = oIngredientData.find(ele => {
@@ -218,7 +218,6 @@ sap.ui.define([
 						oIngredientData.push(oMaterial);
 					}
 				}
-				console.log(oIngredientData);
 			}
 			
 			oIngredientData.push({
@@ -373,10 +372,13 @@ sap.ui.define([
 			var oRow = oModel.getProperty(sPath);
 			
 			
+			oRow.Status = iValue > 0 ? "Success": "Error";
+
 			if (oRow.Peinh > 0) {
 				var iTotalCost = ( iValue / oRow.Peinh ) * oRow.Netpr.Curr;
 				oRow.TNetpr.Curr = iTotalCost.toFixed(2);
-			}
+			} 
+			
 			oModel.setProperty(sPath,oRow);
 			this._calcTotals();
 		

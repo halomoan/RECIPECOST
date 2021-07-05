@@ -8,7 +8,7 @@ sap.ui.define([
 	'sap/ui/model/FilterOperator',
 	'sap/ui/model/Sorter'
 
-], function(BaseController, JSONModel, MessageBox, MessageToast, Message,  Filter, FilterOperator,Sorter) {
+], function(BaseController, JSONModel, MessageBox, MessageToast, Message, Filter, FilterOperator, Sorter) {
 	"use strict";
 	var _oBundle;
 
@@ -19,17 +19,17 @@ sap.ui.define([
 		onInit: function() {
 
 			var oView = this.getView();
-			
+
 			var oViewModel = new JSONModel({
 				"ImagePopUpPos": "Right",
-				"IsFiltered" : false,
+				"IsFiltered": false,
 				"IsListSelected": false,
-				"IsMultiSelected" : false,
+				"IsMultiSelected": false,
 				"Mode": ""
 			});
-			
-			oView.setModel(oViewModel,"viewData");
-	
+
+			oView.setModel(oViewModel, "viewData");
+
 			var oFormData = {
 				"Name": "",
 				"GroupID": "",
@@ -41,9 +41,8 @@ sap.ui.define([
 			this.PlantID = "PPHS";
 
 			this.oFilterWerks = new Filter("Werks", FilterOperator.EQ, this.PlantID);
-			this.aFilterDefault = [this.oFilterWerks]; 
-			                    
-			
+			this.aFilterDefault = [this.oFilterWerks];
+
 			var oFormModel = new JSONModel(oFormData);
 			oFormModel.setDefaultBindingMode(sap.ui.model.BindingMode.TwoWay);
 			this.setModel(oFormModel, "form");
@@ -52,8 +51,7 @@ sap.ui.define([
 			var oMessageManager = sap.ui.getCore().getMessageManager();
 			oView.setModel(oMessageManager.getMessageModel(), "message");
 			oMessageManager.registerObject(oView, true);
-			
-			
+
 			//GroupBy functions
 			this.mGroupFunctions = {
 				LocationTxt: function(oContext) {
@@ -70,151 +68,157 @@ sap.ui.define([
 						text: name
 					};
 				}
-			
+
 			};
 
 			this.getOwnerComponent().getModel().metadataLoaded().then(function() {
 				this._init();
 
 			}.bind(this));
-			
-			this._oRouter =  this.getRouter();
+
+			this._oRouter = this.getRouter();
 		},
-		
-		_init: function(){
-			
+
+		_init: function() {
+
 			var oView = this.getView();
 			_oBundle = this.getResourceBundle();
 
 			var oTable = oView.byId("recipeTable");
 			var oTemplate = oTable.getBindingInfo("items").template;
-			
-			
+
 			oTable.bindAggregation("items", {
 				path: "/RecipeSet",
 				filters: this.aFilterDefault,
-				sorter: new Sorter({path: 'Name', descending: true}),
+				sorter: new Sorter({
+					path: 'Name',
+					descending: true
+				}),
 				template: oTemplate
 			});
-			
+
 			oTable.attachSelectionChange(this.onItemSelected, this);
 		},
-		
-		onItemSelected: function(oEvent){
+
+		onItemSelected: function(oEvent) {
 			var arrItems = oEvent.getSource().getSelectedItems();
 			var oViewModel = this.getModel("viewData");
-			
+
 			sap.ui.getCore().getMessageManager().removeAllMessages();
-			if (arrItems.length > 0 ){
-				oViewModel.setProperty("/IsListSelected",true);
-				
-				if (arrItems.length > 1 ){
-					
-					oViewModel.setProperty("/IsMultiSelected",true);
-				} else{
-					oViewModel.setProperty("/IsMultiSelected",false);
+			if (arrItems.length > 0) {
+				oViewModel.setProperty("/IsListSelected", true);
+
+				if (arrItems.length > 1) {
+
+					oViewModel.setProperty("/IsMultiSelected", true);
+				} else {
+					oViewModel.setProperty("/IsMultiSelected", false);
 				}
-			
-			} else{
-				oViewModel.setProperty("/IsListSelected",false);
+
+			} else {
+				oViewModel.setProperty("/IsListSelected", false);
 			}
-			
-			
+
 		},
-		
-		onDeleteRecipe: function(){
-			
+
+		onDeleteRecipe: function() {
+
 			var oTable = this.getView().byId("recipeTable");
 			var arrItems = oTable.getSelectedItems();
 			var oViewModel = this.getModel("viewData");
-			oViewModel.setProperty("/Mode","Delete");
-			
-			
-			if (arrItems.length > 0){
+			oViewModel.setProperty("/Mode", "Delete");
+
+			if (arrItems.length > 0) {
 				MessageBox.confirm(_oBundle.getText("msgCfrmDeleteRecipe"), {
 					actions: ["Delete", MessageBox.Action.CANCEL],
 					emphasizedAction: "CANCEL",
 					onClose: function(sAction) {
 						if (sAction === 'Delete') {
 							this._deleteRecipe(arrItems);
-						} 
+						}
 					}.bind(this)
 
 				});
 			}
-		
-			
+
 		},
-		
-		_deleteRecipe: function(arrItems){
-			
+
+		_deleteRecipe: function(arrItems) {
+
 			var oModel = this.getModel();
 
 			sap.ui.getCore().getMessageManager().removeAllMessages();
 
-			
 			oModel.setDeferredGroups(["batchRecipeDelete"]);
-			for(var i = 0 ; i < arrItems.length; i++){
+			for (var i = 0; i < arrItems.length; i++) {
 				var oData = arrItems[i].getBindingContext().getObject();
-				
+
 				oModel.callFunction("/Func_RecipeDelete", {
 					method: "POST",
 					batchGroupId: "batchRecipeDelete",
 					changeSetId: i,
 					urlParameters: {
-					"Werks" : oData.Werks,
-					"RecipeID" :  oData.RecipeID
-					
+						"Werks": oData.Werks,
+						"RecipeID": oData.RecipeID
+
 					}
 				});
 			}
-			
+
 			//Submitting the function import batch call
 			oModel.submitChanges({
 				batchGroupId: "batchRecipeDelete", //Same as the batch group id used previously
-				success: function (oResponse) {
-					
+				success: function(oResponse) {
+
 					var arrResponses = oResponse.__batchResponses;
 					var bHasError = false;
-					
-					for( i = 0; i < arrResponses.length; i++){
+
+					for (i = 0; i < arrResponses.length; i++) {
 						var oResponseData = arrResponses[i].__changeResponses[0].data;
 						if (oResponseData.Type === 'E') {
 							bHasError = true;
 							var oMessage = new Message({
-									message: oResponseData.Message,
-									type: "Error",
-									target: "",
-									processor: ""
+								message: oResponseData.Message,
+								type: "Error",
+								target: "",
+								processor: ""
 							});
 							sap.ui.getCore().getMessageManager().addMessages(oMessage);
-								
+
 						}
 					}
-					if (bHasError){
-						MessageBox.error( _oBundle.getText("msgErrRecipeDelete"), {
-				          styleClass: "sapUiSizeCompact" 
-				        });
+					if (bHasError) {
+						MessageBox.error(_oBundle.getText("msgErrRecipeDelete"), {
+							styleClass: "sapUiSizeCompact"
+						});
 					}
-					
+
 					this.getView().byId("recipeTable").getBinding("items").refresh();
 				}.bind(this),
-				error: function (e) {
+				error: function(e) {
 					MessageToast.show("Error");
 					//var sMsg = JSON.parse(e.responseText).error.message.value;
-				}	
-    			
+				}
+
 			});
-				
+
 		},
 		onAddRecipe: function() {
 			var oViewModel = this.getModel("viewData");
-			oViewModel.setProperty("/Mode","Add");
+			oViewModel.setProperty("/Mode", "Add");
+			var oFormModel = this.getModel("form");
+			var oFormData = oFormModel.getData();
 			
+			oFormData.RecipeID = "";
+			oFormData.Name = null;
+			oFormData.GroupID = null;
+			oFormData.LocationID = null;
+			oFormData.Quantity = 1;
+				
+			oFormModel.setProperty("/", oFormData);
+
 			this.showFormDialogFragment(this.getView(), this._formFragments, "halo.sap.mm.RECIPECOST.fragments.RecipeForm", this);
-			
-			
-		
+
 			// Filter Location List
 			var oLocList = this.getView().byId("location");
 			var oLocBinding = oLocList.getBinding("items");
@@ -223,25 +227,73 @@ sap.ui.define([
 			// Filter Location List
 			var oGroupList = this.getView().byId("group");
 			oGroupList.bindAggregation("items", {
+				path: "/RecipeGroupSet",
+				filters: this.aFilterDefault,
+				sorter: new Sorter({
+					path: 'Text',
+					descending: true
+				}),
+				template: new sap.ui.core.ListItem({
+					text: "{Text}",
+					key: "{Groupid}"
+				})
+			});
+
+		},
+
+		onCopyRecipe: function() {
+			var oViewModel = this.getModel("viewData");
+			oViewModel.setProperty("/Mode", "Copy");
+			var oTable = this.getView().byId("recipeTable");
+			var arrItems = oTable.getSelectedItems();
+
+			if (arrItems.length === 1) {
+				var oFormModel = this.getModel("form");
+				var oFormData = oFormModel.getData();
+				var oListData = arrItems[0].getBindingContext().getObject();
+				
+				oFormData.RecipeID = oListData.RecipeID;
+				oFormData.Name = oListData.Name;
+				oFormData.GroupID = oListData.GroupID;
+				oFormData.LocationID = oListData.LocationID;
+				oFormData.Quantity = oListData.Quantity;
+				
+				oFormModel.setProperty("/", oFormData);
+
+				this.showFormDialogFragment(this.getView(), this._formFragments, "halo.sap.mm.RECIPECOST.fragments.RecipeForm", this);
+
+				// Filter Location List
+				var oLocList = this.getView().byId("location");
+				var oLocBinding = oLocList.getBinding("items");
+				oLocBinding.filter(this.aFilterDefault, "Application");
+
+				// Filter Location List
+				var oGroupList = this.getView().byId("group");
+				oGroupList.bindAggregation("items", {
 					path: "/RecipeGroupSet",
 					filters: this.aFilterDefault,
-					sorter: new Sorter({path: 'Text', descending: true}),
+					sorter: new Sorter({
+						path: 'Text',
+						descending: true
+					}),
 					template: new sap.ui.core.ListItem({
 						text: "{Text}",
 						key: "{Groupid}"
 					})
-			});
-		
+				});
 
+			} else {
+				MessageBox.error(_oBundle.getText("msgErrSelect1Recipe"));
+			}
 		},
-		
-		onEditRecipe: function(){
+
+		onEditRecipe: function() {
 			var oViewModel = this.getModel("viewData");
-			oViewModel.setProperty("/Mode","Edit");
-			
+			oViewModel.setProperty("/Mode", "Edit");
+
 			var oTable = this.getView().byId("recipeTable");
 			var arrItems = oTable.getSelectedItems();
-			if (arrItems.length === 1){
+			if (arrItems.length === 1) {
 				var oFormModel = this.getModel("form");
 				var oFormData = oFormModel.getData();
 				var oListData = arrItems[0].getBindingContext().getObject();
@@ -249,14 +301,11 @@ sap.ui.define([
 				oFormData.GroupID = oListData.GroupID;
 				oFormData.LocationID = oListData.LocationID;
 				oFormData.Quantity = oListData.Quantity;
-				oFormModel.setProperty("/",oFormData);
+				oFormModel.setProperty("/", oFormData);
 			}
-			
-			
+
 			this.showFormDialogFragment(this.getView(), this._formFragments, "halo.sap.mm.RECIPECOST.fragments.RecipeForm", this);
-			
-			
-			
+
 			// Filter Location List
 			var oLocList = this.getView().byId("location");
 			var oLocBinding = oLocList.getBinding("items");
@@ -265,38 +314,39 @@ sap.ui.define([
 			// Filter Location List
 			var oGroupList = this.getView().byId("group");
 			oGroupList.bindAggregation("items", {
-					path: "/RecipeGroupSet",
-					filters: this.aFilterDefault,
-					sorter: new Sorter({path: 'Text', descending: true}),
-					template: new sap.ui.core.ListItem({
-						text: "{Text}",
-						key: "{Groupid}"
-					})
+				path: "/RecipeGroupSet",
+				filters: this.aFilterDefault,
+				sorter: new Sorter({
+					path: 'Text',
+					descending: true
+				}),
+				template: new sap.ui.core.ListItem({
+					text: "{Text}",
+					key: "{Groupid}"
+				})
 			});
-			
+
 		},
 		onSaveRecipe: function() {
 			var oFormData = this.getView().getModel("form").getData();
 			var oViewModel = this.getModel("viewData");
 			var bMultiple = oViewModel.getProperty("/IsMultiSelected");
 			var sMode = oViewModel.getProperty("/Mode");
-			
 
-			if (this._validateRecipe(oFormData,bMultiple)) {
+			if (this._validateRecipe(oFormData, bMultiple)) {
 
 				MessageBox.confirm(_oBundle.getText("msgCfrmSaveRecipe"), {
 					actions: ["Save", MessageBox.Action.CANCEL],
 					emphasizedAction: "CANCEL",
 					onClose: function(sAction) {
 						if (sAction === 'Save') {
-							if (sMode === "Add") {
-								this._addRecipe(oFormData);
+							if (sMode === "Add" || sMode === "Copy") {
+								this._addRecipe(oFormData,sMode);
 							} else {
 								this._editRecipe(oFormData);
 							}
 							this.byId("addRecipeDialog").close();
-						} else {
-							this.byId("addRecipeDialog").close();
+						
 						}
 					}.bind(this)
 
@@ -306,54 +356,52 @@ sap.ui.define([
 				MessageToast.show(_oBundle.getText("msgErrFormError"));
 			}
 		},
-		onSelectRecipe: function(oEvent){
+		onSelectRecipe: function(oEvent) {
 			var oItem = oEvent.getSource();
 			var oListItem = oItem.getBindingContext().getObject();
-			
-			this._oRouter.navTo("ingredientform", { Ekorg: oListItem.Ekorg, Werks: oListItem.Werks, RecipeID: oListItem.RecipeID });
+
+			this._oRouter.navTo("ingredientform", {
+				Ekorg: oListItem.Ekorg,
+				Werks: oListItem.Werks,
+				RecipeID: oListItem.RecipeID
+			});
 		},
-		
-		onSearchRecipe: function(oEvent){
+
+		onSearchRecipe: function(oEvent) {
 			var aFilters = [];
 			var sQuery = oEvent.getSource().getValue();
-			if (sQuery && sQuery.length > 0) {				
+			if (sQuery && sQuery.length > 0) {
 				var filter = new Filter({
 					filters: [
-						new Filter("RecipeID", FilterOperator.Contains,sQuery),
-						new Filter("Name", FilterOperator.Contains,sQuery)
+						new Filter("RecipeID", FilterOperator.Contains, sQuery),
+						new Filter("Name", FilterOperator.Contains, sQuery)
 					],
-    				and: false
+					and: false
 				});
 				aFilters.push(filter);
 			}
-			
-		
-			
-			this._ApplyFiltersAndSorting(aFilters,[]);
-		
+
+			this._ApplyFiltersAndSorting(aFilters, []);
+
 		},
-		
-	
+
 		// onGroupChanged: function(oEvent){
 		// 	var oItem = oEvent.getParameter("selectedItem");
-			
+
 		// 	var aFilter = [];
-			
+
 		// 	aFilter.push(new Filter("Werks", FilterOperator.EQ,  this.PlantID));
 		// 	if (oItem) {
 		// 		var selKey = oItem.getKey();
 		// 		aFilter.push(new Filter("GroupID", FilterOperator.EQ,  selKey));
 		// 	}
-			
-			
+
 		// 	var oTable = this.byId("recipeTable");
 		// 	var oBinding = oTable.getBinding("items");
 		// 	oBinding.filter(aFilter);
-			
-			
 
 		// },
-		
+
 		onMessagePopoverPress: function(oEvent) {
 			var oSource = oEvent.getSource();
 
@@ -380,12 +428,11 @@ sap.ui.define([
 
 			sPath = sPath.replace("RecipeSet", "RecipeVersionSet") + "/Photo";
 
-
 			if (!oUploader.getValue()) {
 				MessageToast.show("Choose a file first");
 				return;
 			}
-			
+
 			oUploader.setUploadUrl("/sap/opu/odata/sap/zrecipecost_odata_srv" + sPath);
 
 			oUploader.checkFileReadable().then(function() {
@@ -400,12 +447,13 @@ sap.ui.define([
 			var oPopOver = this.getFragmentByName(this._formFragments, "halo.sap.mm.RECIPECOST.fragments.ImageUploadPopover");
 			oPopOver.close();
 		},
-		_addRecipe: function(oFormData) {
+		_addRecipe: function(oFormData,sMode) {
 			var oModel = this.getModel();
 			var oData = {
 				"Werks": this.PlantID,
+				"RecipeID" : oFormData.RecipeID,
 				"Name": oFormData.Name,
-				"Ekorg" : this.PurchOrgID,
+				"Ekorg": this.PurchOrgID,
 				"GroupID": oFormData.GroupID,
 				"LocationID": oFormData.LocationID,
 				"Quantity": "" + oFormData.Quantity
@@ -423,20 +471,20 @@ sap.ui.define([
 			});
 
 		},
-		
+
 		_editRecipe: function(oFormData) {
-			
+
 			var oModel = this.getModel();
 			var oTable = this.getView().byId("recipeTable");
 			var arrItems = oTable.getSelectedItems();
-			var mParameters = { 
-					method: "PUT", 
-					groupId:"batchRecipeUpdate", 
-					success:function(oResponse){
-						
+			var mParameters = {
+				method: "PUT",
+				groupId: "batchRecipeUpdate",
+				success: function(oResponse) {
+
 					// var arrResponses = oResponse.__batchResponses;
 					// var bHasError = false;
-					
+
 					// for( var i = 0; i < arrResponses.length; i++){
 					// 	var oResponseData = arrResponses[i].__changeResponses[0].data;
 					// 	if (oResponseData.Type === 'E') {
@@ -448,86 +496,80 @@ sap.ui.define([
 					// 				processor: ""
 					// 		});
 					// 		sap.ui.getCore().getMessageManager().addMessages(oMessage);
-								
+
 					// 	}
 					// }
 					// if (bHasError){
 					// 	MessageBox.error( _oBundle.getText("msgErrRecipeDelete"), {
-				 //         styleClass: "sapUiSizeCompact" 
-				 //       });
+					//         styleClass: "sapUiSizeCompact" 
+					//       });
 					// }
-					
-					},
-					error: function(e) { 
-						var sMsg = JSON.parse(e.responseText).error.message.value;
-						var oMessage = new Message({
-									message: sMsg,
-									type: "Error",
-									target: "",
-									processor: ""
-							});
-						sap.ui.getCore().getMessageManager().addMessages(oMessage);
-						MessageToast.show("Error Detected");
-					}
-				
+
+				},
+				error: function(e) {
+					var sMsg = JSON.parse(e.responseText).error.message.value;
+					var oMessage = new Message({
+						message: sMsg,
+						type: "Error",
+						target: "",
+						processor: ""
+					});
+					sap.ui.getCore().getMessageManager().addMessages(oMessage);
+					MessageToast.show("Error Detected");
+				}
+
 			};
-			
-			
+
 			sap.ui.getCore().getMessageManager().removeAllMessages();
-			
+
 			oModel.setUseBatch(true);
 			oModel.setDeferredGroups(["batchRecipeUpdate"]);
-			
-			
-			for(var i = 0 ; i < arrItems.length; i++){
+
+			for (var i = 0; i < arrItems.length; i++) {
 				var oData = arrItems[i].getBindingContext().getObject();
 				if (arrItems.length === 1) {
 					oData.Name = oFormData.Name;
 				}
 				if (oFormData.GroupID) {
- 					oData.GroupID = oFormData.GroupID;
+					oData.GroupID = oFormData.GroupID;
 				}
-				if (oFormData.LocationID){
+				if (oFormData.LocationID) {
 					oData.LocationID = oFormData.LocationID;
 				}
 				if (oFormData.Quantity) {
-					oData.Quantity = "" +  oFormData.Quantity;
+					oData.Quantity = "" + oFormData.Quantity;
 				}
-				oData.Ekorg =  this.PurchOrgID;
-				
-				oModel.update("/RecipeSet(Werks='" + oData.Werks + "',RecipeID='" + oData.RecipeID + "')" , oData,mParameters);
-				
+				oData.Ekorg = this.PurchOrgID;
+
+				oModel.update("/RecipeSet(Werks='" + oData.Werks + "',RecipeID='" + oData.RecipeID + "')", oData, mParameters);
+
 			}
-			
-			
+
 			//Submitting the function import batch call
 			oModel.submitChanges(mParameters);
-	
 
 		},
-		_validateRecipe: function(oFormData,bMultiple) {
+		_validateRecipe: function(oFormData, bMultiple) {
 
 			var oMessage;
 			var status = true;
 
 			sap.ui.getCore().getMessageManager().removeAllMessages();
-			
-			
+
 			if (bMultiple) {
 				return true;
-			}	
-			
-			if (oFormData.Name.length < 5) {
-					status = false;
-					oMessage = new Message({
-						message: "Empty Is not allowed. Minimum 5 characters",
-						type: "Error",
-						target: "/Name",
-						processor: this.getView().getModel("form")
-					});
-					sap.ui.getCore().getMessageManager().addMessages(oMessage);
 			}
-			
+
+			if (oFormData.Name.length < 5) {
+				status = false;
+				oMessage = new Message({
+					message: "Empty Is not allowed. Minimum 5 characters",
+					type: "Error",
+					target: "/Name",
+					processor: this.getView().getModel("form")
+				});
+				sap.ui.getCore().getMessageManager().addMessages(oMessage);
+			}
 
 			if (oFormData.GroupID.length < 1) {
 				status = false;
@@ -559,56 +601,62 @@ sap.ui.define([
 		onCancelRecipe: function() {
 			this.byId("addRecipeDialog").close();
 		},
-		
-		onSettingDialog: function(){
-			this.showFormDialogFragment(this.getView(),this._formFragments,"halo.sap.mm.RECIPECOST.fragments.RecipeSettingDialog", this);
-			
+
+		onSettingDialog: function() {
+			this.showFormDialogFragment(this.getView(), this._formFragments, "halo.sap.mm.RECIPECOST.fragments.RecipeSettingDialog", this);
+
 			// Group List
 			var oGroupList = this.byId("VSFGroup");
 			oGroupList.bindAggregation("items", {
-					path: "/RecipeGroupSet",
-					filters: this.aFilterDefault,
-					sorter: new Sorter({path: 'Text', descending: true}),
-					template: new sap.m.ViewSettingsItem({
-						text: "{Text}",
-						key: "GroupID___EQ___" + "{Groupid}" + "___X"
-					})
+				path: "/RecipeGroupSet",
+				filters: this.aFilterDefault,
+				sorter: new Sorter({
+					path: 'Text',
+					descending: true
+				}),
+				template: new sap.m.ViewSettingsItem({
+					text: "{Text}",
+					key: "GroupID___EQ___" + "{Groupid}" + "___X"
+				})
 			});
-			
+
 			// Group List
 			var oLocationList = this.byId("VSFLocation");
 			oLocationList.bindAggregation("items", {
-					path: "/LocationSet",
-					filters: this.aFilterDefault,
-					sorter: new Sorter({path: 'Text', descending: true}),
-					template: new sap.m.ViewSettingsItem({
-						text: "{Text}",
-						key: "LocationID___EQ___" + "{Locationid}" + "___X"
-					})
+				path: "/LocationSet",
+				filters: this.aFilterDefault,
+				sorter: new Sorter({
+					path: 'Text',
+					descending: true
+				}),
+				template: new sap.m.ViewSettingsItem({
+					text: "{Text}",
+					key: "LocationID___EQ___" + "{Locationid}" + "___X"
+				})
 			});
-			
+
 		},
-		onSettingConfirm: function(oEvent){
+		onSettingConfirm: function(oEvent) {
 			var mParams = oEvent.getParameters();
-		
+
 			var sPath = mParams.sortItem.getKey(),
 				bDescending = mParams.sortDescending,
 				aSorters = [],
 				vGroup;
 			var aFilters = [];
-			
+
 			if (mParams.groupItem) {
 				sPath = mParams.groupItem.getKey();
-				
+
 				bDescending = mParams.groupDescending;
 				vGroup = this.mGroupFunctions[sPath];
 				aSorters.push(new Sorter(sPath, bDescending, vGroup));
 				// apply the selected group settings
-			
+
 			} else {
-				aSorters.push(new Sorter(sPath, bDescending));	
+				aSorters.push(new Sorter(sPath, bDescending));
 			}
-			
+
 			mParams.filterItems.forEach(function(oItem) {
 				var aSplit = oItem.getKey().split("___"),
 					fPath = aSplit[0],
@@ -619,28 +667,24 @@ sap.ui.define([
 				aFilters.push(oFilter);
 			});
 
-		
-			this._ApplyFiltersAndSorting(aFilters,aSorters);
-			
+			this._ApplyFiltersAndSorting(aFilters, aSorters);
+
 		},
-		
-		
-		_ApplyFiltersAndSorting: function(aFilters,aSorters){
-			
+
+		_ApplyFiltersAndSorting: function(aFilters, aSorters) {
+
 			var oViewModel = this.getModel("viewData");
-			if (aFilters.length < 1){
+			if (aFilters.length < 1) {
 				oViewModel.setProperty("/IsFiltered", false);
 			} else {
 				oViewModel.setProperty("/IsFiltered", true);
 			}
-			
+
 			//Apply Default Filters
 			for (var i = 0; i < this.aFilterDefault.length; i++) {
 				aFilters.push(this.aFilterDefault[i]);
 			}
-			
-			
-			
+
 			// update list binding
 			var oTable = this.byId("recipeTable");
 			var oBinding = oTable.getBinding("items");
@@ -648,7 +692,7 @@ sap.ui.define([
 				oBinding.filter(aFilters).sort(aSorters);
 			}
 		},
-		
+
 		onExit: function() {
 
 			this.removeFragment(this._formFragments);
