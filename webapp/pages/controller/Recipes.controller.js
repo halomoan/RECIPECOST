@@ -214,6 +214,7 @@ sap.ui.define([
 			oFormData.GroupID = null;
 			oFormData.LocationID = null;
 			oFormData.Quantity = 1;
+			oFormData.IsSubMaterial = false;
 				
 			oFormModel.setProperty("/", oFormData);
 
@@ -257,6 +258,7 @@ sap.ui.define([
 				oFormData.GroupID = oListData.GroupID;
 				oFormData.LocationID = oListData.LocationID;
 				oFormData.Quantity = oListData.Quantity;
+				oFormData.IsSubMaterial = oListData.IsSubMaterial;
 				
 				oFormModel.setProperty("/", oFormData);
 
@@ -301,6 +303,7 @@ sap.ui.define([
 				oFormData.GroupID = oListData.GroupID;
 				oFormData.LocationID = oListData.LocationID;
 				oFormData.Quantity = oListData.Quantity;
+				oFormData.IsSubMaterial = oListData.IsSubMaterial;
 				oFormModel.setProperty("/", oFormData);
 			}
 
@@ -456,7 +459,8 @@ sap.ui.define([
 				"Ekorg": this.PurchOrgID,
 				"GroupID": oFormData.GroupID,
 				"LocationID": oFormData.LocationID,
-				"Quantity": "" + oFormData.Quantity
+				"Quantity": "" + oFormData.Quantity,
+				"IsSubMaterial" : oFormData.IsSubMaterial
 
 			};
 
@@ -540,6 +544,8 @@ sap.ui.define([
 					oData.Quantity = "" + oFormData.Quantity;
 				}
 				oData.Ekorg = this.PurchOrgID;
+				
+				oData.IsSubMaterial = oFormData.IsSubMaterial;
 
 				oModel.update("/RecipeSet(Werks='" + oData.Werks + "',RecipeID='" + oData.RecipeID + "')", oData, mParameters);
 

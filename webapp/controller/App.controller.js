@@ -13,8 +13,7 @@ sap.ui.define([
 				//oCtx = oItem.getBindingContext(),
 				//sMenu = oItem.getText(),
 				sTarget = oItem.getTarget();
-			
-			console.log(sTarget);
+				
 			switch(sTarget){
 				case "G001:RECIPES":			
 					this._oRouter.navTo("recipes"); break;

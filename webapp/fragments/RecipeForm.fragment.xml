@@ -1,6 +1,7 @@
-<core:FragmentDefinition xmlns="sap.m" xmlns:f="sap.ui.layout.form" xmlns:l="sap.ui.layout"
-	xmlns:core="sap.ui.core">
-	<Dialog id="addRecipeDialog" contentWidth="540px" contentHeight="450px" title="{= ${viewData>/IsMultiSelected} ?  ${i18n>RecipeForm} + ' (' + ${i18n>Multiple} +')' : ${i18n>RecipeForm} }" icon="sap-icon://activity-items">
+<core:FragmentDefinition xmlns="sap.m" xmlns:f="sap.ui.layout.form" xmlns:l="sap.ui.layout" xmlns:core="sap.ui.core">
+	<Dialog id="addRecipeDialog" contentWidth="540px" contentHeight="450px"
+		title="{= ${viewData>/IsMultiSelected} ? ${i18n>RecipeForm} + ' (' + ${i18n>Multiple} +')' : ${i18n>RecipeForm} }"
+		icon="sap-icon://activity-items">
 		<NavContainer id="form1" class="customCSS">
 			<Page id="page1" class="sapUiResponsivePadding--header" showHeader="false" showNavButton="false">
 				<content>
@@ -17,19 +18,21 @@
 								<f:formElements>
 									<f:FormElement label="{i18n>NameOfRecipe}">
 										<f:fields>
-											<Input value="{ path: 'form>/Name', type: 'sap.ui.model.type.String', constraints: { minLength:5, maxLength: 50 } }" autocomplete="false" enabled="{= ! ${viewData>/IsMultiSelected} }"/>
+											<Input value="{ path: 'form>/Name', type: 'sap.ui.model.type.String', constraints: { minLength:5, maxLength: 50 } }" autocomplete="false"
+												enabled="{= ! ${viewData>/IsMultiSelected} }"/>
 										</f:fields>
 									</f:FormElement>
 									<f:FormElement label="{i18n>Group}">
 										<f:fields>
-											<ComboBox id="group" selectedKey="{path:'form>/GroupID', type: 'sap.ui.model.type.String', constraints: {  minLength:5 }}">
+											<ComboBox id="group" selectedKey="{path:'form>/GroupID', type: 'sap.ui.model.type.String', constraints: { minLength:5 }}">
 												<core:Item key="{Groupid}" text="{Text}"/>
 											</ComboBox>
 										</f:fields>
 									</f:FormElement>
 									<f:FormElement label="{i18n>Location}">
 										<f:fields>
-											<ComboBox id="location" items="{ path: '/LocationSet', sorter: { path: 'Text' } }" selectedKey="{path:'form>/LocationID', type: 'sap.ui.model.type.String', constraints: {  minLength:5 }}">
+											<ComboBox id="location" items="{ path: '/LocationSet', sorter: { path: 'Text' } }"
+												selectedKey="{path:'form>/LocationID', type: 'sap.ui.model.type.String', constraints: { minLength:5 }}">
 												<core:Item key="{LocationID}" text="{Text}"/>
 											</ComboBox>
 										</f:fields>
@@ -39,21 +42,27 @@
 											<StepInput value="{form>/Quantity}" min="1" displayValuePrecision="2"></StepInput>
 										</f:fields>
 									</f:FormElement>
+									<f:FormElement label="{i18n>AllowAsSubMaterial}">
+										<f:fields>
+											<Switch state="{form>/IsSubMaterial}" customTextOn="Yes" customTextOff="No">
+												<layoutData>
+													<FlexItemData growFactor="1"/>
+												</layoutData>
+											</Switch>
+										</f:fields>
+									</f:FormElement>
 								</f:formElements>
 							</f:FormContainer>
 						</f:formContainers>
 					</f:Form>
 				</content>
-				 <footer>
-            <Toolbar
-                id="otbFooter">
-
-               
-				<ToolbarSpacer/>
-				<Button text="{viewData>/Mode}" press=".onSaveRecipe"/>	
-				<Button text="{i18n>Cancel}" press=".onCancelRecipe"/>
-            </Toolbar>
-        </footer>
+				<footer>
+					<Toolbar id="otbFooter">
+						<ToolbarSpacer/>
+						<Button text="{viewData>/Mode}" press=".onSaveRecipe"/>
+						<Button text="{i18n>Cancel}" press=".onCancelRecipe"/>
+					</Toolbar>
+				</footer>
 			</Page>
 			<Page id="page2" class="sapUiResponsivePadding--header" showHeader="false" showNavButton="false">
 				<content></content>

@@ -72,7 +72,7 @@ sap.ui.define([
 
 		onSave: function() {
 			var oModel = this.getModel();
-			var oThis = this;
+			
 
 			var oFormModel = this.getModel("form"),
 				oFormData = oFormModel.getData();
@@ -88,9 +88,9 @@ sap.ui.define([
 					oModel.create("/RecipeGroupSet", oData, {
 						method: "POST",
 						success: function(data) {
-							oThis._initForm();
+							this._initForm();
 							MessageToast.show("Group Successfully Created");
-						},
+						}.bind(this),
 						error: function(e) {
 							MessageToast.show("Error Detected");
 						}
@@ -98,9 +98,9 @@ sap.ui.define([
 				} else {
 					oModel.update("/RecipeGroupSet(Werks='" + this.PlantID + "',Groupid='" + oFormData.Groupid + "')", oData, null,
 						function() {
-							oThis._initForm();
+							this._initForm();
 							MessageToast.show("Group Successfully Edited");
-						},
+						}.bind(this),
 						function(e) {
 							var oMessage = JSON.parse(e.responseText).error.message.value;
 							MessageBox.error(oMessage);

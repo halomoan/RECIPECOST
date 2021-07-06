@@ -11,7 +11,7 @@
 					</fb:FilterGroupItem>
 					<fb:FilterGroupItem groupName="__$INTERNAL$" name="Matkltx" label="Group Name" visibleInFilterBar="true">
 						<fb:control>
-							<m:Input name="Matkltx"/>
+							<m:Input id="MatGroup" name="Matkltx" showSuggestion="true" showValueHelp="false"/>
 						</fb:control>
 					</fb:FilterGroupItem>
 				</fb:filterGroupItems>

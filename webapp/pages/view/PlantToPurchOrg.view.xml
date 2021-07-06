@@ -8,7 +8,6 @@
 					<ToolbarSpacer/>
 					<Button icon="sap-icon://alert" text="{= ${message>/}.length }" visible="{= ${message>/}.length > 0 }" type="Emphasized"
 						press="onMessagePopoverPress"/>
-					<Button icon="sap-icon://add-document" press="onNew"/>
 					<Button icon="sap-icon://save" press="onSave"/>
 				</Toolbar>
 			</f:toolbar>
@@ -18,23 +17,25 @@
 			<f:formContainers>
 				<f:FormContainer>
 					<f:formElements>
-						<f:FormElement label="{i18n>ID} / {i18n>Plant}">
+						<f:FormElement label="{i18n>Plant}">
 							<f:fields>
-								<ComboBox id="plantcbo" items="{ path: '/PlantSet', sorter: { path: 'Text' } }" selectedKey="{form>/PlantID}">
-									<core:Item key="{PlantID}" text="{Text}"/>
+								<ComboBox id="plantcbo" items="{ path: '/PlantSet', sorter: { path: 'Name' } }" selectedKey="{form>/PlantID}" showSecondaryValues="true">
+									<core:ListItem key="{Werks}" text="{Name}" additionalText="{Werks}"/>
 								</ComboBox>
 							</f:fields>
 						</f:FormElement>
 						<f:FormElement label="{i18n>PurchOrg}">
-							<ComboBox id="ekorgcbo" items="{ path: '/PurchOrgSet', sorter: { path: 'Text' } }" selectedKey="{form>/Ekorg}">
-									<core:Item key="{Ekorg}" text="{Text}"/>
+							<ComboBox id="ekorgcbo" items="{ path: '/I_PurchaseOrgVH', sorter: { path: 'ResponsiblePurchaseOrg' } }" selectedKey="{form>/Ekorg}"
+								showSecondaryValues="true">
+								<core:ListItem key="{ResponsiblePurchaseOrg}" text="{PurchasingOrganizationName}" additionalText="{ResponsiblePurchaseOrg}"/>
 							</ComboBox>
 						</f:FormElement>
 					</f:formElements>
 				</f:FormContainer>
 			</f:formContainers>
 		</f:Form>
-		<t:Table id="planttbl" rows="{/PlantSet}" selectionMode="MultiToggle" visibleRowCount="7" paste="onPaste" ariaLabelledBy="title">
+		<t:Table id="planttbl" rows="{path: '/PlantSet', sorter: { path: 'Name' },filters: [{ path: 'Ekorg', operator: 'NE', value1: '' }] }"
+			selectionMode="None" visibleRowCount="7" paste="onPaste" ariaLabelledBy="title">
 			<t:extension>
 				<OverflowToolbar style="Clear">
 					<Title text="{i18n>Plant}"/>
@@ -44,13 +45,13 @@
 				<t:Column width="10rem">
 					<Label text="{i18n>ID}"/>
 					<t:template>
-						<Text text="{PlantID}" wrapping="false"/>
+						<Text text="{Werks}" wrapping="false"/>
 					</t:template>
 				</t:Column>
 				<t:Column width="20rem">
 					<Label text="{i18n>Text}"/>
 					<t:template>
-						<Text text="{Text}" wrapping="false"/>
+						<Text text="{Name}" wrapping="false"/>
 					</t:template>
 				</t:Column>
 				<t:Column width="20rem">

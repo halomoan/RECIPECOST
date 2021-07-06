@@ -46,6 +46,9 @@
 			<Column minScreenWidth="Tablet" demandPopin="true">
 				<Text text="{i18n>Price}"/>
 			</Column>
+			<Column minScreenWidth="Tablet" hAlign="Center" demandPopin="true" width="2rem">
+				<Text text=""/>
+			</Column>
 		</columns>
 		<items>
 			<ColumnListItem  vAlign="Middle" type="Navigation" press="onSelectRecipe">
@@ -58,6 +61,8 @@
 					<ObjectIdentifier title="{Quantity}" text="Unit" />
 					<ObjectNumber number="{ parts:[{path:'Price'},{path:'Currency'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: false} }"
 						unit="{Currency}" state="Success"/>
+						
+					<core:Icon src="{= ${IsSubMaterial} ? 'sap-icon://example': '' }" tooltip="{i18n>SubMaterial}"></core:Icon>	
 				</cells>
 			</ColumnListItem>
 		</items>

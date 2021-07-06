@@ -22,6 +22,10 @@
 				<items>
 				</items>
 			</ViewSettingsFilterItem>
+			<ViewSettingsFilterItem id="VSFSubMaterial" text="{i18n>SubMaterial}" key="IsSubMaterial">
+				<items>
+				</items>
+			</ViewSettingsFilterItem>
 		</filterItems>
 	</ViewSettingsDialog>
 </core:FragmentDefinition>

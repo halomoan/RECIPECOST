@@ -41,16 +41,11 @@ sap.ui.define([
 							type: "Delete",
 							text: "Delete",
 							press: fnTableRowAction
-						}),
-						new sap.ui.table.RowActionItem({
-							icon: "sap-icon://edit",
-							text: "Edit",
-							press: fnTableRowAction
 						})
 					]
 				});
 				oTable.setRowActionTemplate(oTemplate);
-				oTable.setRowActionCount(2);
+				oTable.setRowActionCount(1);
 
 			}.bind(this));
 		},
@@ -81,18 +76,7 @@ sap.ui.define([
 			var oItem = oEvent.getParameter("item");
 			var oViewModel = this.getModel("viewData");
 
-			if (oItem.getText() === "Edit") {
-				var oFormModel = this.getModel("form"),
-					oFormData = oFormModel.getData();
-
-				oFormData.Werks = oData.Werks;
-				oFormData.Groupid = oData.Groupid;
-				oFormData.Text = oData.Text;
-
-				oFormModel.setProperty("/", oFormData);
-				oViewModel.setProperty("/Mode", "Edit");
-
-			} else {
+			if (oItem.getText() === "Delete") {
 
 				var oThis = this;
 				oViewModel.setProperty("/Mode", "");
@@ -120,6 +104,81 @@ sap.ui.define([
 			this.showPopOverFragment(this.getView(), oSource, this._formFragments, "halo.sap.mm.RECIPECOST.fragments.MessagePopover", this);
 		},
 		
+		onSave: function(){
+			var oModel = this.getModel();
+
+			var oFormModel = this.getModel("form"),
+				oFormData = oFormModel.getData();
+
+			if (this._validateForm(oFormData)) {
+				
+				var oData = {
+					"Werks": oFormData.PlantID,
+					"Ekorg": oFormData.Ekorg
+				};
+				
+				oModel.create("/PlantSet", oData, {
+					method: "POST",
+					success: function(data) {
+						MessageToast.show(_oBundle.getText("msgInfoPlantCreated"));
+					}.bind(this),
+					error: function(e) {
+						MessageToast.show("Error Detected");
+					}
+				});
+				
+			} else {
+				MessageToast.show(_oBundle.getText("msgErr"));
+			}
+			
+		},
+		
+		_deleteData: function(oData){
+			var oModel = this.getModel();
+			console.log(oData);
+			oModel.remove("/PlantSet(Werks='" + oData.Werks + "')", {
+				method: "DELETE",
+				success: function(data) {
+					MessageToast.show(_oBundle.getText("msgSuccessDelete"));
+				},
+				error: function(e) {
+					var oMessage = JSON.parse(e.responseText).error.message.value;
+					MessageBox.error(oMessage);
+
+				}
+			});
+		},
+		_validateForm: function(oFormData) {
+
+			var oMessage;
+			var status = true;
+
+			sap.ui.getCore().getMessageManager().removeAllMessages();
+
+			if (oFormData.PlantID.length < 1) {
+				status = false;
+				oMessage = new Message({
+					message: "Empty Is not allowed.",
+					type: "Error",
+					target: "/PlantID",
+					processor: this.getView().getModel("form")
+				});
+				sap.ui.getCore().getMessageManager().addMessages(oMessage);
+			}
+			
+			if (oFormData.Ekorg.length < 1) {
+				status = false;
+				oMessage = new Message({
+					message: "Empty Is not allowed.",
+					type: "Error",
+					target: "/Ekorg",
+					processor: this.getView().getModel("form")
+				});
+				sap.ui.getCore().getMessageManager().addMessages(oMessage);
+			}
+
+			return status;
+		},
 		onExit: function() {
 
 		}

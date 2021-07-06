@@ -1,4 +1,4 @@
-<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:f="sap.ui.layout.form" xmlns:l="sap.ui.layout"
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:f="sap.ui.layout.form" xmlns:l="sap.ui.layout" xmlns:tnt="sap.tnt"
 	xmlns:t="sap.ui.table" controllerName="halo.sap.mm.RECIPECOST.pages.controller.IngredientForm">
 	<l:DynamicSideContent id="DynamicSideContent" class="sapUiSizeCompact" containerQuery="true" sideContentFallDown="BelowM"
 		breakpointChanged="handleBreakpointChangeEvent" showSideContent="false">
@@ -12,10 +12,15 @@
 				<l:BlockLayoutRow>
 					<l:BlockLayoutCell width="2" class="sapUiNoContentPadding">
 						<l:VerticalLayout>
-						<Title text="{i18n>NameOfRecipe} : {Name}" titleStyle="H1" />
+						<HBox>
+							<Title text="{i18n>NameOfRecipe} : {Name}" titleStyle="H1" class="sapUiTinyMarginEnd"/>
+						
+							<tnt:InfoLabel id="il9" text="{i18n>SubMaterial}" colorScheme="7" displayOnly= "true" visible="{IsSubMaterial}" class="sapUiTinyMarginTop"/>
+						</HBox>
 						<Label text="{i18n>ID} : {RecipeID}" class="sapUiSmallMarginBottom"/>
+						
 						<Title text="{i18n>PortionProduced} : {Quantity} Unit"/>
-						<Title text="{i18n>Location} : {LocationTxt} Unit"/>
+						<Title text="{i18n>Location} : {LocationTxt}"/>
 						<Title text="{i18n>CreatedBy} : {CreatedBy}"/>
 						</l:VerticalLayout>
 					</l:BlockLayoutCell>
@@ -60,7 +65,7 @@
 							<Label text="Qty Used" textAlign="Center" width="100%"/>
 						</t:multiLabels>
 						<t:template>
-							<Input textAlign="End" value="{ parts: [{path: 'Ingredients>TPeinh'}, {path: 'Ingredients>Bprme'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: false } }" description="{Ingredients>Bprme}" visible="{= ${Ingredients>ID} === undefined }" change=".onQtyChanged"/>
+							<Input textAlign="End" value="{ parts: [{path: 'Ingredients>TPeinh'}, {path: 'Ingredients>Bprme'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: false,maxFractionDigits:3 } }" description="{Ingredients>Bprme}" visible="{= ${Ingredients>ID} === undefined }" change=".onQtyChanged"/>
 							
 						</t:template>
 					</t:Column>
@@ -89,7 +94,7 @@
 						</t:multiLabels>
 						<t:template>
 							<FlexBox alignItems="Start" justifyContent="End">
-								<Text text="{Ingredients>TNetpr/Curr} {Ingredients>Waers}" wrapping="false" visible="{= ${Ingredients>Matnr} !== null || ${Ingredients>ID} === 'readonly'  }"/>
+								<Text text="{ parts: [{path: 'Ingredients>TNetpr/Curr'}, {path: 'Ingredients>Waers'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: true,maxFractionDigits:3 } }" wrapping="false" visible="{= ${Ingredients>Matnr} !== null || ${Ingredients>ID} === 'readonly'  }"/>
 								<Input textAlign="End" value="{ parts: [{path: 'Ingredients>AddMisc/Curr'}, {path: 'Ingredients>Waers'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: false } }" description="{Ingredients>Waers}" visible="{= ${Ingredients>ID} === 'AddMisc' }" change="onAddMiscChanged"/>
 								<Input textAlign="End" value="{ parts: [{path: 'Ingredients>SellPrice/Curr'}, {path: 'Ingredients>Waers'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: false } }" description="{Ingredients>Waers}" visible="{= ${Ingredients>ID} === 'UnitSellPrice' }" change="onUnitSellPriceChanged"/>
 								
