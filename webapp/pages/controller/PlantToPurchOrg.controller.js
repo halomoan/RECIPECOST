@@ -135,7 +135,7 @@ sap.ui.define([
 		
 		_deleteData: function(oData){
 			var oModel = this.getModel();
-			console.log(oData);
+			
 			oModel.remove("/PlantSet(Werks='" + oData.Werks + "')", {
 				method: "DELETE",
 				success: function(data) {

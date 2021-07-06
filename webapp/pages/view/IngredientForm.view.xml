@@ -1,4 +1,5 @@
 <mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:f="sap.ui.layout.form" xmlns:l="sap.ui.layout" xmlns:tnt="sap.tnt"
+	xmlns:plugins="sap.ui.table.plugins"
 	xmlns:t="sap.ui.table" controllerName="halo.sap.mm.RECIPECOST.pages.controller.IngredientForm">
 	<l:DynamicSideContent id="DynamicSideContent" class="sapUiSizeCompact" containerQuery="true" sideContentFallDown="BelowM"
 		breakpointChanged="handleBreakpointChangeEvent" showSideContent="false">
@@ -15,7 +16,7 @@
 						<HBox>
 							<Title text="{i18n>NameOfRecipe} : {Name}" titleStyle="H1" class="sapUiTinyMarginEnd"/>
 						
-							<tnt:InfoLabel id="il9" text="{i18n>SubMaterial}" colorScheme="7" displayOnly= "true" visible="{IsSubMaterial}" class="sapUiTinyMarginTop"/>
+							<tnt:InfoLabel text="{i18n>SubMaterial}" colorScheme="7" displayOnly= "true" visible="{IsSubMaterial}" class="sapUiTinyMarginTop"/>
 						</HBox>
 						<Label text="{i18n>ID} : {RecipeID}" class="sapUiSmallMarginBottom"/>
 						
@@ -33,11 +34,26 @@
 					</l:BlockLayoutCell>
 				</l:BlockLayoutRow>
 			</l:BlockLayout>
-			<t:Table rows="{Ingredients>/Items}" selectionMode="None" visibleRowCount="15" paste="onPaste" ariaLabelledBy="title">
+			<t:Table id="ingredienttbl" rows="{Ingredients>/Items}"  visibleRowCount="15" paste="onPaste" ariaLabelledBy="title">
+				
+				<t:plugins>
+					<plugins:MultiSelectionPlugin limit="20"
+						enableNotification="true"
+						showHeaderSelector="true"
+						selectionMode="None"
+						selectionChange=".onSelectMaterial"/>
+				</t:plugins>
+				
+				
 				<t:extension>
 					<OverflowToolbar style="Clear">
-						<Title id="title" text="{i18n>Ingredient}"/>
+						<Title text="{i18n>Ingredient}"/>
 						<ToolbarSpacer/>
+						
+						<ToggleButton
+							icon="sap-icon://activities"
+							tooltip="Enable / Disable Freezing Menu Entries"
+							pressed="{ui>/showFreezeMenuEntry}"/>
 						<Button icon="sap-icon://add" type="Transparent" tooltip="Add Material(s)" press=".onVHMaterialRequested"/>
 					</OverflowToolbar>
 				</t:extension>
@@ -45,7 +61,7 @@
 				<t:rowSettingsTemplate>
 					<t:RowSettings highlight="{Ingredients>Status}"/>
 				</t:rowSettingsTemplate>
-				
+			
 				<t:columns>
 					<t:Column width="7rem">
 						<Label text="Material No."/>

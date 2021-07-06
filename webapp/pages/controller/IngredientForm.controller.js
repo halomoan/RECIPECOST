@@ -20,6 +20,7 @@ sap.ui.define([
 			var oViewModel = new JSONModel({
 				"isFullScreen": false,
 				"ImagePopUpPos": "Left",
+				"ShowDelete" : false
 
 			});
 			this.getView().setModel(oViewModel, "viewData");
@@ -58,8 +59,15 @@ sap.ui.define([
 			this.aFilters = [this.oFilterPurchOrg, this.oFilterPlant, this.oFilterMatType];
 
 			this.getView().bindElement("/RecipeSet(Werks='" + this.PlantID + "',RecipeID='" + this.RecipeID + "')");
-
+			
 			_oBundle = this.getResourceBundle();
+				
+			this.getOwnerComponent().getModel().metadataLoaded().then(function() {
+				
+			}.bind(this));
+			
+
+		
 		},
 		onNavBack: function() {
 			this._oRouter.navTo("recipes");
@@ -397,7 +405,41 @@ sap.ui.define([
 			var oPopOver = this.getFragmentByName(this._formFragments, "halo.sap.mm.RECIPECOST.fragments.ImageUploadPopover");
 			oPopOver.close();
 		},
+		
+		onToggleSelect:function(oEvent){
+			var oSource = oEvent.getSource();
+			var oTable = this.byId("ingredienttbl");
+			var oPlugin = oTable.getPlugins()[0];
+			var sMode = oPlugin.getSelectionMode();
+			
+			if (sMode === "MultiToggle") {
+				oPlugin.setSelectionMode("None");
+				oSource.setText(_oBundle.getText("Select"));
+				
+			} else {
+				oPlugin.setSelectionMode("MultiToggle");
+				oSource.setText(_oBundle.getText("DeSelect"));
+			}
+		
+		},
+		
+		onSelectMaterial: function(oEvent) {
+			var oPlugin = oEvent.getSource();
+			var bLimitReached = oEvent.getParameters().limitReached;
+			var iIndices = oPlugin.getSelectedIndices();
+			var sMessage = "";
 
+			if (iIndices.length > 0) {
+				sMessage = iIndices.length + " row(s) selected.";
+				if (bLimitReached) {
+					sMessage = sMessage + " The recently selected range was limited to " + oPlugin.getLimit() + " rows!";
+				}
+			} else {
+				sMessage = "Selection cleared.";
+			}
+
+			MessageToast.show(sMessage);
+		},
 		onQtyChanged: function(oEvent) {
 			var oSource = oEvent.getSource();
 
@@ -432,6 +474,7 @@ sap.ui.define([
 			this.aSubTotal[0].UnitSellPrice = iValue;
 			this._calcTotals();
 		},
+	
 		_calcTotals: function() {
 			var oModel = this.getModel("Ingredients");
 			var oRows = oModel.getProperty("/Items");
