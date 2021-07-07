@@ -49,11 +49,12 @@
 					<OverflowToolbar style="Clear">
 						<Title text="{i18n>Ingredient}"/>
 						<ToolbarSpacer/>
-						
+						<Button text="{i18n>Delete}" type="Transparent" tooltip="{i18n>Delete}" press=".onDeleteMaterial" visible="{viewData>/ShowDelete}"/>
 						<ToggleButton
 							icon="sap-icon://activities"
-							tooltip="Enable / Disable Freezing Menu Entries"
-							pressed="{ui>/showFreezeMenuEntry}"/>
+							tooltip="{i18n>ToogleSelect}"
+							pressed="false"
+							press="onToggleSelect" visible="{viewData>/ShowMultiSelect}"/>
 						<Button icon="sap-icon://add" type="Transparent" tooltip="Add Material(s)" press=".onVHMaterialRequested"/>
 					</OverflowToolbar>
 				</t:extension>

@@ -20,7 +20,8 @@ sap.ui.define([
 			var oViewModel = new JSONModel({
 				"isFullScreen": false,
 				"ImagePopUpPos": "Left",
-				"ShowDelete" : false
+				"ShowDelete" : false,
+				"ShowMultiSelect": false
 
 			});
 			this.getView().setModel(oViewModel, "viewData");
@@ -204,12 +205,13 @@ sap.ui.define([
 		},
 		onValueHelpOkPress: function(oEvent) {
 			var oIngredientModel = this.getModel("Ingredients"),
-				oIngredientData = oIngredientModel.getData().Items;
+				oIngredientData = oIngredientModel.getData().Items,
+				oViewModel = this.getModel("viewData");
 
 			var aTokens = oEvent.getParameter("tokens");
 
 			if (aTokens.length) {
-
+				oViewModel.setProperty("/ShowMultiSelect",true);
 				//remove subtotal
 				if (oIngredientData.length > 1) {
 					oIngredientData.splice(oIngredientData.length - 7, 7);
@@ -407,38 +409,58 @@ sap.ui.define([
 		},
 		
 		onToggleSelect:function(oEvent){
-			var oSource = oEvent.getSource();
+			
 			var oTable = this.byId("ingredienttbl");
 			var oPlugin = oTable.getPlugins()[0];
 			var sMode = oPlugin.getSelectionMode();
 			
 			if (sMode === "MultiToggle") {
 				oPlugin.setSelectionMode("None");
-				oSource.setText(_oBundle.getText("Select"));
-				
 			} else {
 				oPlugin.setSelectionMode("MultiToggle");
-				oSource.setText(_oBundle.getText("DeSelect"));
 			}
 		
 		},
 		
 		onSelectMaterial: function(oEvent) {
+			var oViewModel = this.getModel("viewData");
 			var oPlugin = oEvent.getSource();
 			var bLimitReached = oEvent.getParameters().limitReached;
 			var iIndices = oPlugin.getSelectedIndices();
 			var sMessage = "";
 
 			if (iIndices.length > 0) {
-				sMessage = iIndices.length + " row(s) selected.";
+				
+				oViewModel.setProperty("/ShowDelete",true);
+				
+				sMessage = _oBundle.getText("NoRowSelected",iIndices.length);
 				if (bLimitReached) {
-					sMessage = sMessage + " The recently selected range was limited to " + oPlugin.getLimit() + " rows!";
+					sMessage = sMessage + _oBundle.getText("LimitRowSelected",oPlugin.getLimit());
 				}
 			} else {
-				sMessage = "Selection cleared.";
+				sMessage = _oBundle.getText("SelectedRowClear");
+				oViewModel.setProperty("/ShowDelete",false);
 			}
 
 			MessageToast.show(sMessage);
+		},
+		
+		onDeleteMaterial: function(){
+			var oModel = this.getModel("Ingredients");
+			var oRows = oModel.getProperty("/Items");
+			
+			var oTable = this.byId("ingredienttbl");
+			var oPlugin = oTable.getPlugins()[0];
+			var aIndices = oPlugin.getSelectedIndices();
+			
+			for(var i = aIndices.length - 1; i >= 0; i--){
+				oRows.splice(aIndices[i],1);
+			}
+			
+			
+			oPlugin.clearSelection();
+			oModel.setProperty("/Items",oRows); 
+			this._calcTotals();
 		},
 		onQtyChanged: function(oEvent) {
 			var oSource = oEvent.getSource();
