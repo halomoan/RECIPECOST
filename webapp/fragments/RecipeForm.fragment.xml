@@ -39,7 +39,7 @@
 									</f:FormElement>
 									<f:FormElement label="{i18n>PortionProduced}">
 										<f:fields>
-											<StepInput value="{form>/Quantity}" min="1" displayValuePrecision="2"></StepInput>
+											<StepInput value="{form>/Qty}" min="1" displayValuePrecision="2"></StepInput>
 										</f:fields>
 									</f:FormElement>
 									<f:FormElement label="{i18n>AllowAsSubMaterial}">

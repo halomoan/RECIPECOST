@@ -249,12 +249,12 @@ sap.ui.define([
 			}
 
 			oIngredientData.push({
-				"ID": "spacer"
+				"ID": ""
 			});
 
 			oIngredientData.push({
-				"ID": "readonly",
-				"Matnr": null,
+				"ID": "SubTotal",
+				"Matnr": "",
 				"Maktx": _oBundle.getText("SubTotal"),
 				"TPeinh": null,
 				"Bprme": null,
@@ -283,8 +283,8 @@ sap.ui.define([
 				}
 			});
 			oIngredientData.push({
-				"ID": "readonly",
-				"Matnr": null,
+				"ID": "TotRecipeCost",
+				"Matnr": "",
 				"Maktx": _oBundle.getText("TotalRecipeCost"),
 				"TPeinh": null,
 				"Bprme": null,
@@ -298,8 +298,8 @@ sap.ui.define([
 			});
 
 			oIngredientData.push({
-				"ID": "readonly",
-				"Matnr": null,
+				"ID": "CostPerUnit",
+				"Matnr": "",
 				"Maktx": _oBundle.getText("CostPerPortion"),
 				"TPeinh": null,
 				"Bprme": null,
@@ -328,7 +328,7 @@ sap.ui.define([
 			});
 			oIngredientData.push({
 				"ID": "readonly",
-				"Matnr": null,
+				"Matnr": "",
 				"Maktx": _oBundle.getText("Cost%PerPortion"),
 				"TPeinh": null,
 				"Bprme": null,
@@ -454,7 +454,9 @@ sap.ui.define([
 			var aIndices = oPlugin.getSelectedIndices();
 			
 			for(var i = aIndices.length - 1; i >= 0; i--){
-				oRows.splice(aIndices[i],1);
+				if (aIndices[i] < oRows.length - 7) {
+					oRows.splice(aIndices[i],1);
+				}
 			}
 			
 			
@@ -496,11 +498,54 @@ sap.ui.define([
 			this.aSubTotal[0].UnitSellPrice = iValue;
 			this._calcTotals();
 		},
+		
+		onSave: function(){
+			var i = 0;
+			var oModel = this.getModel("Ingredients");
+			var oRows = oModel.getProperty("/Items");
+			var sPath = this.getView().getBindingContext().getPath();
+			var oRecipeData = this.getModel().getProperty(sPath);
+			
+			//Ingredients
+			for (i = 0; i < oRows.length - 7; i++) {
+				
+			}
+			
+			var oRecipeVersion = {
+				"Werks": this.PlantID,
+				"RecipeID": this.RecipeID,
+				"VersionID": "",
+				"PriceDate": sap.ui.model.odata.ODataUtils.formatValue(new Date(), "Edm.DateTime"),
+				"Wears": oRecipeData.Currency,
+				"Bprme": oRecipeData.Unit,
+				"SubTotal": 0.00,
+				"AddMisc": 0.00,
+				"TotRecipeCost": 0.00,
+				"CostPerUnit": 0.00,
+				"UnitSellPrice": 0.00,
+				
+			};
+			
+			//SubTotals
+			
+			for (i = oRows.length - 7; i < oRows.length; i++) {
+				switch(oRows[i].ID) {
+					case "SubTotal": oRecipeVersion.SubTotal = oRows[i].TNetpr.Curr; break;
+					case "AddMisc":  oRecipeVersion.AddMisc = oRows[i].AddMisc.Curr / 100;break;
+					case "TotRecipeCost" : oRecipeVersion.TotRecipeCost = oRows[i].TNetpr.Curr;break;
+					case "CostPerUnit" : oRecipeVersion.CostPerUnit = oRows[i].TNetpr.Curr;break;
+					case "UnitSellPrice" : oRecipeVersion.UnitSellPrice = oRows[i].SellPrice.Curr;break;
+				}
+				console.log(i,oRows[i]);
+			}
+			console.log(oRecipeVersion);
+			
+		},
 	
 		_calcTotals: function() {
 			var oModel = this.getModel("Ingredients");
 			var oRows = oModel.getProperty("/Items");
-
+			
 			var sPath = this.getView().getBindingContext().getPath();
 			var oRecipeData = this.getModel().getProperty(sPath);
 
@@ -527,11 +572,12 @@ sap.ui.define([
 			oModel.setProperty("/Items/" + (oRows.length - 4), oRowTotalCost);
 
 			//Cost Per Portion
-			var iQty = oRecipeData.Quantity;
+			var iQty = oRecipeData.Qty;
 			var oRowCostPerPortion = oRows[oRows.length - 3];
 			var iCostPerPortion = (oRowTotalCost.TNetpr.Curr / iQty).toFixed(2);
 			oRowCostPerPortion.TNetpr.Curr = iCostPerPortion;
 
+			
 			oModel.setProperty("/Items/" + (oRows.length - 3), oRowCostPerPortion);
 
 			//Cost % Per Portion
@@ -543,8 +589,9 @@ sap.ui.define([
 			var oRowCostPctg = oRows[oRows.length - 1];
 
 			oRowCostPctg.TNetpr.Curr = iCostPctg;
-
+			
 			oModel.setProperty("/Items/" + (oRows.length - 1), oRowCostPctg);
+			
 		},
 
 		onExit: function() {

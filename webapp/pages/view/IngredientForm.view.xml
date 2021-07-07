@@ -7,6 +7,7 @@
 			class="sapUiContentPadding sapUiResponsivePadding--header sapUiResponsivePadding--subHeader sapUiResponsivePadding--content sapUiResponsivePadding--footer"
 			showNavButton="true" navButtonPress=".onNavBack">
 			<headerContent>
+				<Button text="{i18n>Save}" tooltip="{i18n>Save}" press=".onSave"/>
 				<Button icon="sap-icon://action" tooltip="Share"/>
 			</headerContent>
 			<l:BlockLayout>
@@ -20,7 +21,7 @@
 						</HBox>
 						<Label text="{i18n>ID} : {RecipeID}" class="sapUiSmallMarginBottom"/>
 						
-						<Title text="{i18n>PortionProduced} : {Quantity} Unit"/>
+						<Title text="{i18n>PortionProduced} : {Qty} Unit"/>
 						<Title text="{i18n>Location} : {LocationTxt}"/>
 						<Title text="{i18n>CreatedBy} : {CreatedBy}"/>
 						</l:VerticalLayout>
@@ -111,7 +112,7 @@
 						</t:multiLabels>
 						<t:template>
 							<FlexBox alignItems="Start" justifyContent="End">
-								<Text text="{ parts: [{path: 'Ingredients>TNetpr/Curr'}, {path: 'Ingredients>Waers'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: true,maxFractionDigits:3 } }" wrapping="false" visible="{= ${Ingredients>Matnr} !== null || ${Ingredients>ID} === 'readonly'  }"/>
+								<Text text="{ parts: [{path: 'Ingredients>TNetpr/Curr'}, {path: 'Ingredients>Waers'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: true,maxFractionDigits:3 } }" wrapping="false" visible="{= ${Ingredients>Matnr} !== null  }"/>
 								<Input textAlign="End" value="{ parts: [{path: 'Ingredients>AddMisc/Curr'}, {path: 'Ingredients>Waers'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: false } }" description="{Ingredients>Waers}" visible="{= ${Ingredients>ID} === 'AddMisc' }" change="onAddMiscChanged"/>
 								<Input textAlign="End" value="{ parts: [{path: 'Ingredients>SellPrice/Curr'}, {path: 'Ingredients>Waers'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: false } }" description="{Ingredients>Waers}" visible="{= ${Ingredients>ID} === 'UnitSellPrice' }" change="onUnitSellPriceChanged"/>
 								
@@ -135,7 +136,7 @@
 						</t:multiLabels>
 						<t:template>
 							<FlexBox alignItems="Start" justifyContent="End">
-								<Text text="{Ingredients>TNetpr/Prev1} {Ingredients>Waers}" wrapping="false" visible="{= ${Ingredients>Matnr} !== null || ${Ingredients>ID} === 'readonly'  }"/>
+								<Text text="{Ingredients>TNetpr/Prev1} {Ingredients>Waers}" wrapping="false" visible="{= ${Ingredients>Matnr} !== null }"/>
 								<Text text="{Ingredients>AddMisc/Prev1} {Ingredients>Waers}" visible="{= ${Ingredients>ID} === 'AddMisc' }"/>
 								<Text text="{Ingredients>SellPrice/Prev1} {Ingredients>Waers}" visible="{= ${Ingredients>ID} === 'UnitSellPrice' }"/>
 							</FlexBox>

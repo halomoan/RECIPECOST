@@ -1,6 +1,6 @@
 <mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
 	controllerName="halo.sap.mm.RECIPECOST.pages.controller.Recipes"  class="sapUiSizeCompact">
-	<Table id="recipeTable" inset="false" items="{odata>/}" mode="MultiSelect">
+	<Table id="recipeTable" inset="false" items="{odata>/}" mode="MultiSelect" alternateRowColors="true">
 		<headerToolbar>
 			<OverflowToolbar>
 				<Title text="{i18n>Recipe}" level="H2"/>
@@ -15,7 +15,7 @@
                     press="onMessagePopoverPress" />
 				<ToolbarSpacer/>
 				<Button text="{i18n>Add}" type="Transparent" tooltip="Add Recipe" press=".onAddRecipe"/>
-				<Button text="{i18n>Copy}" type="Transparent" tooltip="Add Recipe" press=".onCopyRecipe" visible="{viewData>/IsListSelected}"/>
+				<Button text="{i18n>Copy}" type="Transparent" tooltip="Add Recipe" press=".onCopyRecipe" visible="{viewData>/ShowCopy}"/>
 				<Button text="{i18n>Edit}" type="Transparent" tooltip="Edit Recipe" press=".onEditRecipe" visible="{viewData>/IsListSelected}"/>
 				<Button text="{i18n>Delete}" type="Transparent" tooltip="Delete Recipe" press=".onDeleteRecipe" visible="{viewData>/IsListSelected}"/>
 				
@@ -58,11 +58,11 @@
 					<ObjectIdentifier title="{Name}" text="{RecipeID}"/>
 					<ObjectIdentifier title="{GroupTxt}" text=""/>
 					<ObjectIdentifier title="{LocationTxt}" text=""/>
-					<ObjectIdentifier title="{Quantity}" text="Unit" />
+					<ObjectIdentifier title="{Qty}" text="{Unit}" />
 					<ObjectNumber number="{ parts:[{path:'Price'},{path:'Currency'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: false} }"
 						unit="{Currency}" state="Success"/>
 						
-					<core:Icon src="{= ${IsSubMaterial} ? 'sap-icon://example': '' }" tooltip="{i18n>SubMaterial}"></core:Icon>	
+					<core:Icon src="sap-icon://example" tooltip="{i18n>SubMaterial}" visible="{IsSubMaterial}"></core:Icon>	
 				</cells>
 			</ColumnListItem>
 		</items>

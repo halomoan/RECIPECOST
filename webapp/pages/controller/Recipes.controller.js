@@ -25,6 +25,7 @@ sap.ui.define([
 				"IsFiltered": false,
 				"IsListSelected": false,
 				"IsMultiSelected": false,
+				"ShowCopy": false,
 				"Mode": ""
 			});
 
@@ -34,7 +35,7 @@ sap.ui.define([
 				"Name": "",
 				"GroupID": "",
 				"LocationID": "",
-				"Quantity": 1.0
+				"Qty": 1.0
 			};
 
 			this.PurchOrgID = "C103";
@@ -117,6 +118,12 @@ sap.ui.define([
 
 			} else {
 				oViewModel.setProperty("/IsListSelected", false);
+			}
+			
+			if (arrItems.length === 1){
+				oViewModel.setProperty("/ShowCopy", true);
+			} else{
+				oViewModel.setProperty("/ShowCopy", false);
 			}
 
 		},
@@ -213,7 +220,7 @@ sap.ui.define([
 			oFormData.Name = null;
 			oFormData.GroupID = null;
 			oFormData.LocationID = null;
-			oFormData.Quantity = 1;
+			oFormData.Qty = 1;
 			oFormData.IsSubMaterial = false;
 				
 			oFormModel.setProperty("/", oFormData);
@@ -257,7 +264,7 @@ sap.ui.define([
 				oFormData.Name = oListData.Name;
 				oFormData.GroupID = oListData.GroupID;
 				oFormData.LocationID = oListData.LocationID;
-				oFormData.Quantity = oListData.Quantity;
+				oFormData.Qty = oListData.Qty;
 				oFormData.IsSubMaterial = oListData.IsSubMaterial;
 				
 				oFormModel.setProperty("/", oFormData);
@@ -302,7 +309,7 @@ sap.ui.define([
 				oFormData.Name = oListData.Name;
 				oFormData.GroupID = oListData.GroupID;
 				oFormData.LocationID = oListData.LocationID;
-				oFormData.Quantity = oListData.Quantity;
+				oFormData.Qty = oListData.Qty;
 				oFormData.IsSubMaterial = oListData.IsSubMaterial;
 				oFormModel.setProperty("/", oFormData);
 			}
@@ -459,7 +466,7 @@ sap.ui.define([
 				"Ekorg": this.PurchOrgID,
 				"GroupID": oFormData.GroupID,
 				"LocationID": oFormData.LocationID,
-				"Quantity": "" + oFormData.Quantity,
+				"Qty": "" + oFormData.Qty,
 				"IsSubMaterial" : oFormData.IsSubMaterial
 
 			};
@@ -540,8 +547,8 @@ sap.ui.define([
 				if (oFormData.LocationID) {
 					oData.LocationID = oFormData.LocationID;
 				}
-				if (oFormData.Quantity) {
-					oData.Quantity = "" + oFormData.Quantity;
+				if (oFormData.Qty) {
+					oData.Qty = "" + oFormData.Qty;
 				}
 				oData.Ekorg = this.PurchOrgID;
 				
@@ -664,6 +671,7 @@ sap.ui.define([
 			}
 
 			mParams.filterItems.forEach(function(oItem) {
+				
 				var aSplit = oItem.getKey().split("___"),
 					fPath = aSplit[0],
 					sOperator = aSplit[1],
@@ -685,12 +693,12 @@ sap.ui.define([
 			} else {
 				oViewModel.setProperty("/IsFiltered", true);
 			}
-
+		
 			//Apply Default Filters
-			for (var i = 0; i < this.aFilterDefault.length; i++) {
-				aFilters.push(this.aFilterDefault[i]);
-			}
-
+			// for (var i = 0; i < this.aFilterDefault.length; i++) {
+			// 	aFilters.push(this.aFilterDefault[i]);
+			// }
+			
 			// update list binding
 			var oTable = this.byId("recipeTable");
 			var oBinding = oTable.getBinding("items");

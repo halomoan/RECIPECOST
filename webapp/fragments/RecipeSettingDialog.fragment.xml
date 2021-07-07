@@ -22,8 +22,10 @@
 				<items>
 				</items>
 			</ViewSettingsFilterItem>
-			<ViewSettingsFilterItem id="VSFSubMaterial" text="{i18n>SubMaterial}" key="IsSubMaterial">
+			<ViewSettingsFilterItem id="VSFSubMaterial" text="{i18n>Material}" key="IsSubMaterial">
 				<items>
+					<ViewSettingsItem text="{i18n>SubMaterial}" key="IsSubMaterial___EQ___true___X" />
+					<ViewSettingsItem text="{i18n>FinalMaterial}" key="IsSubMaterial___EQ___false___X" />
 				</items>
 			</ViewSettingsFilterItem>
 		</filterItems>
