@@ -7,13 +7,14 @@ sap.ui.define([
 	'sap/ui/model/FilterOperator',
 	"sap/m/MessageBox",
 	"sap/m/MessageToast",
-], function(BaseController, JSONModel, ColumnListItem, Token, Filter, FilterOperator, MessageBox, MessageToast) {
+	"halo/sap/mm/RECIPECOST/model/formatter",
+], function(BaseController, JSONModel, ColumnListItem, Token, Filter, FilterOperator, MessageBox, MessageToast,formatter) {
 	"use strict";
 
 	var _oBundle;
 
 	return BaseController.extend("halo.sap.mm.RECIPECOST.pages.controller.IngredientForm", {
-
+		formatter: formatter, 
 		_formFragments: {},
 
 		onInit: function() {
@@ -500,8 +501,8 @@ sap.ui.define([
 
 		onSave: function() {
 			var i = 0;
-			var oModel = this.getModel("Ingredients");
-			var oRows = oModel.getProperty("/Items");
+			var oIngredientModel = this.getModel("Ingredients");
+			var oRows = oIngredientModel.getProperty("/Items");
 			var sPath = this.getView().getBindingContext().getPath();
 			var oRecipeData = this.getModel().getProperty(sPath);
 
@@ -509,8 +510,8 @@ sap.ui.define([
 				"Werks": this.PlantID,
 				"RecipeID": this.RecipeID,
 				"VersionID": "",
-				"PriceDate": sap.ui.model.odata.ODataUtils.formatValue(new Date(), "Edm.DateTime"),
-				"Wears": oRecipeData.Currency,
+				"PriceDate": this.formatter.oDateDate(new Date()),
+				"Waers": oRecipeData.Currency,
 				"Bprme": oRecipeData.Unit,
 				"SubTotal": 0.00,
 				"AddMisc": 0.00,
@@ -521,8 +522,6 @@ sap.ui.define([
 
 			};
 			
-			console.log(oRows);
-		
 
 			for (i = 0; i < oRows.length; i++) {
 
@@ -537,11 +536,11 @@ sap.ui.define([
 						"Matkltx": "",
 						"Ebeln": oRows[i].Ebeln,
 						"Waers": oRows[i].Waers,
-						"Netpr": oRows[i].Netpr,
+						"Netpr": oRows[i].Netpr.Curr,
 						"Peinh": oRows[i].Peinh,
 						"Bprme": oRows[i].Bprme,
 						"CalcCost": oRows[i].TNetpr.Curr,
-						"QtyUsed": oRows[i].TPeinh.Curr
+						"QtyUsed": "" + oRows[i].TPeinh.Curr
 					};
 					
 					oRecipeVersion.Ingredients.push(oIngredient);
@@ -552,7 +551,7 @@ sap.ui.define([
 							oRecipeVersion.SubTotal = oRows[i].TNetpr.Curr;
 							break;
 						case "AddMisc":
-							oRecipeVersion.AddMisc = oRows[i].AddMisc.Curr / 100;
+							oRecipeVersion.AddMisc = "" + (oRows[i].AddMisc.Curr / 100);
 							break;
 						case "TotRecipeCost":
 							oRecipeVersion.TotRecipeCost = oRows[i].TNetpr.Curr;
@@ -561,13 +560,24 @@ sap.ui.define([
 							oRecipeVersion.CostPerUnit = oRows[i].TNetpr.Curr;
 							break;
 						case "UnitSellPrice":
-							oRecipeVersion.UnitSellPrice = oRows[i].SellPrice.Curr;
+							oRecipeVersion.UnitSellPrice = "" + oRows[i].SellPrice.Curr;
 							break;
 					}
 				}
 
 			}
 			console.log(oRecipeVersion);
+			var oModel = this.getModel();
+			oModel.create('/RecipeVersionSet',
+				oRecipeVersion,
+				null,
+				function(oData, oResponse) {
+					console.log(oData);
+				},
+				function() {
+					alert('Call service creation failed');
+				}
+			);
 		},
 
 		_calcTotals: function() {
