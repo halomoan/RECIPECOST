@@ -7,8 +7,9 @@ sap.ui.define([
 	'sap/ui/model/FilterOperator',
 	"sap/m/MessageBox",
 	"sap/m/MessageToast",
+	'sap/ui/core/BusyIndicator',
 	"halo/sap/mm/RECIPECOST/model/formatter",
-], function(BaseController, JSONModel, ColumnListItem, Token, Filter, FilterOperator, MessageBox, MessageToast,formatter) {
+], function(BaseController, JSONModel, ColumnListItem, Token, Filter, FilterOperator, MessageBox, MessageToast,BusyIndicator,formatter) {
 	"use strict";
 
 	var _oBundle;
@@ -566,18 +567,23 @@ sap.ui.define([
 				}
 
 			}
-			console.log(oRecipeVersion);
+			//console.log(oRecipeVersion);
 			var oModel = this.getModel();
-			oModel.create('/RecipeVersionSet',
-				oRecipeVersion,
-				null,
-				function(oData, oResponse) {
-					console.log(oData);
-				},
-				function() {
-					alert('Call service creation failed');
-				}
-			);
+			
+			BusyIndicator.show(1000);
+			
+			oModel.create("/RecipeVersionSet", oRecipeVersion, {
+					method: "POST",
+					success: function(oData) {
+						console.log(oData);
+						BusyIndicator.hide();
+					}.bind(this),
+					error: function(e) {
+						BusyIndicator.hide();
+						MessageToast.show("Error Detected");
+					}
+				});
+				
 		},
 
 		_calcTotals: function() {
@@ -629,6 +635,21 @@ sap.ui.define([
 
 			oModel.setProperty("/Items/" + (oRows.length - 1), oRowCostPctg);
 
+		},
+		
+		_showBusyIndicator : function (iDuration, iDelay) {
+			BusyIndicator.show();
+
+			if (iDuration && iDuration > 0) {
+				if (this._sTimeoutId) {
+					clearTimeout(this._sTimeoutId);
+					this._sTimeoutId = null;
+				}
+
+				this._sTimeoutId = setTimeout(function() {
+					this.hideBusyIndicator();
+				}.bind(this), iDuration);
+			}
 		},
 
 		onExit: function() {
