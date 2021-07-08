@@ -83,7 +83,7 @@
 							<Label text="Qty Used" textAlign="Center" width="100%"/>
 						</t:multiLabels>
 						<t:template>
-							<Input textAlign="End" value="{ parts: [{path: 'Ingredients>TPeinh'}, {path: 'Ingredients>Bprme'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: false,maxFractionDigits:3 } }" description="{Ingredients>Bprme}" visible="{= ${Ingredients>ID} === undefined }" change=".onQtyChanged"/>
+							<Input textAlign="End" value="{ parts: [{path: 'Ingredients>TPeinh/Curr'}, {path: 'Ingredients>Bprme'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: false,maxFractionDigits:3 } }" description="{Ingredients>Bprme}" visible="{= ${Ingredients>ID} === undefined }" change=".onQtyChanged"/>
 							
 						</t:template>
 					</t:Column>
