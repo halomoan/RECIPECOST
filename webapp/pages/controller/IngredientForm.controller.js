@@ -36,6 +36,9 @@ sap.ui.define([
 				"Items": []
 
 			});
+			this._sVersionID = "";
+			this._oDate = null;
+			
 			this.getView().setModel(oIngredientModel, "Ingredients");
 
 			this.oColModel = new JSONModel(sap.ui.require.toUrl("halo/sap/mm/RECIPECOST/fragments/") + "/VHMaterialColumnsModel.json");
@@ -75,21 +78,28 @@ sap.ui.define([
 				//filters: [  new Filter({ path: "VersionID",  operator:FilterOperator.EQ,  value1: "0000"}) ],
 				success: function(oData, oResponse) {
 					var aVersions = oData.results;
-					
+					var oViewModel = this.getModel("viewData");
 					
 					
 					if (aVersions.length > 0) {
-						var oViewModel = this.getModel("viewData");
+						
 						oViewModel.setProperty("/Date/Curr",aVersions[0].PriceDate);
-						//this._sVersion = aVersions[0].VersionID;
-						//this._sDate = aVersions[0].PriceDate;
+						this._sVersionID = aVersions[0].VersionID;
+						this._oDate = aVersions[0].PriceDate;
 						
 						if (aVersions.length === 2) {
 							oViewModel.setProperty("/Date/Prev1",aVersions[1].PriceDate);
+						} else {
+							oViewModel.setProperty("/Date/Prev1",null);
 						}
 						
-						this._showMaterial(aVersions);
-					}
+						oViewModel.setProperty("/ShowMultiSelect", true);
+					} else {
+						oViewModel.setProperty("/Date/Curr",null);
+						oViewModel.setProperty("/Date/Prev1",null);
+					}	
+					this._showMaterial(aVersions);
+					
 					BusyIndicator.hide();
 
 				}.bind(this),
@@ -246,9 +256,6 @@ sap.ui.define([
 
 			if (aVersions.length > 0) {
 				oVersion = aVersions[0];
-				
-				console.log(oVersion);
-				
 				
 				aIngredients = oVersion.Ingredients.results;
 				for (i = 0; i < aIngredients.length; i++) {
@@ -645,7 +652,7 @@ sap.ui.define([
 			var oRecipeVersion = {
 				"Werks": this.PlantID,
 				"RecipeID": this.RecipeID,
-				"VersionID": "",
+				"VersionID": this._sVersionID,
 				"PriceDate": this.formatter.oDateDate(new Date()),
 				"Waers": oRecipeData.Currency,
 				"Bprme": oRecipeData.Unit,
@@ -665,7 +672,7 @@ sap.ui.define([
 						var oIngredient = {
 							"Werks": this.PlantID,
 							"RecipeID": this.RecipeID,
-							"VersionID": "",
+							"VersionID": this._sVersionID,
 							"Matnr": oRows[i].Matnr,
 							"Maktx": "",
 							"Matkl": oRows[i].Matkl,
@@ -719,6 +726,47 @@ sap.ui.define([
 				}
 			});
 
+		},
+		
+		onCreateNewVersion: function(){
+			this._sVersionID = "";
+			var oIngredientModel = this.getModel("Ingredients");
+			var aMaterials = oIngredientModel.getProperty("/Items");
+			
+			
+			
+			for(var i = 0; i < aMaterials.length ; i++){
+				
+				for (let id in aMaterials[i]) {
+					if (aMaterials[i][id] && aMaterials[i][id].hasOwnProperty("Curr")){
+						aMaterials[i][id].Prev1 = aMaterials[i][id].Curr;
+					}	 
+				}
+			}
+			console.log(aMaterials);
+			aMaterials = aMaterials.filter(oMaterial => {
+				var bSkip = true;
+				
+				console.log(oMaterial.hasOwnProperty("ID"));
+				
+				if (oMaterial.hasOwnProperty("ID")) {
+					bSkip = true ;
+				} else {
+					for (let id in oMaterial) {
+						
+						if (oMaterial[id] && oMaterial[id].hasOwnProperty("Curr") ){
+							bSkip = bSkip && oMaterial[id].Curr !== null; 
+						} 	 
+					}
+				}
+				return bSkip;
+			})
+			
+			console.log(aMaterials);
+			
+			oIngredientModel.setProperty("/Items",aMaterials);
+			
+			
 		},
 
 		_calcTotals: function() {
