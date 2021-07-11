@@ -9,13 +9,13 @@ sap.ui.define([
 	"sap/m/MessageToast",
 	'sap/ui/core/BusyIndicator',
 	"halo/sap/mm/RECIPECOST/model/formatter",
-], function(BaseController, JSONModel, ColumnListItem, Token, Filter, FilterOperator, MessageBox, MessageToast,BusyIndicator,formatter) {
+], function(BaseController, JSONModel, ColumnListItem, Token, Filter, FilterOperator, MessageBox, MessageToast, BusyIndicator, formatter) {
 	"use strict";
 
 	var _oBundle;
 
 	return BaseController.extend("halo.sap.mm.RECIPECOST.pages.controller.IngredientForm", {
-		formatter: formatter, 
+		formatter: formatter,
 		_formFragments: {},
 
 		onInit: function() {
@@ -23,7 +23,11 @@ sap.ui.define([
 				"isFullScreen": false,
 				"ImagePopUpPos": "Left",
 				"ShowDelete": false,
-				"ShowMultiSelect": false
+				"ShowMultiSelect": false,
+				"Date" : {
+					"Curr": "",
+					"Prev1": ""
+				}
 
 			});
 			this.getView().setModel(oViewModel, "viewData");
@@ -34,14 +38,6 @@ sap.ui.define([
 			});
 			this.getView().setModel(oIngredientModel, "Ingredients");
 
-			this.aSubTotal = [{
-				"AddMisc": 1.00,
-				"UnitSellPrice": 20.00
-			}, {
-				"AddMisc": 2.00,
-				"UnitSellPrice": 0.00
-			}, ];
-
 			this.oColModel = new JSONModel(sap.ui.require.toUrl("halo/sap/mm/RECIPECOST/fragments/") + "/VHMaterialColumnsModel.json");
 
 			this._oRouter = this.getRouter();
@@ -49,6 +45,7 @@ sap.ui.define([
 		},
 
 		__onRouteMatched: function(oEvent) {
+			
 			var oArguments = oEvent.getParameter("arguments");
 			this.PurchOrgID = oArguments.Ekorg;
 			this.PlantID = oArguments.Werks;
@@ -65,11 +62,49 @@ sap.ui.define([
 
 			_oBundle = this.getResourceBundle();
 
+			var oModel = this.getModel();
+			
+			BusyIndicator.show();
+			oModel.read("/RecipeSet(Werks='" + this.PlantID + "',RecipeID='" + this.RecipeID + "')/Versions", {
+				urlParameters: {
+					//"$select": "Werks,RecipeID,Versions/VersionID,Versions/Ingredients",
+					//"$expand": "Versions/Ingredients"
+					"$expand": "Ingredients",
+					"$top": 2
+				},
+				//filters: [  new Filter({ path: "VersionID",  operator:FilterOperator.EQ,  value1: "0000"}) ],
+				success: function(oData, oResponse) {
+					var aVersions = oData.results;
+					
+					
+					
+					if (aVersions.length > 0) {
+						var oViewModel = this.getModel("viewData");
+						oViewModel.setProperty("/Date/Curr",aVersions[0].PriceDate);
+						//this._sVersion = aVersions[0].VersionID;
+						//this._sDate = aVersions[0].PriceDate;
+						
+						if (aVersions.length === 2) {
+							oViewModel.setProperty("/Date/Prev1",aVersions[1].PriceDate);
+						}
+						
+						this._showMaterial(aVersions);
+					}
+					BusyIndicator.hide();
+
+				}.bind(this),
+				error: function(oError) {
+					BusyIndicator.hide();
+					MessageBox.error("{i18n>msgErr}");
+				}
+			});
+
 			this.getOwnerComponent().getModel().metadataLoaded().then(function() {
 
 			}.bind(this));
 
 		},
+
 		onNavBack: function() {
 			this._oRouter.navTo("recipes");
 		},
@@ -201,6 +236,100 @@ sap.ui.define([
 				this._filterTable([]);
 			}
 		},
+
+		_showMaterial: function(aVersions) {
+
+			var oIngredientModel = this.getModel("Ingredients"),
+				aMaterials = [];
+			var oVersion, aIngredients, oMaterial;
+			var i, idx;
+
+			if (aVersions.length > 0) {
+				oVersion = aVersions[0];
+				
+				console.log(oVersion);
+				
+				
+				aIngredients = oVersion.Ingredients.results;
+				for (i = 0; i < aIngredients.length; i++) {
+					oMaterial = {
+						"Matnr": aIngredients[i].Matnr,
+						"Matkl": aIngredients[i].Matkl,
+						"Maktx": aIngredients[i].Maktx,
+						"Bprme": aIngredients[i].Bprme,
+						"Peinh": {
+							Curr: aIngredients[i].Peinh,
+							Prev1: 0
+						},
+						"Netpr": {
+							Curr: aIngredients[i].Netpr,
+							Prev1: 0
+						},
+						"Waers": aIngredients[i].Waers,
+						"Ebeln": aIngredients[i].Ebeln,
+						"TPeinh": {
+							Curr: aIngredients[i].QtyUsed,
+							Prev1: 0
+						},
+						"TNetpr": {
+							Curr: aIngredients[i].CalcCost,
+							Prev1: 0.00
+						},
+						"Status": "Success"
+					}
+					aMaterials.push(oMaterial);
+				}
+
+				if (aVersions.length === 2) {
+					oVersion = aVersions[1];
+					aIngredients = oVersion.Ingredients.results;
+					for (i = 0; i < aIngredients.length; i++) {
+
+						idx = aMaterials.findIndex(ele => {
+							return ele.Matnr === aIngredients[i].Matnr;
+						});
+					
+						if (idx > -1) {
+							oMaterial = aMaterials[idx];
+							oMaterial.Netpr.Prev1 = aIngredients[i].Netpr;
+							oMaterial.TPeinh.Prev1 = aIngredients[i].TPeinh;
+							oMaterial.TNetpr.Prev1 = aIngredients[i].CalcCost;
+
+						} else {
+							oMaterial = {
+								"Matnr": aIngredients[i].Matnr,
+								"Matkl": aIngredients[i].Matkl,
+								"Maktx": aIngredients[i].Maktx,
+								"Bprme": aIngredients[i].Bprme,
+								"Peinh": {
+									Curr: null,
+									Prev1: aIngredients[i].Peinh
+								},
+								"Netpr": {
+									Curr: null,
+									Prev1: aIngredients[i].Netpr
+								},
+								"Waers": aIngredients[i].Waers,
+								"Ebeln": aIngredients[i].Ebeln,
+								"TPeinh": {
+									Curr: null,
+									Prev1: aIngredients[i].QtyUsed
+								},
+								"TNetpr": {
+									Curr: null,
+									Prev1: aIngredients[i].CalcCost
+								},
+								"Status": "Warning"
+							}
+							aMaterials.push(oMaterial);
+						}
+					}
+					this._showSubTotal(aMaterials,aVersions);
+				}
+			}
+			oIngredientModel.setProperty("/Items", aMaterials);
+		},
+
 		onValueHelpOkPress: function(oEvent) {
 			var oIngredientModel = this.getModel("Ingredients"),
 				oIngredientData = oIngredientModel.getData().Items,
@@ -221,7 +350,10 @@ sap.ui.define([
 						"Matkl": oObject.Matkl,
 						"Maktx": oObject.Maktx,
 						"Bprme": oObject.Bprme,
-						"Peinh": oObject.Peinh,
+						"Peinh": {
+							Curr: oObject.Peinh,
+							Prev1: "0.00"
+						},
 						"Netpr": {
 							Curr: oObject.Netpr,
 							Prev1: "0.00"
@@ -250,11 +382,22 @@ sap.ui.define([
 				}
 			}
 
-			oIngredientData.push({
-				"ID": ""
+			this._showSubTotal(oIngredientData,[]);
+			oIngredientModel.setProperty("/Items", oIngredientData);
+
+			this._oValueHelpDialog.close();
+		},
+
+		_showSubTotal: function(aMaterials,aVersions) {
+			aMaterials.push({
+				"ID": "",
+				"Netpr": {
+					Curr: null,
+					Prev1: null
+				}
 			});
 
-			oIngredientData.push({
+			aMaterials.push({
 				"ID": "SubTotal",
 				"Matnr": "",
 				"Maktx": _oBundle.getText("SubTotal"),
@@ -264,12 +407,12 @@ sap.ui.define([
 				"Netpr": null,
 				"Waers": "SGD",
 				"TNetpr": {
-					Curr: 0.00,
-					Prev1: 0.00
+					Curr: (aVersions.length > 0 ? aVersions[0].SubTotal : 0 ),
+					Prev1: (aVersions.length > 1 ? aVersions[1].SubTotal : 0 )
 				}
 			});
 
-			oIngredientData.push({
+			aMaterials.push({
 				"ID": "AddMisc",
 				"Matnr": null,
 				"Maktx": _oBundle.getText("AddMisc"),
@@ -280,11 +423,11 @@ sap.ui.define([
 				"Waers": "%",
 				"TNetpr": 0.00,
 				"AddMisc": {
-					Curr: this.aSubTotal[0].AddMisc,
-					Prev1: 0.00
+					Curr: (aVersions.length > 0 ? aVersions[0].AddMisc * 100 : 0 ),
+					Prev1: (aVersions.length > 1 ? aVersions[1].AddMisc * 100 : 0 )
 				}
 			});
-			oIngredientData.push({
+			aMaterials.push({
 				"ID": "TotRecipeCost",
 				"Matnr": "",
 				"Maktx": _oBundle.getText("TotalRecipeCost"),
@@ -294,12 +437,12 @@ sap.ui.define([
 				"Netpr": null,
 				"Waers": "SGD",
 				"TNetpr": {
-					Curr: 0.00,
-					Prev1: 0.00
+					Curr: (aVersions.length > 0 ? aVersions[0].TotRecipeCost : 0 ),
+					Prev1: (aVersions.length > 1 ? aVersions[1].TotRecipeCost : 0 )
 				}
 			});
 
-			oIngredientData.push({
+			aMaterials.push({
 				"ID": "CostPerUnit",
 				"Matnr": "",
 				"Maktx": _oBundle.getText("CostPerPortion"),
@@ -309,11 +452,11 @@ sap.ui.define([
 				"Netpr": null,
 				"Waers": "SGD",
 				"TNetpr": {
-					Curr: 0.00,
-					Prev1: 0.00
+					Curr: (aVersions.length > 0 ? aVersions[0].CostPerUnit : 0 ),
+					Prev1: (aVersions.length > 1 ? aVersions[1].CostPerUnit : 0 )
 				}
 			});
-			oIngredientData.push({
+			aMaterials.push({
 				"ID": "UnitSellPrice",
 				"Matnr": null,
 				"Maktx": _oBundle.getText("UnitSellPrice"),
@@ -324,11 +467,11 @@ sap.ui.define([
 				"Waers": "SGD",
 				"TNetpr": null,
 				"SellPrice": {
-					Curr: this.aSubTotal[0].UnitSellPrice,
-					Prev1: 0.00
+					Curr: (aVersions.length > 0 ? aVersions[0].UnitSellPrice : 0 ),
+					Prev1: (aVersions.length > 1 ? aVersions[1].UnitSellPrice : 0 )
 				}
 			});
-			oIngredientData.push({
+			aMaterials.push({
 				"ID": "readonly",
 				"Matnr": "",
 				"Maktx": _oBundle.getText("Cost%PerPortion"),
@@ -338,15 +481,11 @@ sap.ui.define([
 				"Netpr": null,
 				"Waers": "% ",
 				"TNetpr": {
-					Curr: 0.00,
-					Prev1: 0.00
+					Curr: (aVersions.length > 0 ? aVersions[0].CostPerUnit / aVersions[0].UnitSellPrice : 0 ),
+					Prev1: (aVersions.length > 1 ? aVersions[1].CostPerUnit / aVersions[1].UnitSellPrice : 0 )
 				}
 			});
-			oIngredientModel.setProperty("/Items", oIngredientData);
-
-			this._oValueHelpDialog.close();
 		},
-
 		onValueHelpCancelPress: function() {
 			this._oValueHelpDialog.close();
 		},
@@ -475,8 +614,8 @@ sap.ui.define([
 
 			oRow.Status = iValue > 0 ? "Success" : "Error";
 
-			if (oRow.Peinh > 0) {
-				var iTotalCost = (iValue / oRow.Peinh) * oRow.Netpr.Curr;
+			if (oRow.Peinh.Curr > 0) {
+				var iTotalCost = (iValue / oRow.Peinh.Curr) * oRow.Netpr.Curr;
 				oRow.TNetpr.Curr = iTotalCost.toFixed(2);
 			}
 
@@ -488,15 +627,11 @@ sap.ui.define([
 		onAddMiscChanged: function(oEvent) {
 
 			var iValue = oEvent.getSource().getValue();
-
-			this.aSubTotal[0].AddMisc = iValue;
-
 			this._calcTotals();
 		},
 		onUnitSellPriceChanged: function(oEvent) {
 
 			var iValue = oEvent.getSource().getValue();
-			this.aSubTotal[0].UnitSellPrice = iValue;
 			this._calcTotals();
 		},
 
@@ -522,43 +657,44 @@ sap.ui.define([
 				"Ingredients": []
 
 			};
-			
 
 			for (i = 0; i < oRows.length; i++) {
 
 				if (i < oRows.length - 7) {
-					var oIngredient = {
-						"Werks": this.PlantID,
-						"RecipeID": this.RecipeID,
-						"VersionID": "",
-						"Matnr": oRows[i].Matnr,
-						"Maktx": "",
-						"Matkl": oRows[i].Matkl,
-						"Matkltx": "",
-						"Ebeln": oRows[i].Ebeln,
-						"Waers": oRows[i].Waers,
-						"Netpr": oRows[i].Netpr.Curr,
-						"Peinh": oRows[i].Peinh,
-						"Bprme": oRows[i].Bprme,
-						"CalcCost": oRows[i].TNetpr.Curr,
-						"QtyUsed": "" + oRows[i].TPeinh.Curr
-					};
-					
-					oRecipeVersion.Ingredients.push(oIngredient);
-					
+					if (oRows[i].TPeinh.Curr > 0) {
+						var oIngredient = {
+							"Werks": this.PlantID,
+							"RecipeID": this.RecipeID,
+							"VersionID": "",
+							"Matnr": oRows[i].Matnr,
+							"Maktx": "",
+							"Matkl": oRows[i].Matkl,
+							"Matkltx": "",
+							"Ebeln": oRows[i].Ebeln,
+							"Waers": oRows[i].Waers,
+							"Netpr": oRows[i].Netpr.Curr,
+							"Peinh": oRows[i].Peinh.Curr,
+							"Bprme": oRows[i].Bprme,
+							"CalcCost": oRows[i].TNetpr.Curr,
+							"QtyUsed": "" + oRows[i].TPeinh.Curr
+						};
+
+						oRecipeVersion.Ingredients.push(oIngredient);
+					}
+
 				} else {
 					switch (oRows[i].ID) {
 						case "SubTotal":
-							oRecipeVersion.SubTotal = oRows[i].TNetpr.Curr;
+							oRecipeVersion.SubTotal = "" + oRows[i].TNetpr.Curr;
 							break;
 						case "AddMisc":
 							oRecipeVersion.AddMisc = "" + (oRows[i].AddMisc.Curr / 100);
 							break;
 						case "TotRecipeCost":
-							oRecipeVersion.TotRecipeCost = oRows[i].TNetpr.Curr;
+							oRecipeVersion.TotRecipeCost = "" + oRows[i].TNetpr.Curr;
 							break;
 						case "CostPerUnit":
-							oRecipeVersion.CostPerUnit = oRows[i].TNetpr.Curr;
+							oRecipeVersion.CostPerUnit = "" + oRows[i].TNetpr.Curr;
 							break;
 						case "UnitSellPrice":
 							oRecipeVersion.UnitSellPrice = "" + oRows[i].SellPrice.Curr;
@@ -567,23 +703,22 @@ sap.ui.define([
 				}
 
 			}
-			//console.log(oRecipeVersion);
+
 			var oModel = this.getModel();
-			
+
 			BusyIndicator.show(1000);
-			
+
 			oModel.create("/RecipeVersionSet", oRecipeVersion, {
-					method: "POST",
-					success: function(oData) {
-						console.log(oData);
-						BusyIndicator.hide();
-					}.bind(this),
-					error: function(e) {
-						BusyIndicator.hide();
-						MessageToast.show("Error Detected");
-					}
-				});
-				
+				method: "POST",
+				success: function(oData) {
+					BusyIndicator.hide();
+				}.bind(this),
+				error: function(e) {
+					BusyIndicator.hide();
+					MessageToast.show("Error Detected");
+				}
+			});
+
 		},
 
 		_calcTotals: function() {
@@ -602,18 +737,21 @@ sap.ui.define([
 			}
 
 			var oRowSubTotal = oRows[oRows.length - 6];
-			oRowSubTotal.TNetpr.Curr = iSubTotal.toFixed(2);
-			oModel.setProperty("/Items/" + (oRows.length - 6), oRowSubTotal);
+
+			oRowSubTotal.TNetpr.Curr = iSubTotal;
+			//oModel.setProperty("/Items/" + (oRows.length - 6), oRowSubTotal);
 
 			var oRowAddMisc = oRows[oRows.length - 5];
 			var iAddMisc = oRowAddMisc.AddMisc.Curr || 0;
+			
+			
 
 			var iTotalCost = iSubTotal * (1 + (iAddMisc / 100));
 
 			var oRowTotalCost = oRows[oRows.length - 4];
-			oRowTotalCost.TNetpr.Curr = iTotalCost.toFixed(2);
+			oRowTotalCost.TNetpr.Curr = iTotalCost;
 
-			oModel.setProperty("/Items/" + (oRows.length - 4), oRowTotalCost);
+			//oModel.setProperty("/Items/" + (oRows.length - 4), oRowTotalCost);
 
 			//Cost Per Portion
 			var iQty = oRecipeData.Qty;
@@ -621,7 +759,7 @@ sap.ui.define([
 			var iCostPerPortion = (oRowTotalCost.TNetpr.Curr / iQty).toFixed(2);
 			oRowCostPerPortion.TNetpr.Curr = iCostPerPortion;
 
-			oModel.setProperty("/Items/" + (oRows.length - 3), oRowCostPerPortion);
+			//oModel.setProperty("/Items/" + (oRows.length - 3), oRowCostPerPortion);
 
 			//Cost % Per Portion
 			var oRowSellPrice = oRows[oRows.length - 2];
@@ -633,23 +771,10 @@ sap.ui.define([
 
 			oRowCostPctg.TNetpr.Curr = iCostPctg;
 
-			oModel.setProperty("/Items/" + (oRows.length - 1), oRowCostPctg);
+			//oModel.setProperty("/Items/" + (oRows.length - 1), oRowCostPctg);
+			
+			oModel.setProperty("/Items",oRows);
 
-		},
-		
-		_showBusyIndicator : function (iDuration, iDelay) {
-			BusyIndicator.show();
-
-			if (iDuration && iDuration > 0) {
-				if (this._sTimeoutId) {
-					clearTimeout(this._sTimeoutId);
-					this._sTimeoutId = null;
-				}
-
-				this._sTimeoutId = setTimeout(function() {
-					this.hideBusyIndicator();
-				}.bind(this), iDuration);
-			}
 		},
 
 		onExit: function() {
