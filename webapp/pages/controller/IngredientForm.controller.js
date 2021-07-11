@@ -695,7 +695,7 @@ sap.ui.define([
 				"Werks": this.PlantID,
 				"RecipeID": this.RecipeID,
 				"VersionID": this._sVersionID,
-				"PriceDate": this.formatter.oDateDate(new Date()),
+				"PriceDate": this._oDate,
 				"Waers": oRecipeData.Currency,
 				"Bprme": oRecipeData.Unit,
 				"SubTotal": 0.00,
@@ -772,6 +772,8 @@ sap.ui.define([
 
 		onCreateNewVersion: function() {
 			this._sVersionID = "";
+			this._oDate = new Date();
+			var oViewModel = this.getModel("viewData");
 			var oIngredientModel = this.getModel("Ingredients");
 			var aMaterials = oIngredientModel.getProperty("/Items");
 
@@ -798,7 +800,10 @@ sap.ui.define([
 					}
 				}
 				return bSkip;
-			})
+			});
+			
+			oViewModel.setProperty("/Date/Prev1", oViewModel.getProperty("/Date/Curr"));
+			oViewModel.setProperty("/Date/Curr", this._oDate);
 
 			oIngredientModel.setProperty("/Items", aMaterials);
 
