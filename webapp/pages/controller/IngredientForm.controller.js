@@ -24,7 +24,7 @@ sap.ui.define([
 				"ImagePopUpPos": "Left",
 				"ShowDelete": false,
 				"ShowMultiSelect": false,
-				"Date" : {
+				"Date": {
 					"Curr": "",
 					"Prev1": ""
 				}
@@ -38,7 +38,7 @@ sap.ui.define([
 			});
 			this._sVersionID = "";
 			this._oDate = null;
-			
+
 			this.getView().setModel(oIngredientModel, "Ingredients");
 
 			this.oColModel = new JSONModel(sap.ui.require.toUrl("halo/sap/mm/RECIPECOST/fragments/") + "/VHMaterialColumnsModel.json");
@@ -48,7 +48,7 @@ sap.ui.define([
 		},
 
 		__onRouteMatched: function(oEvent) {
-			
+
 			var oArguments = oEvent.getParameter("arguments");
 			this.PurchOrgID = oArguments.Ekorg;
 			this.PlantID = oArguments.Werks;
@@ -66,7 +66,7 @@ sap.ui.define([
 			_oBundle = this.getResourceBundle();
 
 			var oModel = this.getModel();
-			
+
 			BusyIndicator.show();
 			oModel.read("/RecipeSet(Werks='" + this.PlantID + "',RecipeID='" + this.RecipeID + "')/Versions", {
 				urlParameters: {
@@ -79,27 +79,26 @@ sap.ui.define([
 				success: function(oData, oResponse) {
 					var aVersions = oData.results;
 					var oViewModel = this.getModel("viewData");
-					
-					
+
 					if (aVersions.length > 0) {
-						
-						oViewModel.setProperty("/Date/Curr",aVersions[0].PriceDate);
+
+						oViewModel.setProperty("/Date/Curr", aVersions[0].PriceDate);
 						this._sVersionID = aVersions[0].VersionID;
 						this._oDate = aVersions[0].PriceDate;
-						
+
 						if (aVersions.length === 2) {
-							oViewModel.setProperty("/Date/Prev1",aVersions[1].PriceDate);
+							oViewModel.setProperty("/Date/Prev1", aVersions[1].PriceDate);
 						} else {
-							oViewModel.setProperty("/Date/Prev1",null);
+							oViewModel.setProperty("/Date/Prev1", null);
 						}
-						
+
 						oViewModel.setProperty("/ShowMultiSelect", true);
 					} else {
-						oViewModel.setProperty("/Date/Curr",null);
-						oViewModel.setProperty("/Date/Prev1",null);
-					}	
+						oViewModel.setProperty("/Date/Curr", null);
+						oViewModel.setProperty("/Date/Prev1", null);
+					}
 					this._showMaterial(aVersions);
-					
+
 					BusyIndicator.hide();
 
 				}.bind(this),
@@ -256,7 +255,7 @@ sap.ui.define([
 
 			if (aVersions.length > 0) {
 				oVersion = aVersions[0];
-				
+
 				aIngredients = oVersion.Ingredients.results;
 				for (i = 0; i < aIngredients.length; i++) {
 					oMaterial = {
@@ -295,7 +294,7 @@ sap.ui.define([
 						idx = aMaterials.findIndex(ele => {
 							return ele.Matnr === aIngredients[i].Matnr;
 						});
-					
+
 						if (idx > -1) {
 							oMaterial = aMaterials[idx];
 							oMaterial.Netpr.Prev1 = aIngredients[i].Netpr;
@@ -326,12 +325,12 @@ sap.ui.define([
 									Curr: null,
 									Prev1: aIngredients[i].CalcCost
 								},
-								"Status": "Warning"
+								"Status": "None"
 							}
 							aMaterials.push(oMaterial);
 						}
 					}
-					this._showSubTotal(aMaterials,aVersions);
+					this._showSubTotal(aMaterials, aVersions);
 				}
 			}
 			oIngredientModel.setProperty("/Items", aMaterials);
@@ -375,27 +374,61 @@ sap.ui.define([
 							Curr: 0.00,
 							Prev1: 0.00
 						},
-						"Status": "Warning"
+						"Status": "Success"
 					}
 
-					var bExist = oIngredientData.find(ele => {
+					var idx = oIngredientData.findIndex(ele => {
 						return ele.Matnr === oMaterial.Matnr;
 					})
 
-					if (!bExist) {
+					if (idx > -1) {
+						if (oIngredientData[idx].Netpr.Curr === null) {
+							oIngredientData[idx].Netpr.Curr = oMaterial.Netpr.Curr;
+							oIngredientData[idx].Peinh.Curr = oMaterial.Peinh.Curr;
+							oIngredientData[idx].TNetpr.Curr = 0.00;
+							oIngredientData[idx].TPeinh.Curr = 0.00;
+							oIngredientData[idx].Status = "Success";
+						}
+					} else{
 
-						oIngredientData.push(oMaterial);
+						if (oIngredientData.length > 0) {
+							var idx = oIngredientData.findIndex(ele => {
+								return ele.TPeinh.Curr === null;
+							});
+							if (idx > -1) {
+								oIngredientData.splice(idx, 0, oMaterial);
+							} else{
+								oIngredientData.push(oMaterial);
+							}
+						} else {
+							oIngredientData.push(oMaterial);
+
+						}
+
 					}
 				}
 			}
-
-			this._showSubTotal(oIngredientData,[]);
-			oIngredientModel.setProperty("/Items", oIngredientData);
-
+			
+			
+			
+			this._sortMaterials(oIngredientData);
+			this._showSubTotal(oIngredientData, []);
+			
+			this._calcTotals(oIngredientData);
 			this._oValueHelpDialog.close();
 		},
+		
+		_sortMaterials: function(aMaterials){
+			aMaterials.sort(function(a,b){
+				if(a.TPeinh.Curr) {
+					return -1;
+				} else {
+					return 1;
+				}
+			});
+		},
 
-		_showSubTotal: function(aMaterials,aVersions) {
+		_showSubTotal: function(aMaterials, aVersions) {
 			aMaterials.push({
 				"ID": "",
 				"Netpr": {
@@ -414,8 +447,8 @@ sap.ui.define([
 				"Netpr": null,
 				"Waers": "SGD",
 				"TNetpr": {
-					Curr: (aVersions.length > 0 ? aVersions[0].SubTotal : 0 ),
-					Prev1: (aVersions.length > 1 ? aVersions[1].SubTotal : 0 )
+					Curr: (aVersions.length > 0 ? aVersions[0].SubTotal : 0),
+					Prev1: (aVersions.length > 1 ? aVersions[1].SubTotal : 0)
 				}
 			});
 
@@ -430,8 +463,8 @@ sap.ui.define([
 				"Waers": "%",
 				"TNetpr": 0.00,
 				"AddMisc": {
-					Curr: (aVersions.length > 0 ? aVersions[0].AddMisc * 100 : 0 ),
-					Prev1: (aVersions.length > 1 ? aVersions[1].AddMisc * 100 : 0 )
+					Curr: (aVersions.length > 0 ? aVersions[0].AddMisc * 100 : 0),
+					Prev1: (aVersions.length > 1 ? aVersions[1].AddMisc * 100 : 0)
 				}
 			});
 			aMaterials.push({
@@ -444,8 +477,8 @@ sap.ui.define([
 				"Netpr": null,
 				"Waers": "SGD",
 				"TNetpr": {
-					Curr: (aVersions.length > 0 ? aVersions[0].TotRecipeCost : 0 ),
-					Prev1: (aVersions.length > 1 ? aVersions[1].TotRecipeCost : 0 )
+					Curr: (aVersions.length > 0 ? aVersions[0].TotRecipeCost : 0),
+					Prev1: (aVersions.length > 1 ? aVersions[1].TotRecipeCost : 0)
 				}
 			});
 
@@ -459,8 +492,8 @@ sap.ui.define([
 				"Netpr": null,
 				"Waers": "SGD",
 				"TNetpr": {
-					Curr: (aVersions.length > 0 ? aVersions[0].CostPerUnit : 0 ),
-					Prev1: (aVersions.length > 1 ? aVersions[1].CostPerUnit : 0 )
+					Curr: (aVersions.length > 0 ? aVersions[0].CostPerUnit : 0),
+					Prev1: (aVersions.length > 1 ? aVersions[1].CostPerUnit : 0)
 				}
 			});
 			aMaterials.push({
@@ -474,8 +507,8 @@ sap.ui.define([
 				"Waers": "SGD",
 				"TNetpr": null,
 				"SellPrice": {
-					Curr: (aVersions.length > 0 ? aVersions[0].UnitSellPrice : 0 ),
-					Prev1: (aVersions.length > 1 ? aVersions[1].UnitSellPrice : 0 )
+					Curr: (aVersions.length > 0 ? aVersions[0].UnitSellPrice : 0),
+					Prev1: (aVersions.length > 1 ? aVersions[1].UnitSellPrice : 0)
 				}
 			});
 			aMaterials.push({
@@ -488,8 +521,8 @@ sap.ui.define([
 				"Netpr": null,
 				"Waers": "% ",
 				"TNetpr": {
-					Curr: (aVersions.length > 0 ? aVersions[0].CostPerUnit / aVersions[0].UnitSellPrice : 0 ),
-					Prev1: (aVersions.length > 1 ? aVersions[1].CostPerUnit / aVersions[1].UnitSellPrice : 0 )
+					Curr: (aVersions.length > 0 ? aVersions[0].CostPerUnit / aVersions[0].UnitSellPrice : 0),
+					Prev1: (aVersions.length > 1 ? aVersions[1].CostPerUnit / aVersions[1].UnitSellPrice : 0)
 				}
 			});
 		},
@@ -601,15 +634,25 @@ sap.ui.define([
 			var oPlugin = oTable.getPlugins()[0];
 			var aIndices = oPlugin.getSelectedIndices();
 
+			
 			for (var i = aIndices.length - 1; i >= 0; i--) {
+
 				if (aIndices[i] < oRows.length - 7) {
-					oRows.splice(aIndices[i], 1);
+					var oMaterial = oRows[aIndices[i]];
+					
+					if (oMaterial.TPeinh.Curr !== 0 || oMaterial.TPeinh.Prev1 !== 0 ) {
+						if (oMaterial.TPeinh.Curr) {
+							oMaterial.TPeinh.Curr = 0.00;	
+						}
+					} else {		
+						oRows.splice(aIndices[i], 1);
+					}
 				}
+				
 			}
 
 			oPlugin.clearSelection();
-			oModel.setProperty("/Items", oRows);
-			this._calcTotals();
+			this._calcTotals(oRows);
 		},
 		onQtyChanged: function(oEvent) {
 			var oSource = oEvent.getSource();
@@ -619,7 +662,6 @@ sap.ui.define([
 			var oModel = this.getModel("Ingredients");
 			var oRow = oModel.getProperty(sPath);
 
-			oRow.Status = iValue > 0 ? "Success" : "Error";
 
 			if (oRow.Peinh.Curr > 0) {
 				var iTotalCost = (iValue / oRow.Peinh.Curr) * oRow.Netpr.Curr;
@@ -727,51 +769,47 @@ sap.ui.define([
 			});
 
 		},
-		
-		onCreateNewVersion: function(){
+
+		onCreateNewVersion: function() {
 			this._sVersionID = "";
 			var oIngredientModel = this.getModel("Ingredients");
 			var aMaterials = oIngredientModel.getProperty("/Items");
-			
-			
-			
-			for(var i = 0; i < aMaterials.length ; i++){
-				
+
+			for (var i = 0; i < aMaterials.length; i++) {
+
 				for (let id in aMaterials[i]) {
-					if (aMaterials[i][id] && aMaterials[i][id].hasOwnProperty("Curr")){
+					if (aMaterials[i][id] && aMaterials[i][id].hasOwnProperty("Curr")) {
 						aMaterials[i][id].Prev1 = aMaterials[i][id].Curr;
-					}	 
+					}
 				}
 			}
-			console.log(aMaterials);
+
 			aMaterials = aMaterials.filter(oMaterial => {
 				var bSkip = true;
-				
-				console.log(oMaterial.hasOwnProperty("ID"));
-				
+
 				if (oMaterial.hasOwnProperty("ID")) {
-					bSkip = true ;
+					bSkip = true;
 				} else {
 					for (let id in oMaterial) {
-						
-						if (oMaterial[id] && oMaterial[id].hasOwnProperty("Curr") ){
-							bSkip = bSkip && oMaterial[id].Curr !== null; 
-						} 	 
+
+						if (oMaterial[id] && oMaterial[id].hasOwnProperty("Curr")) {
+							bSkip = bSkip && oMaterial[id].Curr !== null;
+						}
 					}
 				}
 				return bSkip;
 			})
-			
-			console.log(aMaterials);
-			
-			oIngredientModel.setProperty("/Items",aMaterials);
-			
-			
+
+			oIngredientModel.setProperty("/Items", aMaterials);
+
 		},
 
-		_calcTotals: function() {
+		_calcTotals: function(oRows) {
 			var oModel = this.getModel("Ingredients");
-			var oRows = oModel.getProperty("/Items");
+			
+			if (!oRows) {
+				oRows = oModel.getProperty("/Items");
+			}
 
 			var sPath = this.getView().getBindingContext().getPath();
 			var oRecipeData = this.getModel().getProperty(sPath);
@@ -791,8 +829,6 @@ sap.ui.define([
 
 			var oRowAddMisc = oRows[oRows.length - 5];
 			var iAddMisc = oRowAddMisc.AddMisc.Curr || 0;
-			
-			
 
 			var iTotalCost = iSubTotal * (1 + (iAddMisc / 100));
 
@@ -820,8 +856,8 @@ sap.ui.define([
 			oRowCostPctg.TNetpr.Curr = iCostPctg;
 
 			//oModel.setProperty("/Items/" + (oRows.length - 1), oRowCostPctg);
-			
-			oModel.setProperty("/Items",oRows);
+
+			oModel.setProperty("/Items", oRows);
 
 		},
 
