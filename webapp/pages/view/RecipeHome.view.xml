@@ -1,0 +1,31 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:mc="sap.suite.ui.microchart"
+	controllerName="halo.sap.mm.RECIPECOST.pages.controller.RecipeHome">
+	<l:BlockLayout background="Default" class="customCSS">
+		<l:BlockLayoutRow accentCells="Accent1">
+			<l:BlockLayoutCell  width="1" backgroundColorSet="ColorSet11" backgroundColorShade="ShadeB">
+				<Text text="{i18n>SelectPlant}" class="green fontSize3"></Text>
+					<ComboBox id="cboPlant" items="{ path: '/PlantSet', sorter: { path: 'Name' } }" selectedKey="{viewData>/PlantID}" showSecondaryValues="true"
+						width="100%">
+						<core:ListItem key="{Werks}" text="{Name}" additionalText="{Werks}"/>
+					</ComboBox>
+					<Button text="{i18n>GotoRecipe}" press="onGoToRecipe"></Button>
+			</l:BlockLayoutCell>
+			<l:BlockLayoutCell width="2" backgroundColorSet="ColorSet11" backgroundColorShade="ShadeD">
+				<FlexBox height="100px" alignItems="End" justifyContent="End">
+					<Text text="{i18n>Welcome}" class="green fontSize5 sapUiTinyMarginEnd"></Text><Text text="K.Halomoan" class="fontSize2 sapUiSmallMarginBottom"/>
+				</FlexBox>
+			</l:BlockLayoutCell>
+		</l:BlockLayoutRow>
+		<l:BlockLayoutRow>
+			<l:BlockLayoutCell title="{i18n>RecipeByGroup}" backgroundColorSet="ColorSet1" backgroundColorShade="ShadeF">
+				<mc:InteractiveBarChart labelWidth="25%" selectionChanged="selectionChanged" press="press">
+					<mc:bars>
+						<mc:InteractiveBarChartBar label="Product 1" value="10"/>
+						<mc:InteractiveBarChartBar label="Product 2" value="20"/>
+						<mc:InteractiveBarChartBar label="Product 3" value="70"/>
+					</mc:bars>
+				</mc:InteractiveBarChart>
+			</l:BlockLayoutCell>
+		</l:BlockLayoutRow>
+	</l:BlockLayout>
+</mvc:View>

@@ -16,7 +16,8 @@ sap.ui.define([
 				
 			switch(sTarget){
 				case "G001:RECIPES":			
-					this._oRouter.navTo("recipes"); break;
+					this._oRouter.navTo("recipehome"); break;
+					//this._oRouter.navTo("recipes"); break;
 				case "SAPG1:PLANT":			
 					this._oRouter.navTo("planttopurchorg"); break;
 				default:

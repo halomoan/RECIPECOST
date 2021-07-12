@@ -97,6 +97,11 @@
 			},
 			"routes": [
 				{
+					"pattern": "recipehome",
+					"name": "recipehome",
+					"target": "recipehome"
+				},
+				{
 					"pattern": "recipes",
 					"name": "recipes",
 					"target": "recipes"
@@ -123,6 +128,11 @@
 				}
 			],
 			"targets": {
+				"recipehome": {
+					"viewId": "recipehome",
+					"viewName": "RecipeHome",
+					"viewLevel": 1
+				},
 				"recipes": {
 					"viewId": "recipes",
 					"viewName": "Recipes",

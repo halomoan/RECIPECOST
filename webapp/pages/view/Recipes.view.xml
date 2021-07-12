@@ -1,6 +1,10 @@
 <mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
 	controllerName="halo.sap.mm.RECIPECOST.pages.controller.Recipes"  class="sapUiSizeCompact">
-	<Table id="recipeTable" inset="false" items="{odata>/}" mode="MultiSelect" alternateRowColors="true">
+	<ScrollContainer height="100%"
+		width="100%"
+		vertical="true"
+		focusable="true">
+	<Table id="recipeTable" inset="false" items="{odata>/}" mode="MultiSelect" alternateRowColors="true" sticky="{viewData>/StickyOptions}">
 		<headerToolbar>
 			<OverflowToolbar>
 				<Title text="{i18n>Recipe}" level="H2"/>
@@ -27,6 +31,7 @@
 				<OverflowToolbarButton tooltip="More" type="Transparent" text="More" icon="sap-icon://group-2" press=".onSettingDialog"/>
 			</OverflowToolbar>
 		</headerToolbar>
+			
 		<columns>
 			<Column width="12em">
 				<Text text="Image"/>
@@ -50,6 +55,7 @@
 				<Text text=""/>
 			</Column>
 		</columns>
+	
 		<items>
 			<ColumnListItem  vAlign="Middle" type="Navigation" press="onSelectRecipe">
 				<cells>
@@ -66,5 +72,7 @@
 				</cells>
 			</ColumnListItem>
 		</items>
+		
 	</Table>
+	</ScrollContainer>
 </mvc:View>

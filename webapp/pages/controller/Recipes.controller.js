@@ -26,6 +26,7 @@ sap.ui.define([
 				"IsListSelected": false,
 				"IsMultiSelected": false,
 				"ShowCopy": false,
+				"StickyOptions": ["ColumnHeaders"],
 				"Mode": ""
 			});
 

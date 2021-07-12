@@ -1,1 +1,19 @@
 /* Enter your custom styles here */
+.customCSS .green {
+    color: green;
+}
+
+.customCSS .fontSize1 {
+    font-size: 1rem;
+}
+
+.customCSS .fontSize2 {
+    font-size: 2rem;
+}
+
+.customCSS .fontSize3 {
+    font-size: 3rem;
+}
+.customCSS .fontSize5 {
+    font-size: 5rem;
+}
