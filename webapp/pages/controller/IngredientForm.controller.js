@@ -8,7 +8,7 @@ sap.ui.define([
 	"sap/m/MessageBox",
 	"sap/m/MessageToast",
 	'sap/ui/core/BusyIndicator',
-	"halo/sap/mm/RECIPECOST/model/formatter",
+	"halo/sap/mm/RECIPECOST/model/formatter"
 ], function(BaseController, JSONModel, ColumnListItem, Token, Filter, FilterOperator, MessageBox, MessageToast, BusyIndicator, formatter) {
 	"use strict";
 
@@ -115,7 +115,8 @@ sap.ui.define([
 		},
 
 		onNavBack: function() {
-			this._oRouter.navTo("recipes");
+			this.navBack();
+		
 		},
 
 		onVHMaterialRequested: function() {

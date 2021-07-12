@@ -5,7 +5,7 @@ sap.ui.define([
 	"sap/ui/model/json/JSONModel",
 	"sap/base/util/UriParameters",
 	"sap/f/library",
-	"sap/f/FlexibleColumnLayoutSemanticHelper"
+	"sap/f/FlexibleColumnLayoutSemanticHelper",
 ], function(Controller, History, UIComponent,JSONModel,UriParameters,library,FlexibleColumnLayoutSemanticHelper) {
 	"use strict";
 	
@@ -30,13 +30,13 @@ sap.ui.define([
 			return this.getOwnerComponent().getModel("i18n").getResourceBundle();
 		},
 			
-		onNavBack : function() {
+		navBack : function() {
 				var sPreviousHash = History.getInstance().getPreviousHash();
 
 					if (sPreviousHash !== undefined) {
 					history.go(-1);
 				} else {
-					this.getRouter().navTo("home", {}, true);
+					this.getRouter().navTo("recipehome", {}, true);
 				}
 		},
 		

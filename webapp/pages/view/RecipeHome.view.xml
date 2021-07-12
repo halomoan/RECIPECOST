@@ -2,30 +2,34 @@
 	controllerName="halo.sap.mm.RECIPECOST.pages.controller.RecipeHome">
 	<l:BlockLayout background="Default" class="customCSS">
 		<l:BlockLayoutRow accentCells="Accent1">
-			<l:BlockLayoutCell  width="1" backgroundColorSet="ColorSet11" backgroundColorShade="ShadeB">
+			<l:BlockLayoutCell width="1" backgroundColorSet="ColorSet11" backgroundColorShade="ShadeB">
 				<Text text="{i18n>SelectPlant}" class="green fontSize3"></Text>
-					<ComboBox id="cboPlant" items="{ path: '/PlantSet', sorter: { path: 'Name' } }" selectedKey="{viewData>/PlantID}" showSecondaryValues="true"
-						width="100%">
-						<core:ListItem key="{Werks}" text="{Name}" additionalText="{Werks}"/>
-					</ComboBox>
-					<Button text="{i18n>GotoRecipe}" press="onGoToRecipe"></Button>
+				<ComboBox id="cboPlant" items="{ path: '/PlantSet', sorter: { path: 'Name' } }" showSecondaryValues="true" width="100%"
+					selectionChange="onPlantChange">
+					<core:ListItem key="{Werks}" text="{Name}" additionalText="{Werks}"/>
+				</ComboBox>
+				<Button text="{i18n>GotoRecipe}" press="onGoToRecipe"></Button>
 			</l:BlockLayoutCell>
 			<l:BlockLayoutCell width="2" backgroundColorSet="ColorSet11" backgroundColorShade="ShadeD">
 				<FlexBox height="100px" alignItems="End" justifyContent="End">
-					<Text text="{i18n>Welcome}" class="green fontSize5 sapUiTinyMarginEnd"></Text><Text text="K.Halomoan" class="fontSize2 sapUiSmallMarginBottom"/>
+					<!--<Text text="{i18n>Welcome}" class="green fontSize5 sapUiTinyMarginEnd"></Text><Text text="K.Halomoan" class="fontSize2 sapUiSmallMarginBottom"/>-->
+					<Text text="{viewData>/PurchOrg}" class="fontSize2"/>
+					
 				</FlexBox>
 			</l:BlockLayoutCell>
 		</l:BlockLayoutRow>
 		<l:BlockLayoutRow>
 			<l:BlockLayoutCell title="{i18n>RecipeByGroup}" backgroundColorSet="ColorSet1" backgroundColorShade="ShadeF">
-				<mc:InteractiveBarChart labelWidth="25%" selectionChanged="selectionChanged" press="press">
+				<mc:InteractiveBarChart id="recipebygroup" labelWidth="25%" displayedBars="5"
+					bars="{ path: '/StatisticSet' , filters : [{ path : 'StatID' , operator : 'EQ' , value1 : 'RecipeByGroup' } ]}">
 					<mc:bars>
-						<mc:InteractiveBarChartBar label="Product 1" value="10"/>
-						<mc:InteractiveBarChartBar label="Product 2" value="20"/>
-						<mc:InteractiveBarChartBar label="Product 3" value="70"/>
+						<mc:InteractiveBarChartBar label="{Label}" value="{= ${Value} * 1}" color="Neutral"/>
 					</mc:bars>
 				</mc:InteractiveBarChart>
 			</l:BlockLayoutCell>
+				<l:BlockLayoutCell>
+					<Text text="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr."/>
+				</l:BlockLayoutCell>
 		</l:BlockLayoutRow>
 	</l:BlockLayout>
 </mvc:View>

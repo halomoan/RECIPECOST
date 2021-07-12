@@ -39,11 +39,10 @@ sap.ui.define([
 				"Qty": 1.0
 			};
 
-			this.PurchOrgID = "C103";
-			this.PlantID = "PPHS";
+			this.PurchOrgID = "";
+			this.PlantID = "";
 
-			this.oFilterWerks = new Filter("Werks", FilterOperator.EQ, this.PlantID);
-			this.aFilterDefault = [this.oFilterWerks];
+			
 
 			var oFormModel = new JSONModel(oFormData);
 			oFormModel.setDefaultBindingMode(sap.ui.model.BindingMode.TwoWay);
@@ -72,19 +71,19 @@ sap.ui.define([
 				}
 
 			};
-
-			this.getOwnerComponent().getModel().metadataLoaded().then(function() {
-				this._init();
-
-			}.bind(this));
+			
+			_oBundle = this.getResourceBundle();
+			
+		
 
 			this._oRouter = this.getRouter();
+			this._oRouter.getRoute("recipes").attachPatternMatched(this.__onRouteMatched, this);
 		},
 
 		_init: function() {
 
 			var oView = this.getView();
-			_oBundle = this.getResourceBundle();
+			
 
 			var oTable = oView.byId("recipeTable");
 			var oTemplate = oTable.getBindingInfo("items").template;
@@ -101,7 +100,24 @@ sap.ui.define([
 
 			oTable.attachSelectionChange(this.onItemSelected, this);
 		},
+		
+		__onRouteMatched: function(oEvent){
+			var oArguments = oEvent.getParameter("arguments");
+			this.PurchOrgID = oArguments.Ekorg;
+			this.PlantID = oArguments.Werks;
+			
+			this.oFilterWerks = new Filter("Werks", FilterOperator.EQ, this.PlantID);
+			this.aFilterDefault = [this.oFilterWerks];
+			
+			this.getOwnerComponent().getModel().metadataLoaded().then(function() {
+				this._init();
 
+			}.bind(this));
+		},
+		
+		onNavBack: function(oEvent){
+			this.navBack();
+		},
 		onItemSelected: function(oEvent) {
 			var arrItems = oEvent.getSource().getSelectedItems();
 			var oViewModel = this.getModel("viewData");

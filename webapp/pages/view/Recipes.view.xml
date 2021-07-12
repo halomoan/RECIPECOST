@@ -7,6 +7,7 @@
 	<Table id="recipeTable" inset="false" items="{odata>/}" mode="MultiSelect" alternateRowColors="true" sticky="{viewData>/StickyOptions}">
 		<headerToolbar>
 			<OverflowToolbar>
+				<Button icon="sap-icon://nav-back" press="onNavBack"/>
 				<Title text="{i18n>Recipe}" level="H2"/>
 				<core:Icon src="sap-icon://filter" class="size1" color="#031E48" visible="{viewData>/IsFiltered}">
 					
