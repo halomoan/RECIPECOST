@@ -49,8 +49,9 @@
 				<t:extension>
 					<OverflowToolbar style="Clear">
 						<Title text="{i18n>Ingredient}"/>
-						<ToolbarSpacer/>
 						<Button text="{i18n>NewVersion}" type="Transparent" tooltip="{i18n>CreateNewVersion}" press=".onCreateNewVersion"/>
+						<ToolbarSpacer/>
+					
 						<Button text="{i18n>Delete}" type="Transparent" tooltip="{i18n>Delete}" press=".onDeleteMaterial" visible="{viewData>/ShowDelete}"/>
 						<ToggleButton
 							icon="sap-icon://activities"
@@ -81,7 +82,7 @@
 					<t:Column width="10rem" hAlign="End" headerSpan="4,1">
 						<t:multiLabels>
 							<Label text="{path: 'viewData>/Date/Curr', type: 'sap.ui.model.type.DateTime', formatOptions: { pattern: 'dd-MMM-yyyy' }  }" design="Bold" textAlign="Center" width="100%"/>
-							<Label text="Qty Used" design="Bold" textAlign="Center" width="100%"/>
+							<Label text="{i18n>QtyUsed}" design="Bold" textAlign="Center" width="100%"/>
 						</t:multiLabels>
 						<t:template>
 							<Input textAlign="End" value="{ parts: [{path: 'Ingredients>TPeinh/Curr'}, {path: 'Ingredients>Bprme'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: false,maxFractionDigits:3 } }" description="{Ingredients>Bprme}" visible="{= ${Ingredients>Netpr/Curr} !== null }" change=".onQtyChanged"/>
@@ -91,7 +92,7 @@
 					<t:Column width="10rem" hAlign="End">
 						<t:multiLabels>
 							<Label text=""/>
-							<Label text="Qty Purchased" design="Bold" textAlign="Center" width="100%"/>
+							<Label text="{i18n>QtyPurchased}" design="Bold" textAlign="Center" width="100%"/>
 						</t:multiLabels>
 						<t:template>
 							<Text text="{Ingredients>Peinh/Curr} {Ingredients>Bprme}" wrapping="false" visible="{= ${Ingredients>Peinh/Curr} !== null}"/>
@@ -125,7 +126,7 @@
 					<t:Column width="10rem" hAlign="End" headerSpan="4,1">
 						<t:multiLabels>
 							<Label text="{path: 'viewData>/Date/Prev1', type: 'sap.ui.model.type.DateTime', formatOptions: { pattern: 'dd-MMM-yyyy' }  }" textAlign="Center" width="100%"/>
-							<Label text="Qty Used" textAlign="Center" width="100%"/>
+							<Label text="{i18n>QtyUsed}" textAlign="Center" width="100%"/>
 						</t:multiLabels>
 						<t:template>
 							<Text text="{Ingredients>TPeinh/Prev1} {Ingredients>Bprme}" wrapping="false"/>
@@ -134,7 +135,7 @@
 					<t:Column width="10rem" hAlign="End">
 						<t:multiLabels>
 							<Label text=""/>
-							<Label text="Qty Purchased" textAlign="Center" width="100%"/>
+							<Label text="{i18n>QtyPurchased}" textAlign="Center" width="100%"/>
 						</t:multiLabels>
 						<t:template>
 							<Text text="{Ingredients>Peinh/Prev1} {Ingredients>Bprme}" wrapping="false"/>

@@ -252,7 +252,7 @@ sap.ui.define([
 				aMaterials = [];
 			var oVersion, aIngredients, oMaterial;
 			var i, idx;
-
+		
 			if (aVersions.length > 0) {
 				oVersion = aVersions[0];
 
@@ -297,8 +297,9 @@ sap.ui.define([
 
 						if (idx > -1) {
 							oMaterial = aMaterials[idx];
+							oMaterial.Peinh.Prev1 = aIngredients[i].Peinh;
 							oMaterial.Netpr.Prev1 = aIngredients[i].Netpr;
-							oMaterial.TPeinh.Prev1 = aIngredients[i].TPeinh;
+							oMaterial.TPeinh.Prev1 = aIngredients[i].QtyUsed;
 							oMaterial.TNetpr.Prev1 = aIngredients[i].CalcCost;
 
 						} else {
@@ -329,9 +330,12 @@ sap.ui.define([
 							}
 							aMaterials.push(oMaterial);
 						}
+							
 					}
-					this._showSubTotal(aMaterials, aVersions);
+					
 				}
+				
+				this._showSubTotal(aMaterials, aVersions);
 			}
 			oIngredientModel.setProperty("/Items", aMaterials);
 		},
@@ -511,6 +515,8 @@ sap.ui.define([
 					Prev1: (aVersions.length > 1 ? aVersions[1].UnitSellPrice : 0)
 				}
 			});
+			
+			
 			aMaterials.push({
 				"ID": "readonly",
 				"Matnr": "",
@@ -521,8 +527,8 @@ sap.ui.define([
 				"Netpr": null,
 				"Waers": "% ",
 				"TNetpr": {
-					Curr: (aVersions.length > 0 ? aVersions[0].CostPerUnit / aVersions[0].UnitSellPrice : 0),
-					Prev1: (aVersions.length > 1 ? aVersions[1].CostPerUnit / aVersions[1].UnitSellPrice : 0)
+					Curr: (aVersions.length > 0 ? (aVersions[0].CostPerUnit / aVersions[0].UnitSellPrice) * 100 : 0),
+					Prev1: (aVersions.length > 1 ? (aVersions[1].CostPerUnit / aVersions[1].UnitSellPrice) * 100 : 0)
 				}
 			});
 		},
@@ -627,31 +633,48 @@ sap.ui.define([
 		},
 
 		onDeleteMaterial: function() {
-			var oModel = this.getModel("Ingredients");
-			var oRows = oModel.getProperty("/Items");
-
+		
 			var oTable = this.byId("ingredienttbl");
 			var oPlugin = oTable.getPlugins()[0];
 			var aIndices = oPlugin.getSelectedIndices();
-
 			
-			for (var i = aIndices.length - 1; i >= 0; i--) {
+			if (aIndices.length > 0) {
+				
+				MessageBox.confirm(_oBundle.getText("msgCfrmDelMaterial"), {
+					actions: ["Delete", MessageBox.Action.CANCEL],
+					emphasizedAction: "CANCEL",
+					onClose: function(sAction) {
+						if (sAction === 'Delete') {
+							this._deleteMaterial(aIndices);
+							oPlugin.clearSelection();
+						}
+					}.bind(this)
 
-				if (aIndices[i] < oRows.length - 7) {
-					var oMaterial = oRows[aIndices[i]];
+				});
+			}
+			
+			
+		},
+		
+		_deleteMaterial: function(arrItems){
+			var oModel = this.getModel("Ingredients");
+			var oRows = oModel.getProperty("/Items");
+			
+			for (var i = arrItems.length - 1; i >= 0; i--) {
+
+				if (arrItems[i] < oRows.length - 7) {
+					var oMaterial = oRows[arrItems[i]];
 					
-					if (oMaterial.TPeinh.Curr !== 0 || oMaterial.TPeinh.Prev1 !== 0 ) {
+					if (oMaterial.TPeinh.Prev1 !== 0 ) {
 						if (oMaterial.TPeinh.Curr) {
 							oMaterial.TPeinh.Curr = 0.00;	
 						}
 					} else {		
-						oRows.splice(aIndices[i], 1);
+						oRows.splice(arrItems[i], 1);
 					}
 				}
 				
 			}
-
-			oPlugin.clearSelection();
 			this._calcTotals(oRows);
 		},
 		onQtyChanged: function(oEvent) {
@@ -752,7 +775,7 @@ sap.ui.define([
 				}
 
 			}
-
+			
 			var oModel = this.getModel();
 
 			BusyIndicator.show(1000);
@@ -771,6 +794,20 @@ sap.ui.define([
 		},
 
 		onCreateNewVersion: function() {
+			
+			MessageBox.confirm(_oBundle.getText("msgCfrmNewVersion"), {
+					actions: [MessageBox.Action.YES, MessageBox.Action.CANCEL],
+					emphasizedAction: "CANCEL",
+					onClose: function(sAction) {
+						if (sAction === MessageBox.Action.YES) {
+							this._createNewVersion();
+						}
+					}.bind(this)
+				});
+				
+		},
+		
+		_createNewVersion: function() {
 			this._sVersionID = "";
 			this._oDate = new Date();
 			var oViewModel = this.getModel("viewData");
