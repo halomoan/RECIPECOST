@@ -73,6 +73,7 @@ sap.ui.define([
 			};
 			
 			_oBundle = this.getResourceBundle();
+			this._refreshList(false);
 			
 		
 
@@ -80,20 +81,26 @@ sap.ui.define([
 			this._oRouter.getRoute("recipes").attachPatternMatched(this.__onRouteMatched, this);
 		},
 
-		_init: function() {
+		_refreshList: function(bInit) {
 
 			var oView = this.getView();
 			
-
+			var vGroup;
 			var oTable = oView.byId("recipeTable");
 			var oTemplate = oTable.getBindingInfo("items").template;
-
+			if (bInit) {
+				vGroup = this.mGroupFunctions['GroupTxt'];
+			} else{
+				vGroup = false;
+			}
+			
 			oTable.bindAggregation("items", {
 				path: "/RecipeSet",
 				filters: this.aFilterDefault,
 				sorter: new Sorter({
 					path: 'Name',
-					descending: true
+					descending: true,
+					group: vGroup
 				}),
 				template: oTemplate
 			});
@@ -110,7 +117,7 @@ sap.ui.define([
 			this.aFilterDefault = [this.oFilterWerks];
 			
 			this.getOwnerComponent().getModel().metadataLoaded().then(function() {
-				this._init();
+				
 
 			}.bind(this));
 		},

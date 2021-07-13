@@ -11,7 +11,7 @@
 		</sortItems>
 		<groupItems>
 			<ViewSettingsItem text="{i18n>Location}" key="LocationTxt" />
-			<ViewSettingsItem text="{i18n>RecipeGroup}" key="GroupTxt" />
+			<ViewSettingsItem text="{i18n>RecipeGroup}" key="GroupTxt" selected="true" />
 		</groupItems>
 		<filterItems>
 			<ViewSettingsFilterItem id="VSFGroup" text="{i18n>Group}" key="Groupid">

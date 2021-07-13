@@ -47,10 +47,13 @@
 				<Text text="{i18n>Location}"/>
 			</Column>
 			<Column minScreenWidth="Tablet" demandPopin="true">
-				<Text text="{i18n>Quantity}"/>
+				<Text text="{i18n>PortionProduced}"/>
 			</Column>
 			<Column minScreenWidth="Tablet" demandPopin="true">
-				<Text text="{i18n>Price}"/>
+				<Text text="{i18n>CostPerPortion}"/>
+			</Column>
+			<Column minScreenWidth="Tablet" demandPopin="true">
+				<Text text="{i18n>UnitSellPrice}"/>
 			</Column>
 			<Column minScreenWidth="Tablet" hAlign="Center" demandPopin="true" width="2rem">
 				<Text text=""/>
@@ -66,8 +69,10 @@
 					<ObjectIdentifier title="{GroupTxt}" text=""/>
 					<ObjectIdentifier title="{LocationTxt}" text=""/>
 					<ObjectIdentifier title="{Qty}" text="{Unit}" />
-					<ObjectNumber number="{ parts:[{path:'Price'},{path:'Currency'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: false} }"
-						unit="{Currency}" state="Success"/>
+					<ObjectNumber number="{ parts:[{path:'CostPerUnit'},{path:'Currency'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: false} }"
+						unit="{Currency}" state="Error"/>
+					<ObjectNumber number="{ parts:[{path:'PricePerUnit'},{path:'Currency'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: false} }"
+						unit="{Currency}" state="Success"/>	
 						
 					<core:Icon src="sap-icon://example" tooltip="{i18n>SubMaterial}" visible="{IsSubMaterial}"></core:Icon>	
 				</cells>
