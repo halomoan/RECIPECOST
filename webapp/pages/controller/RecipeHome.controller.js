@@ -4,7 +4,8 @@ sap.ui.define([
 	"sap/m/MessageBox",
 	'sap/ui/model/Filter',
 	'sap/ui/model/FilterOperator',
-], function(BaseController,JSONModel,MessageBox,Filter,FilterOperator) {
+	'sap/ui/model/Sorter'
+], function(BaseController,JSONModel,MessageBox,Filter,FilterOperator,Sorter) {
 	"use strict";
 
 	var _oBundle;
@@ -24,16 +25,39 @@ sap.ui.define([
 			_oBundle = this.getResourceBundle();
 			
 			this._oRouter =  this.getRouter();
+			
+			
+			var oPlantList = this.getView().byId("cboPlant");
+			oPlantList.bindAggregation("items", {
+				path: "/PlantSet",
+				sorter: new Sorter({
+					path: 'Name',
+					descending: true
+				}),
+				template: new sap.ui.core.ListItem({
+					text: "{Name}",
+					key: "{Werks}",
+					additionalText: "{Werks}"
+				}),
+				events : {
+					dataReceived: function(){
+						
+						var aItems = oPlantList.getItems();
+						oPlantList.setSelectedItem(aItems[0]);
+						oPlantList.fireSelectionChange();
+					}
+				}
+			});
+			
+			
 			this._oRouter.getRoute("recipehome").attachPatternMatched(this.__onRouteMatched, this);
 			
 		},
 		
 		__onRouteMatched: function(oEvent){
+			
+		
 			this.getOwnerComponent().getModel().metadataLoaded().then(function() {
-				var oPlant = this.byId("cboPlant");
-				var aItems = oPlant.getItems();
-				console.log(aItems);
-				oPlant.setSelectedItem(aItems[0]);
 
 			}.bind(this));
 		},
