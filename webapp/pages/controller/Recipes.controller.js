@@ -442,6 +442,11 @@ sap.ui.define([
 			this.byId("ImagePopover").bindElement({
 				path: sPath
 			});
+			
+			
+			var sPhotoPath = "/sap/opu/odata/sap/zrecipecost_odata_srv" + sPath.replace("RecipeSet","RecipePhotoSet") + "/$value?" + "?" + new Date().getTime();
+			var oPreviewImage = this.byId("imgPreview");
+			oPreviewImage.setSrc(sPhotoPath);
 			this._imageSelected = oSource;
 			
 		},

@@ -9,7 +9,6 @@
 			</l:BlockLayoutCell>
 			<l:BlockLayoutCell title="{i18n>appTitle}" width="2" backgroundColorSet="ColorSet11" backgroundColorShade="ShadeD">
 				<FlexBox height="50px" alignItems="End" justifyContent="End">
-					<!--<Text text="{i18n>Welcome}" class="green fontSize5 sapUiTinyMarginEnd"></Text><Text text="K.Halomoan" class="fontSize2 sapUiSmallMarginBottom"/>-->
 					<Text text="{viewData>/PurchOrg}" class="fontSize2"/>
 				</FlexBox>
 			</l:BlockLayoutCell>

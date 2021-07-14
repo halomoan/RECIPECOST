@@ -8,12 +8,13 @@
 		class="sapUiContentPadding"
 		placement="{viewData>/ImagePopUpPos}">
 		<VBox>
-			<Image src="{= '/sap/opu/odata/sap/zrecipecost_odata_srv/RecipePhotoSet(Werks=\'' + ${Werks} + '\',RecipeID=\'' + ${RecipeID} + '\')/$value' }"/>
+			<!--<Image id="imgPreview" src="{= '/sap/opu/odata/sap/zrecipecost_odata_srv/RecipePhotoSet(Werks=\'' + ${Werks} + '\',RecipeID=\'' + ${RecipeID} + '\')/$value?' + Math.random() }"/>-->
+			<Image id="imgPreview" src=""/>
 		<u:FileUploader
 			id="ImageUploader"
 			uploadUrl="upload/"
 			tooltip="Upload your file to the local server"
-			fileType="png,jpg"
+			fileType="png,jpg,jpeg"
 			width="100%"
 			useMultipart="false"
 			sendXHR="true"

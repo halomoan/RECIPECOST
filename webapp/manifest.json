@@ -115,6 +115,11 @@
 					"target": "recipes"
 				},
 				{
+					"pattern": "imageeditor",
+					"name": "imageeditor",
+					"target": "imageeditor"
+				},
+				{
 					"pattern": "recipeloc",
 					"name": "recipeloc",
 					"target": "recipeloc"
@@ -144,6 +149,11 @@
 				"recipes": {
 					"viewId": "recipes",
 					"viewName": "Recipes",
+					"viewLevel": 1
+				},
+				"imageeditor": {
+					"viewId": "imageeditor",
+					"viewName": "ImageEditor",
 					"viewLevel": 1
 				},
 				"recipeloc": {

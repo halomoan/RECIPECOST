@@ -22,7 +22,7 @@
     {
       "templateId": "ui5template.basicSAPUI5ApplicationComponent",
       "templateVersion": "1.4.0",
-      "dateTimeStamp": "Mon, 12 Jul 2021 05:49:58 GMT"
+      "dateTimeStamp": "Wed, 14 Jul 2021 08:02:14 GMT"
     }
   ],
   "translation": {
@@ -45,12 +45,12 @@
     "blockPushLevel": "Error"
   },
   "build": {
-    "buildRequired": true,
+    "buildRequired": false,
     "sourceFolder": "webapp",
     "targetFolder": "dist",
     "excludedFolders": [],
     "excludedFiles": [],
-    "lastBuildDateTime": "Wed, 14 Jul 2021 07:03:37 GMT"
+    "lastBuildDateTime": "Wed, 14 Jul 2021 10:06:12 GMT"
   },
   "mockpreview": {
     "mockUri": "/sap/opu/odata/sap/ZRECIPECOST_ODATA_SRV",
