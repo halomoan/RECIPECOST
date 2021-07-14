@@ -109,7 +109,8 @@ sap.ui.define([
 			});
 
 			this.getOwnerComponent().getModel().metadataLoaded().then(function() {
-
+				var oHTML = this.byId("videolink");
+				oHTML.setContent("<div id=\"ytv\"><iframe type=\"text/html\" width=340 height=180 src=\"https://www.youtube.com/embed/XPA3rn1XImY\" frameborder=\"0\" allowfullscreen></iframe></div>")
 			}.bind(this));
 
 		},

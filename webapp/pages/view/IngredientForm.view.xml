@@ -12,7 +12,7 @@
 			</headerContent>
 			<l:BlockLayout>
 				<l:BlockLayoutRow>
-					<l:BlockLayoutCell width="2" class="sapUiNoContentPadding">
+					<l:BlockLayoutCell width="1" class="sapUiNoContentPadding">
 						<l:VerticalLayout>
 						<HBox>
 							<Title text="{i18n>NameOfRecipe} : {Name}" titleStyle="H1" class="sapUiTinyMarginEnd"/>
@@ -27,10 +27,13 @@
 						</l:VerticalLayout>
 					</l:BlockLayoutCell>
 					<l:BlockLayoutCell class="sapUiNoContentPadding">
+					
 						<FlexBox alignItems="Start" justifyContent="End">
+							
 							<Image
 								src="{= '/sap/opu/odata/sap/zrecipecost_odata_srv/RecipePhotoSet(Werks=\'' + ${Werks} + '\',RecipeID=\'' + ${RecipeID} + '\')/$value' }"
-								width="300px" height="180px" press="onSelectImage"/>
+								width="300px" height="180px" press="onSelectImage" class="sapUiSmallMarginEnd"/>
+							<core:HTML id="videolink"></core:HTML>
 						</FlexBox>
 					</l:BlockLayoutCell>
 				</l:BlockLayoutRow>
