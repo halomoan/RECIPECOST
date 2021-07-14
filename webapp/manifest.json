@@ -21,6 +21,14 @@
 					"odataVersion": "2.0",
 					"localUri": "localService/metadata.xml"
 				}
+			},
+			"mainService": {
+				"type": "OData",
+				"settings": {
+					"odataVersion": "2.0",
+					"localUri": "localService/metadata.xml"
+				},
+				"uri": "/sap/opu/odata/sap/ZRECIPECOST_ODATA_SRV/"
 			}
 		}
 	},
@@ -73,7 +81,7 @@
 				}
 			},
 			"": {
-				"dataSource": "ZRECIPECOST_ODATA_SRV"
+				"dataSource": "mainService"
 			}
 		},
 		"resources": {
@@ -165,5 +173,9 @@
 				}
 			}
 		}
+	},
+	"sap.platform.abap": {
+		"uri": "/sap/bc/ui5_ui5/sap/zrecipecost/webapp",
+		"_version": "1.1.0"
 	}
 }

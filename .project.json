@@ -49,7 +49,8 @@
     "sourceFolder": "webapp",
     "targetFolder": "dist",
     "excludedFolders": [],
-    "excludedFiles": []
+    "excludedFiles": [],
+    "lastBuildDateTime": "Wed, 14 Jul 2021 07:03:37 GMT"
   },
   "mockpreview": {
     "mockUri": "/sap/opu/odata/sap/ZRECIPECOST_ODATA_SRV",
@@ -57,5 +58,9 @@
     "loadJSONFiles": false,
     "loadCustomRequests": false,
     "mockRequestsFilePath": ""
+  },
+  "deploy": {
+    "destination": "f30",
+    "name": "ZRECIPECOST"
   }
 }

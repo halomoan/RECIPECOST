@@ -567,30 +567,47 @@ sap.ui.define([
 			this.byId("ImagePopover").bindElement({
 				path: sPath
 			});
+			
+			this._imageSelected = oSource;
 
 		},
+	
 		onUploadImage: function() {
 			var oUploader = this.byId("ImageUploader");
-
 			var sPath = this.byId("ImagePopover").getBindingContext().getPath();
+			sPath = sPath  + "/Photo";
 
-			sPath = sPath.replace("RecipeSet", "RecipeVersionSet") + "/Photo";
 
 			if (!oUploader.getValue()) {
 				MessageToast.show("Choose a file first");
 				return;
 			}
 
-			oUploader.setUploadUrl("/sap/opu/odata/sap/zrecipecost_odata_srv" + sPath);
+			oUploader.setUploadUrl("/sap/opu/odata/SAP/ZRECIPECOST_ODATA_SRV" + sPath);
 
 			oUploader.checkFileReadable().then(function() {
+				var csrfToken = this.getView().getModel().oHeaders['x-csrf-token'];
+				oUploader.setSendXHR(true);
+				var headerParma = new sap.ui.unified.FileUploaderParameter();
+					headerParma.setName('x-csrf-token');
+					headerParma.setValue(csrfToken);
+
+					oUploader.addHeaderParameter(headerParma);
 				oUploader.upload();
-			}, function(error) {
+			}.bind(this), function(error) {
 				MessageToast.show("The file cannot be read. It may have changed.");
 			}).then(function() {
 				oUploader.clear();
 			});
 		},
+		onUploadComplete: function(){
+			this._imageSelected.setSrc( this._imageSelected.getSrc() + "?" + new Date().getTime());
+			
+			var oPopOver = this.getFragmentByName(this._formFragments, "halo.sap.mm.RECIPECOST.fragments.ImageUploadPopover");
+			oPopOver.close();
+			
+		},
+		
 		onImgUploaderClose: function() {
 			var oPopOver = this.getFragmentByName(this._formFragments, "halo.sap.mm.RECIPECOST.fragments.ImageUploadPopover");
 			oPopOver.close();

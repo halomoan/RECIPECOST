@@ -56,10 +56,9 @@ sap.ui.define([
 		
 		__onRouteMatched: function(oEvent){
 			
-		
-			this.getOwnerComponent().getModel().metadataLoaded().then(function() {
-
-			}.bind(this));
+			this._updateChart1();
+			// this.getOwnerComponent().getModel().metadataLoaded().then(function() {
+			// }.bind(this));
 		},
 		onGoToRecipe: function(){
 			
@@ -75,7 +74,9 @@ sap.ui.define([
 		_updateChart1: function(){
 			var oChart = this.byId("recipebygroup");
 			var oBinding = oChart.getBinding("bars");
-			oBinding.filter([this.oFilterWerks]);
+			if (oBinding && this.oFilterWerks){
+				oBinding.filter([this.oFilterWerks]);
+			}
 		},
 		
 		onPlantChange: function(oEvent){
@@ -90,8 +91,8 @@ sap.ui.define([
 			oViewModel.setProperty("/PurchOrg",oPlant.Name);
 			
 			this.oFilterWerks = new Filter("Werks", FilterOperator.EQ, this.PlantID);
-			
 			this._updateChart1();
+			
 		},
 	
 		onExit: function() {

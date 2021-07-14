@@ -26,7 +26,7 @@ sap.ui.define([
 				"IsListSelected": false,
 				"IsMultiSelected": false,
 				"ShowCopy": false,
-				"StickyOptions": ["ColumnHeaders"],
+				"StickyOptions": ["HeaderToolbar", "ColumnHeaders"],
 				"Mode": ""
 			});
 
@@ -41,8 +41,6 @@ sap.ui.define([
 
 			this.PurchOrgID = "";
 			this.PlantID = "";
-
-			
 
 			var oFormModel = new JSONModel(oFormData);
 			oFormModel.setDefaultBindingMode(sap.ui.model.BindingMode.TwoWay);
@@ -71,58 +69,50 @@ sap.ui.define([
 				}
 
 			};
-			
+
 			_oBundle = this.getResourceBundle();
-			this._refreshList(false);
-			
-		
+
+			this.aUserSorter = [new Sorter({
+				path: 'Name',
+				descending: true,
+				group: this.mGroupFunctions['GroupTxt']
+			})];
 
 			this._oRouter = this.getRouter();
 			this._oRouter.getRoute("recipes").attachPatternMatched(this.__onRouteMatched, this);
 		},
 
-		_refreshList: function(bInit) {
+		_refreshList: function() {
 
 			var oView = this.getView();
-			
-			var vGroup;
 			var oTable = oView.byId("recipeTable");
 			var oTemplate = oTable.getBindingInfo("items").template;
-			if (bInit) {
-				vGroup = this.mGroupFunctions['GroupTxt'];
-			} else{
-				vGroup = false;
-			}
-			
+
 			oTable.bindAggregation("items", {
 				path: "/RecipeSet",
 				filters: this.aFilterDefault,
-				sorter: new Sorter({
-					path: 'Name',
-					descending: true,
-					group: vGroup
-				}),
+				sorter: this.aUserSorter,
 				template: oTemplate
 			});
 
 			oTable.attachSelectionChange(this.onItemSelected, this);
 		},
-		
-		__onRouteMatched: function(oEvent){
+
+		__onRouteMatched: function(oEvent) {
 			var oArguments = oEvent.getParameter("arguments");
 			this.PurchOrgID = oArguments.Ekorg;
 			this.PlantID = oArguments.Werks;
-			
+
 			this.oFilterWerks = new Filter("Werks", FilterOperator.EQ, this.PlantID);
 			this.aFilterDefault = [this.oFilterWerks];
-			
+
 			this.getOwnerComponent().getModel().metadataLoaded().then(function() {
-				
+				this._refreshList();
 
 			}.bind(this));
 		},
-		
-		onNavBack: function(oEvent){
+
+		onNavBack: function(oEvent) {
 			this.navBack();
 		},
 		onItemSelected: function(oEvent) {
@@ -143,10 +133,10 @@ sap.ui.define([
 			} else {
 				oViewModel.setProperty("/IsListSelected", false);
 			}
-			
-			if (arrItems.length === 1){
+
+			if (arrItems.length === 1) {
 				oViewModel.setProperty("/ShowCopy", true);
-			} else{
+			} else {
 				oViewModel.setProperty("/ShowCopy", false);
 			}
 
@@ -239,14 +229,14 @@ sap.ui.define([
 			oViewModel.setProperty("/Mode", "Add");
 			var oFormModel = this.getModel("form");
 			var oFormData = oFormModel.getData();
-			
+
 			oFormData.RecipeID = "";
 			oFormData.Name = null;
 			oFormData.GroupID = null;
 			oFormData.LocationID = null;
 			oFormData.Qty = 1;
 			oFormData.IsSubMaterial = false;
-				
+
 			oFormModel.setProperty("/", oFormData);
 
 			this.showFormDialogFragment(this.getView(), this._formFragments, "halo.sap.mm.RECIPECOST.fragments.RecipeForm", this);
@@ -283,14 +273,14 @@ sap.ui.define([
 				var oFormModel = this.getModel("form");
 				var oFormData = oFormModel.getData();
 				var oListData = arrItems[0].getBindingContext().getObject();
-				
+
 				oFormData.RecipeID = oListData.RecipeID;
 				oFormData.Name = oListData.Name;
 				oFormData.GroupID = oListData.GroupID;
 				oFormData.LocationID = oListData.LocationID;
 				oFormData.Qty = oListData.Qty;
 				oFormData.IsSubMaterial = oListData.IsSubMaterial;
-				
+
 				oFormModel.setProperty("/", oFormData);
 
 				this.showFormDialogFragment(this.getView(), this._formFragments, "halo.sap.mm.RECIPECOST.fragments.RecipeForm", this);
@@ -375,12 +365,12 @@ sap.ui.define([
 					onClose: function(sAction) {
 						if (sAction === 'Save') {
 							if (sMode === "Add" || sMode === "Copy") {
-								this._addRecipe(oFormData,sMode);
+								this._addRecipe(oFormData, sMode);
 							} else {
 								this._editRecipe(oFormData);
 							}
 							this.byId("addRecipeDialog").close();
-						
+
 						}
 					}.bind(this)
 
@@ -452,46 +442,63 @@ sap.ui.define([
 			this.byId("ImagePopover").bindElement({
 				path: sPath
 			});
-
+			this._imageSelected = oSource;
+			
 		},
 
 		onUploadImage: function() {
 			var oUploader = this.byId("ImageUploader");
-
 			var sPath = this.byId("ImagePopover").getBindingContext().getPath();
+			sPath = sPath  + "/Photo";
 
-			sPath = sPath.replace("RecipeSet", "RecipeVersionSet") + "/Photo";
 
 			if (!oUploader.getValue()) {
 				MessageToast.show("Choose a file first");
 				return;
 			}
-
-			oUploader.setUploadUrl("/sap/opu/odata/sap/zrecipecost_odata_srv" + sPath);
+			
+			oUploader.setUploadUrl("/sap/opu/odata/SAP/ZRECIPECOST_ODATA_SRV" + sPath);
 
 			oUploader.checkFileReadable().then(function() {
+				var csrfToken = this.getView().getModel().oHeaders['x-csrf-token'];
+				oUploader.setSendXHR(true);
+				var headerParma = new sap.ui.unified.FileUploaderParameter();
+					headerParma.setName('x-csrf-token');
+					headerParma.setValue(csrfToken);
+
+					oUploader.addHeaderParameter(headerParma);
 				oUploader.upload();
-			}, function(error) {
+			}.bind(this), function(error) {
 				MessageToast.show("The file cannot be read. It may have changed.");
 			}).then(function() {
 				oUploader.clear();
 			});
 		},
+		
+		onUploadComplete: function(){
+			
+			this._imageSelected.setSrc( this._imageSelected.getSrc() + "?" + new Date().getTime());
+			var oPopOver = this.getFragmentByName(this._formFragments, "halo.sap.mm.RECIPECOST.fragments.ImageUploadPopover");
+			oPopOver.close();
+			
+			
+			
+		},
 		onImgUploaderClose: function() {
 			var oPopOver = this.getFragmentByName(this._formFragments, "halo.sap.mm.RECIPECOST.fragments.ImageUploadPopover");
 			oPopOver.close();
 		},
-		_addRecipe: function(oFormData,sMode) {
+		_addRecipe: function(oFormData, sMode) {
 			var oModel = this.getModel();
 			var oData = {
 				"Werks": this.PlantID,
-				"RecipeID" : oFormData.RecipeID,
+				"RecipeID": oFormData.RecipeID,
 				"Name": oFormData.Name,
 				"Ekorg": this.PurchOrgID,
 				"GroupID": oFormData.GroupID,
 				"LocationID": oFormData.LocationID,
 				"Qty": "" + oFormData.Qty,
-				"IsSubMaterial" : oFormData.IsSubMaterial
+				"IsSubMaterial": oFormData.IsSubMaterial
 
 			};
 
@@ -575,7 +582,7 @@ sap.ui.define([
 					oData.Qty = "" + oFormData.Qty;
 				}
 				oData.Ekorg = this.PurchOrgID;
-				
+
 				oData.IsSubMaterial = oFormData.IsSubMaterial;
 
 				oModel.update("/RecipeSet(Werks='" + oData.Werks + "',RecipeID='" + oData.RecipeID + "')", oData, mParameters);
@@ -688,14 +695,14 @@ sap.ui.define([
 				bDescending = mParams.groupDescending;
 				vGroup = this.mGroupFunctions[sPath];
 				aSorters.push(new Sorter(sPath, bDescending, vGroup));
-				// apply the selected group settings
 
 			} else {
 				aSorters.push(new Sorter(sPath, bDescending));
 			}
+			this.aUserSorter = aSorters;
 
 			mParams.filterItems.forEach(function(oItem) {
-				
+
 				var aSplit = oItem.getKey().split("___"),
 					fPath = aSplit[0],
 					sOperator = aSplit[1],
@@ -717,12 +724,12 @@ sap.ui.define([
 			} else {
 				oViewModel.setProperty("/IsFiltered", true);
 			}
-		
+
 			//Apply Default Filters
 			// for (var i = 0; i < this.aFilterDefault.length; i++) {
 			// 	aFilters.push(this.aFilterDefault[i]);
 			// }
-			
+
 			// update list binding
 			var oTable = this.byId("recipeTable");
 			var oBinding = oTable.getBinding("items");
