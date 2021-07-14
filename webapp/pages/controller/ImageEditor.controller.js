@@ -9,21 +9,24 @@ sap.ui.define([
 	return Controller.extend("halo.sap.mm.RECIPECOST.pages.controller.ImageEditor", {
 
 	onInit: function () {
-			//var oImageEditor = this.getView().byId("image"),
-			var	oModel = new JSONModel({
+			var oImageEditor = this.getView().byId("image"),
+				oModel = new JSONModel({
 					blocked: true
 				});
 
 			this.getView().setModel(oModel);
 
-			// oImageEditor.setSrc(
-			// 	sap.ui.require.toUrl("sap/m/sample/") + "../../images/demo/nature/ALotOfElephants.jpg"
-			// );
+			oImageEditor.setSrc(
+				""
+				//sap.ui.require.toUrl("abc.jpg")
+			);
 
-			// if (!Device.browser.msie) {
-			// 	// svg files are not supported in Internet Explorer
-			// 	oImageEditor.setCustomShapeSrc(sap.ui.require.toUrl("sap/suite/ui/commons/statusindicator") + "/shapes/bulb.svg");
-			// }
+			if (!Device.browser.msie) {
+				// svg files are not supported in Internet Explorer
+				oImageEditor.setCustomShapeSrc(""
+					//sap.ui.require.toUrl("sap/suite/ui/commons/statusindicator") + "/shapes/bulb.svg"
+					);
+			}
 		},
 
 		onImageLoaded: function() {

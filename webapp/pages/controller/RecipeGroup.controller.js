@@ -4,8 +4,10 @@ sap.ui.define([
 	"sap/m/MessageBox",
 	"sap/m/MessageToast",
 	"sap/ui/core/message/Message",
+	'sap/ui/model/Filter',
+	'sap/ui/model/FilterOperator',
 	"sap/ui/core/library"
-], function(BaseController, JSONModel, MessageBox, MessageToast, Message, library) {
+], function(BaseController, JSONModel, MessageBox, MessageToast, Message, Filter,FilterOperator, library) {
 	"use strict";
 
 	var _oBundle;
@@ -39,7 +41,7 @@ sap.ui.define([
 
 			this.getOwnerComponent().getModel().metadataLoaded().then(function() {
 				_oBundle = this.getResourceBundle();
-				var oTable = this.byId("grouptbl");
+				var oTable = this.byId("grptbl");
 				var oTemplate = new sap.ui.table.RowAction({
 					items: [
 						new sap.ui.table.RowActionItem({
@@ -59,10 +61,35 @@ sap.ui.define([
 
 			}.bind(this));
 
-			this.PurchOrgID = "C103";
-			this.PlantID = "PPHS";
+			this.PlantID = "";
+				
+			this._oRouter = this.getRouter();
+			this._oRouter.getRoute("recipegroup").attachPatternMatched(this.__onRouteMatched, this);
 		},
-
+		
+		__onRouteMatched: function(oEvent){
+			var oArguments = oEvent.getParameter("arguments");
+			this.PlantID = oArguments.Werks;
+			this.oFilterPlant = new Filter("Werks", FilterOperator.EQ, this.PlantID); // Filter Plant
+		
+			this.getView().bindElement({
+				path: "/PlantSet('" + this.PlantID + "')"
+			});
+			
+			this._refreshTable();
+		},
+		_refreshTable: function(){
+			var oTable = this.byId("grptbl");
+			var oBinding = oTable.getBinding("rows");
+			
+			if (oBinding) {
+				oBinding.filter([this.oFilterPlant],sap.ui.model.FilterType.Application);
+			}
+		},
+		onNavBack: function(){
+			this.navBack();	
+		},
+		
 		onNew: function() {
 			this._initForm();
 

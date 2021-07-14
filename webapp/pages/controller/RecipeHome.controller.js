@@ -71,6 +71,25 @@ sap.ui.define([
 			}
 		},
 		
+		onGotoLoc: function(){
+			
+			if (this.PlantID === ""){
+				MessageBox.error(_oBundle.getText("msgErrSelectPlant"), {
+					styleClass: "sapUiSizeCompact"
+				});
+			} else {
+				this._oRouter.navTo("recipeloc", {Werks: this.PlantID}); 	
+			}
+		},
+		onGotoGroup: function(){
+			if (this.PlantID === ""){
+				MessageBox.error(_oBundle.getText("msgErrSelectPlant"), {
+					styleClass: "sapUiSizeCompact"
+				});
+			} else {
+				this._oRouter.navTo("recipegroup", {Werks: this.PlantID}); 	
+			}
+		},
 		_updateChart1: function(){
 			var oChart = this.byId("recipebygroup");
 			var oBinding = oChart.getBinding("bars");
@@ -85,6 +104,7 @@ sap.ui.define([
 			var oSource = oEvent.getSource();
 			
 			var oItem = oSource.getSelectedItem();
+			if (!oItem) return;
 			var oPlant = oItem.getBindingContext().getObject();
 			this.PlantID = oPlant.Werks;
 			this.PurchOrgID = oPlant.Ekorg;

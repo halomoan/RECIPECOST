@@ -4,7 +4,8 @@
 		<f:Form id="locationForm" editable="true">
 			<f:toolbar>
 				<Toolbar>
-					<Title text="{i18n>Location}"/>
+					<Button icon="sap-icon://nav-back" press=".onNavBack"/>
+					<Title text="{i18n>Location} - {Name} ({Werks})"/>
 					<ToolbarSpacer/>
 					   <Button
 	                    icon="sap-icon://alert"
@@ -42,7 +43,7 @@
 				</f:FormContainer>
 			</f:formContainers>
 		</f:Form>
-		<t:Table id="table" rows="{/LocationSet}" selectionMode="MultiToggle" visibleRowCount="7" paste="onPaste" ariaLabelledBy="title">
+		<t:Table id="loctbl" rows="{ path:'/LocationSet', filters : [{ path : 'Werks', operator : 'EQ', value1 : ''}]}" selectionMode="MultiToggle" visibleRowCount="7" paste="onPaste" ariaLabelledBy="title">
 			<t:extension>
 				<OverflowToolbar style="Clear">
 					<Title id="title" text="{i18n>Location}"/>

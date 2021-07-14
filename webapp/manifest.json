@@ -120,12 +120,12 @@
 					"target": "imageeditor"
 				},
 				{
-					"pattern": "recipeloc",
+					"pattern": "recipeloc/{Werks}",
 					"name": "recipeloc",
 					"target": "recipeloc"
 				},
 				{
-					"pattern": "recipegroup",
+					"pattern": "recipegroup/{Werks}",
 					"name": "recipegroup",
 					"target": "recipegroup"
 				},

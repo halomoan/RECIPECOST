@@ -5,7 +5,11 @@
 			<l:BlockLayoutCell width="1" backgroundColorSet="ColorSet11" backgroundColorShade="ShadeB">
 				<Text text="{i18n>SelectPlant}" class="green fontSize3"></Text>
 				<ComboBox id="cboPlant" showSecondaryValues="true" width="100%" selectionChange="onPlantChange"></ComboBox>
-				<Button text="{i18n>GotoRecipe}" press="onGoToRecipe"></Button>
+				<l:HorizontalLayout>
+				<Button text="{i18n>GotoRecipe}" press=".onGoToRecipe" class="sapUiTinyMarginEnd"></Button>
+				<Button text="{i18n>ManageLocation}" press=".onGotoLoc" class="sapUiTinyMarginEnd"></Button>
+				<Button text="{i18n>ManageGroup}" press=".onGotoGroup"></Button>
+				</l:HorizontalLayout>
 			</l:BlockLayoutCell>
 			<l:BlockLayoutCell title="{i18n>appTitle}" width="2" backgroundColorSet="ColorSet11" backgroundColorShade="ShadeD">
 				<FlexBox height="50px" alignItems="End" justifyContent="End">

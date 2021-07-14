@@ -1,10 +1,11 @@
 <mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:f="sap.ui.layout.form" xmlns:t="sap.ui.table"
 	xmlns:l="sap.ui.layout" controllerName="halo.sap.mm.RECIPECOST.pages.controller.RecipeGroup">
 	<l:VerticalLayout class="sapUiContentPadding">
-		<f:Form id="groupForm" editable="true">
+		<f:Form editable="true">
 			<f:toolbar>
 				<Toolbar>
-					<Title text="{i18n>Group}"/>
+					<Button icon="sap-icon://nav-back" press=".onNavBack"/>
+					<Title text="{i18n>Group} - {Name} ({Werks})"/>
 					<ToolbarSpacer/>
 					   <Button
 	                    icon="sap-icon://alert"
@@ -42,7 +43,7 @@
 				</f:FormContainer>
 			</f:formContainers>
 		</f:Form>
-		<t:Table id="grouptbl" rows="{/RecipeGroupSet}" selectionMode="MultiToggle" visibleRowCount="7" paste="onPaste" ariaLabelledBy="title">
+		<t:Table id="grptbl" rows="{/RecipeGroupSet}" selectionMode="MultiToggle" visibleRowCount="7" paste="onPaste" ariaLabelledBy="title">
 			<t:extension>
 				<OverflowToolbar style="Clear">
 					<Title text="{i18n>Group}"/>
