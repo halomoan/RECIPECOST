@@ -36,7 +36,8 @@ sap.ui.define([
 				"Name": "",
 				"GroupID": "",
 				"LocationID": "",
-				"Qty": 1.0
+				"Qty": 1.0,
+				"VideoLink": ""
 			};
 
 			this.PurchOrgID = "";
@@ -236,6 +237,7 @@ sap.ui.define([
 			oFormData.LocationID = null;
 			oFormData.Qty = 1;
 			oFormData.IsSubMaterial = false;
+			oFormData.VideoLink = "";
 
 			oFormModel.setProperty("/", oFormData);
 
@@ -280,6 +282,7 @@ sap.ui.define([
 				oFormData.LocationID = oListData.LocationID;
 				oFormData.Qty = oListData.Qty;
 				oFormData.IsSubMaterial = oListData.IsSubMaterial;
+				oFormData.VideoLink = oListData.VideoLink;
 
 				oFormModel.setProperty("/", oFormData);
 
@@ -325,6 +328,8 @@ sap.ui.define([
 				oFormData.LocationID = oListData.LocationID;
 				oFormData.Qty = oListData.Qty;
 				oFormData.IsSubMaterial = oListData.IsSubMaterial;
+				oFormData.VideoLink = oFormData.VideoLink;
+				
 				oFormModel.setProperty("/", oFormData);
 			}
 
@@ -503,7 +508,8 @@ sap.ui.define([
 				"GroupID": oFormData.GroupID,
 				"LocationID": oFormData.LocationID,
 				"Qty": "" + oFormData.Qty,
-				"IsSubMaterial": oFormData.IsSubMaterial
+				"IsSubMaterial": oFormData.IsSubMaterial,
+				"VideoLink" : oFormData.VideoLink
 
 			};
 
@@ -576,6 +582,7 @@ sap.ui.define([
 				var oData = arrItems[i].getBindingContext().getObject();
 				if (arrItems.length === 1) {
 					oData.Name = oFormData.Name;
+					oData.VideoLink = oFormData.VideoLink;
 				}
 				if (oFormData.GroupID) {
 					oData.GroupID = oFormData.GroupID;

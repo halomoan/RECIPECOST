@@ -1,5 +1,5 @@
 <core:FragmentDefinition xmlns="sap.m" xmlns:f="sap.ui.layout.form" xmlns:l="sap.ui.layout" xmlns:core="sap.ui.core">
-	<Dialog id="addRecipeDialog" contentWidth="540px" contentHeight="450px"
+	<Dialog id="addRecipeDialog" contentWidth="540px" contentHeight="500px"
 		title="{= ${viewData>/IsMultiSelected} ? ${i18n>RecipeForm} + ' (' + ${i18n>Multiple} +')' : ${i18n>RecipeForm} }"
 		icon="sap-icon://activity-items">
 		<NavContainer id="form1" class="customCSS">
@@ -40,6 +40,11 @@
 									<f:FormElement label="{i18n>PortionProduced}">
 										<f:fields>
 											<StepInput value="{form>/Qty}" min="1" displayValuePrecision="2"></StepInput>
+										</f:fields>
+									</f:FormElement>
+									<f:FormElement label="{i18n>EmbeddedLink}">
+										<f:fields>
+											<Input value="{form>/VideoLink}" enabled="{= ! ${viewData>/IsMultiSelected} }"/>
 										</f:fields>
 									</f:FormElement>
 									<f:FormElement label="{i18n>AllowAsSubMaterial}">

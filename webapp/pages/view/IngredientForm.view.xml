@@ -16,7 +16,6 @@
 						<l:VerticalLayout>
 						<HBox>
 							<Title text="{i18n>NameOfRecipe} : {Name}" titleStyle="H1" class="sapUiTinyMarginEnd"/>
-						
 							<tnt:InfoLabel text="{i18n>SubMaterial}" colorScheme="7" displayOnly= "true" visible="{IsSubMaterial}" class="sapUiTinyMarginTop"/>
 						</HBox>
 						<Label text="{i18n>ID} : {RecipeID}" class="sapUiSmallMarginBottom"/>
@@ -29,11 +28,12 @@
 					<l:BlockLayoutCell class="sapUiNoContentPadding">
 					
 						<FlexBox alignItems="Start" justifyContent="End">
-							
+							<core:HTML id="videolink" content="lt;div id='ytv'&gt; &lt;iframe type='text/html' width='340' height='180' src='{VideoLink}' frameborder='0' allowfullscreen&gt;&lt;/iframe&gt; &lt;/div&gt;">
+							</core:HTML>
 							<Image
 								src="{= '/sap/opu/odata/sap/zrecipecost_odata_srv/RecipePhotoSet(Werks=\'' + ${Werks} + '\',RecipeID=\'' + ${RecipeID} + '\')/$value' }"
-								width="300px" height="180px" press="onSelectImage" class="sapUiSmallMarginEnd"/>
-							<core:HTML id="videolink"></core:HTML>
+								width="300px" height="180px" press="onSelectImage" class="sapUiSmallMarginBegin"/>
+
 						</FlexBox>
 					</l:BlockLayoutCell>
 				</l:BlockLayoutRow>
