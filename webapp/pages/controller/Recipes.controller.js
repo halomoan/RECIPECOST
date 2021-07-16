@@ -687,7 +687,7 @@ sap.ui.define([
 				}),
 				template: new sap.m.ViewSettingsItem({
 					text: "{Text}",
-					key: "LocationID___EQ___" + "{Locationid}" + "___X"
+					key: "LocationID___EQ___" + "{LocationID}" + "___X"
 				})
 			});
 

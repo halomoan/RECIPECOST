@@ -53,11 +53,11 @@ sap.ui.define([
 			this.PurchOrgID = oArguments.Ekorg;
 			this.PlantID = oArguments.Werks;
 			this.RecipeID = oArguments.RecipeID;
-			this.MatType = "FOOD";
+			this.MatType = "F";
 
 			this.oFilterPurchOrg = new Filter("Ekorg", FilterOperator.EQ, this.PurchOrgID); // Filter Material Type
 			this.oFilterPlant = new Filter("Werks", FilterOperator.EQ, this.PlantID); // Filter Plant
-			this.oFilterMatType = new Filter("Mtart", FilterOperator.EQ, this.MatType); // Filter Material Type
+			this.oFilterMatType = new Filter("Mtart", FilterOperator.StartsWith, this.MatType); // Filter Material Type
 
 			this.aFilters = [this.oFilterPurchOrg, this.oFilterPlant, this.oFilterMatType];
 
