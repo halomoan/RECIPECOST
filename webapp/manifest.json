@@ -130,6 +130,11 @@
 					"target": "recipegroup"
 				},
 				{
+					"pattern": "uomconversion/{Werks}",
+					"name": "uomconversion",
+					"target": "uomconversion"
+				},
+				{
 					"pattern": "planttopurchorg",
 					"name": "planttopurchorg",
 					"target": "planttopurchorg"
@@ -164,6 +169,11 @@
 				"recipegroup": {
 					"viewId": "recipiegroup",
 					"viewName": "RecipeGroup",
+					"viewLevel": 1
+				},
+				"uomconversion": {
+					"viewId": "uomconversion",
+					"viewName": "UOMConversion",
 					"viewLevel": 1
 				},
 				"planttopurchorg": {

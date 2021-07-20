@@ -25,7 +25,7 @@
 					<f:formElements>
 						<f:FormElement label="{i18n>ID} / {i18n>CookingUOM}">
 							<f:fields>
-								<Input value="{ path: 'form>/UOMID' }" enabled="false">
+								<Input value="{ path: 'form>/Msehi' }" enabled="false">
 										<layoutData>
 										<f:ColumnElementData cellsSmall="3" cellsLarge="1" />
 									</layoutData>
@@ -43,7 +43,7 @@
 				</f:FormContainer>
 			</f:formContainers>
 		</f:Form>
-		<t:Table id="uomtbl" rows="{/CookingUOMSet}" selectionMode="MultiToggle" visibleRowCount="7" paste="onPaste" ariaLabelledBy="title">
+		<t:Table id="uomtbl" rows="{/CookingUnitSet}" selectionMode="MultiToggle" visibleRowCount="7" paste="onPaste" ariaLabelledBy="title">
 			<t:extension>
 				<OverflowToolbar style="Clear">
 					<Title text="{i18n>CookingUOM}"/>
@@ -53,7 +53,7 @@
 				<t:Column width="10rem">
 					<Label text="{i18n>ID}"/>
 					<t:template>
-						<Text text="{UOMID}" wrapping="false"/>
+						<Text text="{Msehi}" wrapping="false"/>
 					</t:template>
 				</t:Column>
 					<t:Column width="20rem">

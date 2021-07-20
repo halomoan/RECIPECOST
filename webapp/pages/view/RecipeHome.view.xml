@@ -6,9 +6,19 @@
 				<Text text="{i18n>SelectPlant}" class="green fontSize3"></Text>
 				<ComboBox id="cboPlant" showSecondaryValues="true" width="100%" selectionChange="onPlantChange"></ComboBox>
 				<l:HorizontalLayout>
-				<Button text="{i18n>GotoRecipe}" press=".onGoToRecipe" class="sapUiTinyMarginEnd"></Button>
-				<Button text="{i18n>ManageLocation}" press=".onGotoLoc" class="sapUiTinyMarginEnd"></Button>
-				<Button text="{i18n>ManageGroup}" press=".onGotoGroup"></Button>
+				<!--<Button text="{i18n>GotoRecipe}" press=".onGoToRecipe" class="sapUiTinyMarginEnd"></Button>-->
+				<!--<Button text="{i18n>ManageLocation}" press=".onGotoLoc" class="sapUiTinyMarginEnd"></Button>-->
+				<!--<Button text="{i18n>ManageGroup}" press=".onGotoGroup"></Button>-->
+					<MenuButton text="{i18n>Goto}" defaultAction="onDefaultAction" useDefaultActionOnly="true" menuPosition="RightBottom">
+			<menu>
+				<Menu itemSelected="onMenuAction">
+					<MenuItem text="{i18n>Recipe}" icon="sap-icon://edit" />
+					<MenuItem text="{i18n>ManageLocation}" icon="sap-icon://save" />
+					<MenuItem text="{i18n>ManageGroup}" icon="sap-icon://open-folder" />
+					<MenuItem text="{i18n>ManageUOM}" icon="sap-icon://open-folder" />
+				</Menu>
+			</menu>
+		</MenuButton>
 				</l:HorizontalLayout>
 			</l:BlockLayoutCell>
 			<l:BlockLayoutCell title="{i18n>appTitle}" width="2" backgroundColorSet="ColorSet11" backgroundColorShade="ShadeD">
