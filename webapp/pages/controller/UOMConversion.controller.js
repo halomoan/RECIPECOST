@@ -15,7 +15,7 @@ sap.ui.define([
 	
 	return BaseController.extend("halo.sap.mm.RECIPECOST.pages.controller.UOMConversion", {
 
-	
+		_formFragments: {},
 		onInit: function() {
 			var oViewData = {
 					"Mode": ""
@@ -33,12 +33,13 @@ sap.ui.define([
 				var oMessageManager = sap.ui.getCore().getMessageManager();
 				oView.setModel(oMessageManager.getMessageModel(), "message");
 				oMessageManager.registerObject(oView, true);
+				sap.ui.getCore().getMessageManager().removeAllMessages();
 
 				var fnTableRowAction = this.onTableRowAction.bind(this);
 
 				this.getOwnerComponent().getModel().metadataLoaded().then(function() {
 					_oBundle = this.getResourceBundle();
-					var oTable = this.byId("loctbl");
+					var oTable = this.byId("uomtbl");
 					var oTemplate = new sap.ui.table.RowAction({
 						items: [
 							new sap.ui.table.RowActionItem({
@@ -63,7 +64,7 @@ sap.ui.define([
 				this.PlantID = "";
 				
 				this._oRouter = this.getRouter();
-				this._oRouter.getRoute("recipecookuom").attachPatternMatched(this.__onRouteMatched, this);
+				this._oRouter.getRoute("uomconversion").attachPatternMatched(this.__onRouteMatched, this);
 				
 		},
 		
@@ -79,8 +80,11 @@ sap.ui.define([
 		},
 		
 		onSave: function() {
+			var oViewModel = this.getModel("viewData");
 			var oModel = this.getModel();
 			var oThis = this;
+			
+			var sMode = oViewModel.getProperty("/Mode");
 			
 			var oFormModel = this.getModel("form"),
 				oFormData = oFormModel.getData();
@@ -92,7 +96,7 @@ sap.ui.define([
 					"Text": oFormData.Text
 				};
 
-				if (oFormData.LocationID === "") {
+				if (sMode === "New") {
 					oModel.create("/CookingUnitSet", oData, {
 						method: "POST",
 						success: function(data) {
@@ -158,7 +162,11 @@ sap.ui.define([
 			//MessageToast.show("Item " + (oItem.getText() || oItem.getType()) + " pressed for product with id " +
 			//	this.getView().getModel().getProperty("Locationid", oRow.getBindingContext()));
 		},
-		
+		onMsehiChange:function(oEvent){
+			var input = oEvent.getSource();
+
+    		input.setValue(input.getValue().toUpperCase());
+		},
 		onMessagePopoverPress: function(oEvent) {
 			var oSource = oEvent.getSource();
 
@@ -171,7 +179,18 @@ sap.ui.define([
 			var status = true;
 
 			sap.ui.getCore().getMessageManager().removeAllMessages();
-
+			
+			if (oFormData.Msehi.length < 1) {
+				status = false;
+				oMessage = new Message({
+					message: "Empty Is not allowed.",
+					type: MessageType.Error,
+					target: "/Msehi",
+					processor: this.getView().getModel("form")
+				});
+				sap.ui.getCore().getMessageManager().addMessages(oMessage);
+			}
+			
 			if (oFormData.Text.length < 1) {
 				status = false;
 				oMessage = new Message({

@@ -25,7 +25,7 @@
 					<f:formElements>
 						<f:FormElement label="{i18n>ID} / {i18n>CookingUOM}">
 							<f:fields>
-								<Input value="{ path: 'form>/Msehi' }" enabled="false">
+								<Input value="{ path: 'form>/Msehi' }" maxLength="3" liveChange = "onMsehiChange">
 										<layoutData>
 										<f:ColumnElementData cellsSmall="3" cellsLarge="1" />
 									</layoutData>

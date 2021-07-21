@@ -36,7 +36,8 @@ sap.ui.define([
 			var oMessageManager = sap.ui.getCore().getMessageManager();
 			oView.setModel(oMessageManager.getMessageModel(), "message");
 			oMessageManager.registerObject(oView, true);
-
+			sap.ui.getCore().getMessageManager().removeAllMessages();
+				
 			var fnTableRowAction = this.onTableRowAction.bind(this);
 
 			this.getOwnerComponent().getModel().metadataLoaded().then(function() {

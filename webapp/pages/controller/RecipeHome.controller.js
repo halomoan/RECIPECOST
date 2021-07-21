@@ -4,8 +4,9 @@ sap.ui.define([
 	"sap/m/MessageBox",
 	'sap/ui/model/Filter',
 	'sap/ui/model/FilterOperator',
-	'sap/ui/model/Sorter'
-], function(BaseController,JSONModel,MessageBox,Filter,FilterOperator,Sorter) {
+	'sap/ui/model/Sorter',
+	"sap/m/MenuItem"
+], function(BaseController,JSONModel,MessageBox,Filter,FilterOperator,Sorter,MenuItem) {
 	"use strict";
 
 	var _oBundle;
@@ -60,6 +61,19 @@ sap.ui.define([
 			// this.getOwnerComponent().getModel().metadataLoaded().then(function() {
 			// }.bind(this));
 		},
+		
+		onMenuAction: function(oEvent) {
+				var oItem = oEvent.getParameter("item"),
+					sText = oItem.getText();
+				
+				switch(sText){
+					case "Recipe": this.onGoToRecipe(); break;
+					case "Manage Location": this.onGotoLoc(); break;
+					case "Manage Group": this.onGotoGroup(); break;
+					case "Manage UOM": this.onGotoUOM(); break;
+				}
+				
+		},
 		onGoToRecipe: function(){
 			
 			if (this.PurchOrgID === ""){
@@ -88,6 +102,16 @@ sap.ui.define([
 				});
 			} else {
 				this._oRouter.navTo("recipegroup", {Werks: this.PlantID}); 	
+			}
+		},
+		
+		onGotoUOM: function(){
+			if (this.PlantID === ""){
+				MessageBox.error(_oBundle.getText("msgErrSelectPlant"), {
+					styleClass: "sapUiSizeCompact"
+				});
+			} else {
+				this._oRouter.navTo("uomconversion", {Werks: this.PlantID}); 	
 			}
 		},
 		_updateChart1: function(){
