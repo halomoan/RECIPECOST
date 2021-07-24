@@ -50,13 +50,13 @@
 				</OverflowToolbar>
 			</t:extension>
 			<t:columns>
-				<t:Column width="10rem">
+				<t:Column width="10rem" filterProperty="Groupid">
 					<Label text="{i18n>ID}"/>
 					<t:template>
 						<Text text="{Groupid}" wrapping="false"/>
 					</t:template>
 				</t:Column>
-					<t:Column width="20rem">
+					<t:Column width="20rem" filterProperty="Text">
 					<Label text="{i18n>Text}"/>
 					<t:template>
 						<Text text="{Text}" wrapping="false"/>

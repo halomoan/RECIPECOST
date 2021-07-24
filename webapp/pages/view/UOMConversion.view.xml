@@ -1,19 +1,15 @@
 <mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:f="sap.ui.layout.form" xmlns:t="sap.ui.table"
 	xmlns:l="sap.ui.layout" controllerName="halo.sap.mm.RECIPECOST.pages.controller.UOMConversion" xmlns:html="http://www.w3.org/1999/xhtml">
 	<l:VerticalLayout class="sapUiContentPadding">
-	<f:Form editable="true">
+		<f:Form editable="true">
 			<f:toolbar>
 				<Toolbar>
 					<Button icon="sap-icon://nav-back" press=".onNavBack"/>
 					<Title text="{i18n>UOMConversion} - {Name} ({Werks})"/>
 					<ToolbarSpacer/>
-					   <Button
-	                    icon="sap-icon://alert"
-	                    text="{= ${message>/}.length }"
-	                    visible="{= ${message>/}.length > 0 }"
-	                    type="Emphasized"
-	                    press="onMessagePopoverPress" />
-					<Button icon="sap-icon://add-document" press="onNew"/>
+					<Button icon="sap-icon://alert" text="{= ${message>/}.length }" visible="{= ${message>/}.length > 0 }" type="Emphasized"
+						press="onMessagePopoverPress"/>
+					<Button icon="sap-icon://add-document" tooltip="{i18n>New}" press="onNew"/>
 					<Button icon="sap-icon://save" press="onSave"/>
 				</Toolbar>
 			</f:toolbar>
@@ -25,18 +21,17 @@
 					<f:formElements>
 						<f:FormElement label="{i18n>ID} / {i18n>CookingUOM}">
 							<f:fields>
-								<Input value="{ path: 'form>/Msehi' }" maxLength="3" liveChange = "onMsehiChange">
-										<layoutData>
-										<f:ColumnElementData cellsSmall="3" cellsLarge="1" />
+								<Input value="{ path: 'form>/Msehi' }" maxLength="3" liveChange="onMsehiChange" enabled="{= ${viewData>/Mode} === 'New' }">
+									<layoutData>
+										<f:ColumnElementData cellsSmall="3" cellsLarge="1"/>
 									</layoutData>
 								</Input>
 								<Text text="/" textAlign="Center">
 									<layoutData>
-										<f:ColumnElementData cellsSmall="1" cellsLarge="1" />
+										<f:ColumnElementData cellsSmall="1" cellsLarge="1"/>
 									</layoutData>
 								</Text>
 								<Input value="{ path: 'form>/Text' }" visible="true"/>
-							
 							</f:fields>
 						</f:FormElement>
 					</f:formElements>
@@ -50,13 +45,13 @@
 				</OverflowToolbar>
 			</t:extension>
 			<t:columns>
-				<t:Column width="10rem">
+				<t:Column width="10rem" filterProperty="Msehi">
 					<Label text="{i18n>ID}"/>
 					<t:template>
 						<Text text="{Msehi}" wrapping="false"/>
 					</t:template>
 				</t:Column>
-					<t:Column width="20rem">
+				<t:Column width="20rem" filterProperty="Text">
 					<Label text="{i18n>Text}"/>
 					<t:template>
 						<Text text="{Text}" wrapping="false"/>

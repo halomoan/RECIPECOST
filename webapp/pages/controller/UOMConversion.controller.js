@@ -18,7 +18,7 @@ sap.ui.define([
 		_formFragments: {},
 		onInit: function() {
 			var oViewData = {
-					"Mode": ""
+					"Mode": "New"
 				};
 				
 				
@@ -33,6 +33,8 @@ sap.ui.define([
 				var oMessageManager = sap.ui.getCore().getMessageManager();
 				oView.setModel(oMessageManager.getMessageModel(), "message");
 				oMessageManager.registerObject(oView, true);
+				
+				
 				sap.ui.getCore().getMessageManager().removeAllMessages();
 
 				var fnTableRowAction = this.onTableRowAction.bind(this);
@@ -96,6 +98,7 @@ sap.ui.define([
 					"Text": oFormData.Text
 				};
 
+				
 				if (sMode === "New") {
 					oModel.create("/CookingUnitSet", oData, {
 						method: "POST",
@@ -104,7 +107,12 @@ sap.ui.define([
 							MessageToast.show(_oBundle.getText("msgUnitCodeCreated"));
 						},
 						error: function(e) {
-							MessageToast.show("Error Detected");
+							var oMessage= JSON.parse(e.responseText).error.message.value;
+							if (oMessage) {
+								MessageToast.show(oMessage);
+							} else {
+								MessageToast.show(_oBundle.getText("msgErr"));
+							}
 						}
 					});
 				} else {
@@ -114,8 +122,12 @@ sap.ui.define([
 						MessageToast.show(_oBundle.getText("msgUnitCodeUpdated"));
 					},
 					function(e){
-						var oMessage= JSON.parse(e.responseText).error.message.value;
-    					MessageBox.error(oMessage);
+							var oMessage= JSON.parse(e.responseText).error.message.value;
+							if (oMessage) {
+								MessageToast.show(oMessage);
+							} else {
+								MessageToast.show(_oBundle.getText("msgErr"));
+							}
 					});
 				}
 			}
@@ -135,7 +147,7 @@ sap.ui.define([
 					oFormData = oFormModel.getData();
 				
 				oFormData.Werks = oData.Werks;
-				oFormData.LocationID = oData.LocationID;
+				oFormData.Msehi = oData.Msehi;
 				oFormData.Text = oData.Text;
 
 				oFormModel.setProperty("/", oFormData);
