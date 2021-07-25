@@ -1,6 +1,6 @@
 <mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:f="sap.ui.layout.form" xmlns:t="sap.ui.table"
 	xmlns:l="sap.ui.layout" controllerName="halo.sap.mm.RECIPECOST.pages.controller.UOMConversion" xmlns:html="http://www.w3.org/1999/xhtml">
-	<l:VerticalLayout class="sapUiContentPadding">
+	<l:VerticalLayout class="sapUiContentPadding sapUiSizeCompact">
 		<f:Form editable="true">
 			<f:toolbar>
 				<Toolbar>

@@ -55,11 +55,16 @@ sap.ui.define([
 								icon: "sap-icon://edit",
 								text: "Edit",
 								press: fnTableRowAction
+							}),
+							new sap.ui.table.RowActionItem({
+								icon: "sap-icon://navigation-right-arrow",
+								text: "Conversion",
+								press: fnTableRowAction
 							})
 						]
 					});
 					oTable.setRowActionTemplate(oTemplate);
-					oTable.setRowActionCount(2);
+					oTable.setRowActionCount(3);
 					
 				
 					
@@ -161,15 +166,15 @@ sap.ui.define([
 				oViewModel.setProperty("/Mode", "");
 				
 				MessageBox.confirm(_oBundle.getText("msgCfrmDelUnitCode"), {
-						actions: [MessageBox.Action.YES, MessageBox.Action.CANCEL],
-						emphasizedAction: "CANCEL",
-						onClose: function(sAction) {
-							if (sAction === 'YES') {
+					actions: [MessageBox.Action.YES, MessageBox.Action.CANCEL],
+					emphasizedAction: "CANCEL",
+					onClose: function(sAction) {
+						if (sAction === 'YES') {
+						
+							oThis._deleteData(oData);
 							
-								oThis._deleteData(oData);
-								
-							}
-					}
+						}
+				}
 			});	
 			}
 
@@ -364,19 +369,28 @@ sap.ui.define([
 		},
 
 		onValueHelpOkPress: function(oEvent) {
-			var oTable = this.byId("matcookunittbl"),
-				oViewModel = this.getModel("viewData");
+			// var oTable = this.byId("matcookunittbl"),
+			// 	oViewModel = this.getModel("viewData");
 				
 				
 		
-			var oBindingInfo = oTable.getBindingInfo("rows");	
-				console.log(oBindingInfo);	
+			// var oBindingInfo = oTable.getBindingInfo("rows");	
+			// 	console.log(oBindingInfo);	
 
 			var aTokens = oEvent.getParameter("tokens");
 
 			if (aTokens.length) {
-				
 				for (var i = 0; i < aTokens.length; i++) {
+					var oObject = aTokens[i].data().row;
+					var oRecord = {
+						"Werks" : this.plantID,
+						"Matnr" : oObject.Matnr,
+						"Cookunit" : null,
+						"Cookqty" : null,
+						"Purcunit" : oObject.Bprme,
+						"Purcqty" : oObject.Peinh,
+						"MAKTX" : oObject.Matkl
+					}
 				}
 			}
 			this._oValueHelpDialog.close();
