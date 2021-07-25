@@ -130,7 +130,7 @@
 					"target": "recipegroup"
 				},
 				{
-					"pattern": "uomconversion/{Werks}",
+					"pattern": "uomconversion/{Ekorg}/{Werks}",
 					"name": "uomconversion",
 					"target": "uomconversion"
 				},

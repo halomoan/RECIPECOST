@@ -111,7 +111,7 @@ sap.ui.define([
 					styleClass: "sapUiSizeCompact"
 				});
 			} else {
-				this._oRouter.navTo("uomconversion", {Werks: this.PlantID}); 	
+				this._oRouter.navTo("uomconversion", {Ekorg: this.PurchOrgID, Werks: this.PlantID}); 	
 			}
 		},
 		_updateChart1: function(){
