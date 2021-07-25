@@ -296,6 +296,117 @@ sap.ui.define([
 			this._oValueHelpDialog.open();
 		},
 		
+		onFilterBarSearch: function(oEvent) {
+
+			var sSearchQuery = this._oBasicSearchField.getValue(),
+				aSelectionSet = oEvent.getParameter("selectionSet");
+			var aFilters = aSelectionSet.reduce(function(aResult, oControl) {
+
+				var sType = oControl.getMetadata().getName();
+				switch (sType) {
+					case "sap.m.Switch":
+						if (oControl.getState()) {
+							aResult.push(new Filter({
+								path: oControl.getName(),
+								operator: FilterOperator.EQ,
+								value1: oControl.getState()
+							}));
+						}
+
+						break;
+					case "sap.m.Input":
+						if (oControl.getValue()) {
+							aResult.push(new Filter({
+								path: oControl.getName(),
+								operator: FilterOperator.Contains,
+								value1: oControl.getValue()
+							}));
+						}
+
+						break;
+
+					case "sap.m.CheckBox":
+						if (oControl.getSelected()) {
+							aResult.push(new Filter({
+								path: oControl.getName(),
+								operator: FilterOperator.EQ,
+								value1: true
+							}));
+						}
+
+						break;
+				}
+				return aResult;
+			}, []);
+
+			if (sSearchQuery) {
+
+				aFilters.push(new Filter({
+					filters: [
+						new Filter({
+							path: "Maktx",
+							operator: FilterOperator.Contains,
+							value1: sSearchQuery
+						})
+					],
+					and: false
+				}));
+			}
+
+			if (aFilters.length > 0) {
+				this._filterTable(new Filter({
+					filters: aFilters,
+					and: true
+				}));
+			} else {
+				this._filterTable([]);
+			}
+		},
+
+		onValueHelpOkPress: function(oEvent) {
+			var oTable = this.byId("matcookunittbl"),
+				oViewModel = this.getModel("viewData");
+				
+				
+		
+			var oBindingInfo = oTable.getBindingInfo("rows");	
+				console.log(oBindingInfo);	
+
+			var aTokens = oEvent.getParameter("tokens");
+
+			if (aTokens.length) {
+				
+				for (var i = 0; i < aTokens.length; i++) {
+				}
+			}
+			this._oValueHelpDialog.close();
+		},
+		
+		onValueHelpCancelPress: function() {
+			this._oValueHelpDialog.close();
+		},
+
+		onValueHelpAfterClose: function() {
+			this._oValueHelpDialog.destroy();
+		},
+		
+		_filterTable: function(oFilter) {
+			var oValueHelpDialog = this._oValueHelpDialog;
+
+			oValueHelpDialog.getTableAsync().then(function(oTable) {
+				if (oTable.bindRows) {
+					oTable.getBinding("rows").filter(oFilter);
+				}
+
+				if (oTable.bindItems) {
+					oTable.getBinding("items").filter(oFilter);
+				}
+
+				oValueHelpDialog.update();
+			});
+		},
+		
+		
 		
 		__onRouteMatched: function(oEvent){
 			var oArguments = oEvent.getParameter("arguments");
