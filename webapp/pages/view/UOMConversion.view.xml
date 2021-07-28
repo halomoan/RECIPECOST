@@ -38,85 +38,76 @@
 				</f:FormContainer>
 			</f:formContainers>
 		</f:Form>
-		<HBox renderType="Bare">
-			<t:Table id="uomtbl" rows="{/CookingUnitSet}" selectionMode="Single" visibleRowCount="7" paste="onPaste" ariaLabelledBy="title" class="sapUiMediumMarginEnd">
-				<t:extension>
-					<OverflowToolbar style="Clear">
-						<Title text="{i18n>CookingUOM}"/>
-					</OverflowToolbar>
-				</t:extension>
-				<t:columns>
-					<t:Column width="5rem" filterProperty="Msehi">
-						<Label text="{i18n>ID}"/>
-						<t:template>
-							<Text text="{Msehi}" wrapping="false"/>
-						</t:template>
-					</t:Column>
-					<t:Column  filterProperty="Text">
-						<Label text="{i18n>Text}"/>
-						<t:template>
-							<Text text="{Text}" wrapping="false"/>
-						</t:template>
-					</t:Column>
-				</t:columns>
-			</t:Table>
-			<l:VerticalLayout>
-				<t:Table id="matcookunittbl" rows="{/MatCookingUnitSet}" selectionMode="Single" visibleRowCount="7" paste="onPaste" ariaLabelledBy="title">
-					<t:extension>
-						<OverflowToolbar style="Clear">
-							<Title text="{i18n>MatCookUnitConvert}"/>
-							<ToolbarSpacer/>
-							<Button icon="sap-icon://add" type="Transparent" tooltip="Add Material(s)" press=".onVHMaterialRequested"/>
-						</OverflowToolbar>
-					</t:extension>
-					<t:columns>
-						<t:Column width="10rem" filterProperty="Matnr">
-							<Label text="{i18n>ID}"/>
-							<t:template>
-								<Text text="{Matnr}" wrapping="false"/>
-							</t:template>
-						</t:Column>
-						<t:Column filterProperty="Maktx">
-							<Label text=""/>
-							<t:template>
-								<Text text="{Maktx}" wrapping="false"/>
-							</t:template>
-						</t:Column>
-						<t:Column width="10rem" filterProperty="Purcqty">
-							<Label text="{i18n>QtyPurchased}"/>
-							<t:template>
-								<Text text="{Purcqty}" wrapping="false"/>
-							</t:template>
-						</t:Column>
-						<t:Column width="5rem" filterProperty="Purcunit">
-							<Label text="{i18n>UnitPurchased}"/>
-							<t:template>
-								<Text text="{Purcunit}" wrapping="false"/>
-							</t:template>
-						</t:Column>
-					
-						<t:Column width="10rem" filterProperty="Cookunit">
-							<Label text="{i18n>UnitCooking}"/>
-							<t:template>
-								<Text text="{Cookunit}" wrapping="false"/>
-							</t:template>
-						</t:Column>
-					
-						<t:Column width="5rem" filterProperty="Cookqty">
-							<Label text="{i18n>QtyCooking}"/>
-							<t:template>
-								<Text text="{Cookqty}" wrapping="false"/>
-							</t:template>
-						</t:Column>
-						<t:Column width="10rem" filterProperty="Cookunit">
-							<Label text="{i18n>UnitCooking}"/>
-							<t:template>
-								<Text text="{Cookunit}" wrapping="false"/>
-							</t:template>
-						</t:Column>
-					</t:columns>
-				</t:Table>
-			</l:VerticalLayout>
-		</HBox>
+		<l:BlockLayout >
+			<l:BlockLayoutRow  class="sapUiNoContentPadding">
+				<l:BlockLayoutCell width="1" class="sapUiMediumMarginEnd">
+					<t:Table id="uomtbl" rows="{/CookingUnitSet}" selectionMode="Single" visibleRowCount="18" paste="onPaste" ariaLabelledBy="title">
+						<t:extension>
+							<OverflowToolbar style="Clear">
+								<Title text="{i18n>CookingUOM}"/>
+							</OverflowToolbar>
+						</t:extension>
+						<t:columns>
+							<t:Column width="5rem" filterProperty="Msehi">
+								<Label text="{i18n>ID}"/>
+								<t:template>
+									<Text text="{Msehi}" wrapping="false"/>
+								</t:template>
+							</t:Column>
+							<t:Column filterProperty="Text">
+								<Label text="{i18n>Text}"/>
+								<t:template>
+									<Text text="{Text}" wrapping="false"/>
+								</t:template>
+							</t:Column>
+						</t:columns>
+					</t:Table>
+				</l:BlockLayoutCell>
+				<l:BlockLayoutCell width="2">
+					<t:Table id="matcookunittbl" rows="{ path: '/MatCookingUnitSet', filters : [{ path : 'Werks', operator : 'EQ', value1 : ''}] }"
+						selectionMode="Single" visibleRowCount="18" paste="onPaste" ariaLabelledBy="title">
+						<t:extension>
+							<OverflowToolbar style="Clear">
+								<Title text="{i18n>MatCookUnitConvert}"/>
+								<ToolbarSpacer/>
+								<Button icon="sap-icon://add" type="Transparent" tooltip="Add Material(s)" press=".onVHMaterialRequested"/>
+							</OverflowToolbar>
+						</t:extension>
+						<t:columns>
+							<t:Column width="10rem" filterProperty="Matnr">
+								<Label text="{i18n>ID}"/>
+								<t:template>
+									<Text text="{Matnr}" wrapping="false"/>
+								</t:template>
+							</t:Column>
+							<t:Column filterProperty="Maktx">
+								<Label text=""/>
+								<t:template>
+									<Text text="{Maktx}" wrapping="false"/>
+								</t:template>
+							</t:Column>
+							<t:Column width="8rem" filterProperty="Purcunit">
+								<Label text="{i18n>QtyPurchased}"/>
+								<t:template>
+									<Text text="{Purcqty} {Purcunit}" wrapping="false"/>
+								</t:template>
+							</t:Column>
+							<t:Column width="5rem" filterProperty="Cookqty" headerSpan="2,1" hAlign="Center">
+								<Label text="{i18n>QtyCooking}"/>
+								<t:template>
+									<Input value="{Cookqty}" change=".onCookQtyChange"/>
+								</t:template>
+							</t:Column>
+							<t:Column width="3rem" filterProperty="Cookunit">
+								<!--<Label text="{i18n>UnitCooking}"/>-->
+								<t:template>
+									<Text text="{Cookunit}" wrapping="false"/>
+								</t:template>
+							</t:Column>
+						</t:columns>
+					</t:Table>
+				</l:BlockLayoutCell>
+			</l:BlockLayoutRow>
+		</l:BlockLayout>
 	</l:VerticalLayout>
 </mvc:View>

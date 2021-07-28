@@ -39,38 +39,53 @@ sap.ui.define([
 				
 				this.oColModel = new JSONModel(sap.ui.require.toUrl("halo/sap/mm/RECIPECOST/fragments/") + "/VHMaterialColumnsModel.json");
 
-				var fnTableRowAction = this.onTableRowAction.bind(this);
+				var fnTable1RowAction = this.onTable1RowAction.bind(this);
+				var fnTable2RowAction = this.onTable2RowAction.bind(this);
 
 				this.getOwnerComponent().getModel().metadataLoaded().then(function() {
 					_oBundle = this.getResourceBundle();
+					
+					//Table 1
 					var oTable = this.byId("uomtbl");
 					var oTemplate = new sap.ui.table.RowAction({
 						items: [
 							new sap.ui.table.RowActionItem({
 								type: "Delete",
 								text: "Delete",
-								press: fnTableRowAction
+								press: fnTable1RowAction
 							}),
 							new sap.ui.table.RowActionItem({
 								icon: "sap-icon://edit",
 								text: "Edit",
-								press: fnTableRowAction
-							}),
-							new sap.ui.table.RowActionItem({
-								icon: "sap-icon://navigation-right-arrow",
-								text: "Conversion",
-								press: fnTableRowAction
+								press: fnTable1RowAction
 							})
+						
 						]
 					});
 					oTable.setRowActionTemplate(oTemplate);
-					oTable.setRowActionCount(3);
+					oTable.setRowActionCount(2);
+					
+					oTable = this.byId("matcookunittbl");
+					oTemplate = new sap.ui.table.RowAction({
+						items: [
+							new sap.ui.table.RowActionItem({
+								type: "Delete",
+								text: "Delete",
+								press: fnTable2RowAction
+							})
+						
+						
+						]
+					});
+					oTable.setRowActionTemplate(oTemplate);
+					oTable.setRowActionCount(1);
 					
 				
 					
 				}.bind(this));
 				
 				this.PlantID = "";
+				this.aMatUnitCvr = [];
 				
 				this._oRouter = this.getRouter();
 				this._oRouter.getRoute("uomconversion").attachPatternMatched(this.__onRouteMatched, this);
@@ -82,13 +97,21 @@ sap.ui.define([
 		},
 		
 		onNew: function() {
-				this._initForm();
+			this._initForm();
 
-				var oViewModel = this.getModel("viewData");
+			var oViewModel = this.getModel("viewData");
 				oViewModel.setProperty("/Mode", "New");
+				
+			var aFilters = [
+				new Filter("Werks", FilterOperator.EQ, "")
+			];
+			
+			this._refreshConvertTable(aFilters);
 		},
 		
 		onSave: function() {
+			
+			
 			var oViewModel = this.getModel("viewData");
 			var oModel = this.getModel();
 			var oThis = this;
@@ -98,6 +121,9 @@ sap.ui.define([
 			var oFormModel = this.getModel("form"),
 				oFormData = oFormModel.getData();
 
+
+			sap.ui.getCore().getMessageManager().removeAllMessages();
+			
 			if (this._validateForm(oFormData)) {
 				var oData = {
 					"Werks": this.PlantID,
@@ -129,40 +155,70 @@ sap.ui.define([
 						MessageToast.show(_oBundle.getText("msgUnitCodeUpdated"));
 					},
 					function(e){
-							var oMessage= JSON.parse(e.responseText).error.message.value;
-							if (oMessage) {
-								MessageToast.show(oMessage);
-							} else {
-								MessageToast.show(_oBundle.getText("msgErr"));
-							}
+						var oMessage= JSON.parse(e.responseText).error.message.value;
+						if (oMessage) {
+							MessageToast.show(oMessage);
+						} else {
+							MessageToast.show(_oBundle.getText("msgErr"));
+						}
 					});
 				}
 			}
 
 		},
 		
-		onTableRowAction: function(oEvent) {
-
+		onTable1RowAction: function(oEvent) {
 		
 			var oRow = oEvent.getParameter("row");
 			var oData = oRow.getBindingContext().getObject();
 			var oItem = oEvent.getParameter("item");
 			var oViewModel = this.getModel("viewData");
 			
+			sap.ui.getCore().getMessageManager().removeAllMessages();
+		
 			if (oItem.getText() === "Edit") {
-				var oFormModel = this.getModel("form"),
-					oFormData = oFormModel.getData();
 				
-				oFormData.Werks = oData.Werks;
-				oFormData.Msehi = oData.Msehi;
-				oFormData.Text = oData.Text;
-
-				oFormModel.setProperty("/", oFormData);
-				oViewModel.setProperty("/Mode", "Edit");
+				
+				var oFormModel = this.getModel("form"),
+						oFormData = oFormModel.getData();
+					
+					oFormData.Werks = oData.Werks;
+					oFormData.Msehi = oData.Msehi;
+					oFormData.Text = oData.Text;
+	
+					oFormModel.setProperty("/", oFormData);
+					oViewModel.setProperty("/Mode", "Edit");
+					
+					var aFilters = [
+						new Filter("Werks", FilterOperator.EQ, oData.Werks),
+				    	new Filter("Cookunit", FilterOperator.EQ, oData.Msehi)
+					];
+					
+				
+				if (this.aMatUnitCvr.length > 0 ){
+						
+					MessageBox.confirm(_oBundle.getText("msgInfoUnsaved"), {
+						actions: [MessageBox.Action.YES, MessageBox.Action.CANCEL],
+						emphasizedAction: "CANCEL",
+						onClose: function(sAction) {
+							if (sAction === 'YES') {
+							
+								this.aMatUnitCvr = [];
+								this._refreshConvertTable(aFilters);
+								
+							}
+						}.bind(this)
+					});		
+				} else {
+					this._refreshConvertTable(aFilters);
+				}
+				
+			
+				
 
 			} else {
 				
-				var oThis = this;
+			
 				oViewModel.setProperty("/Mode", "");
 				
 				MessageBox.confirm(_oBundle.getText("msgCfrmDelUnitCode"), {
@@ -171,15 +227,56 @@ sap.ui.define([
 					onClose: function(sAction) {
 						if (sAction === 'YES') {
 						
-							oThis._deleteData(oData);
+							this._deleteData(oData);
 							
 						}
-				}
-			});	
+					}.bind(this)
+				});	
 			}
 
 			//MessageToast.show("Item " + (oItem.getText() || oItem.getType()) + " pressed for product with id " +
 			//	this.getView().getModel().getProperty("Locationid", oRow.getBindingContext()));
+		},
+		
+		
+		onTable2RowAction: function(oEvent) {
+			var oRow = oEvent.getParameter("row");
+			var oData = oRow.getBindingContext().getObject();
+			var oItem = oEvent.getParameter("item");
+			
+			sap.ui.getCore().getMessageManager().removeAllMessages();
+		
+			if (oItem.getText() === "Delete") {
+				MessageBox.confirm(_oBundle.getText("msgCfrmDelMatUnitCvr"), {
+					actions: [MessageBox.Action.YES, MessageBox.Action.CANCEL],
+					emphasizedAction: "CANCEL",
+					onClose: function(sAction) {
+						if (sAction === 'YES') {
+						
+							this._deleteMatData(oData);
+							
+						}
+					}.bind(this)
+				});	
+			}
+		},
+		
+		onCookQtyChange: function(oEvent){
+			var oSource = oEvent.getSource(),
+				sValue = oSource.getValue(),
+				oParent = oSource.getParent();
+			var oData = oParent.getBindingContext().getObject();
+			oData.Cookqty = sValue;
+			
+			var idx = this.aMatUnitCvr.findIndex(item => item.Matnr === oData.Matnr);
+			
+			if(idx > -1) {
+				
+				this.aMatUnitCvr[idx] = oData;	
+			} else {	
+			    this.aMatUnitCvr.push(oData);
+			}
+				
 		},
 		onMsehiChange:function(oEvent){
 			var input = oEvent.getSource();
@@ -190,6 +287,15 @@ sap.ui.define([
 			var oSource = oEvent.getSource();
 
 			this.showPopOverFragment(this.getView(), oSource, this._formFragments, "halo.sap.mm.RECIPECOST.fragments.MessagePopover", this);
+		},
+		
+		_refreshConvertTable: function(aFilters){
+			var oTable = this.byId("matcookunittbl");
+			var oBinding = oTable.getBinding("rows");
+		
+			if (oBinding) {
+				oBinding.filter(aFilters,sap.ui.model.FilterType.Application);
+			}
 		},
 		
 		_validateForm: function(oFormData) {
@@ -239,7 +345,21 @@ sap.ui.define([
 				}
 			});
 		},
-		
+		_deleteMatData: function(oData){
+			var oModel = this.getModel();
+			
+			oModel.remove("/MatCookingUnitSet(Werks='" + this.PlantID + "',Matnr='" + oData.Matnr + "',Cookunit='" + oData.Cookunit + "')",{
+				method: "DELETE",
+				success: function(data){
+					MessageToast.show(_oBundle.getText("msgMatUnitCvrDeleted"));
+				},
+				error: function(e){
+					var oMessage= JSON.parse(e.responseText).error.message.value;
+    				MessageBox.error(oMessage);
+					
+				}
+			});
+		},
 		onVHMaterialRequested: function() {
 			var aCols = this.oColModel.getData().cols;
 
@@ -369,29 +489,45 @@ sap.ui.define([
 		},
 
 		onValueHelpOkPress: function(oEvent) {
-			// var oTable = this.byId("matcookunittbl"),
-			// 	oViewModel = this.getModel("viewData");
+			var oModel = this.getModel();
+			var oFormModel = this.getModel("form"),
+				oData = oFormModel.getProperty("/");
 				
-				
-		
-			// var oBindingInfo = oTable.getBindingInfo("rows");	
-			// 	console.log(oBindingInfo);	
-
+			if (oData.Werks === "" || oData.Msehi === ""){
+				MessageBox.error(_oBundle.getText("msgWrgSelectCookUnit"));
+				return;
+			}
+			
 			var aTokens = oEvent.getParameter("tokens");
 
 			if (aTokens.length) {
+				
+				oModel.setUseBatch(true);
+				oModel.setDeferredGroups(["batchMatCookingUnit"]);
+				var mParameters = {
+					method: "POST",
+					groupId:"batchMatCookingUnit",
+					success:function(odata, resp){ MessageToast.show(_oBundle.getText("msgSuccessAdded"));  },
+					error: function(odata, resp) { MessageToast.show(_oBundle.getText("msgErr")); }
+					
+				};
+
 				for (var i = 0; i < aTokens.length; i++) {
 					var oObject = aTokens[i].data().row;
 					var oRecord = {
-						"Werks" : this.plantID,
+						"Werks" : oObject.Werks,
 						"Matnr" : oObject.Matnr,
-						"Cookunit" : null,
-						"Cookqty" : null,
+						"Cookunit" : oData.Msehi,
+						"Cookqty" : "0",
 						"Purcunit" : oObject.Bprme,
 						"Purcqty" : oObject.Peinh,
-						"MAKTX" : oObject.Matkl
-					}
+						"Maktx" : oObject.Matkl
+					};
+					
+					oModel.create("/MatCookingUnitSet", oRecord, mParameters);
+				
 				}
+				oModel.submitChanges(mParameters);
 			}
 			this._oValueHelpDialog.close();
 		},
