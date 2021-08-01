@@ -28,7 +28,7 @@ sap.ui.define([
 				var oViewModel = new JSONModel(oViewData);
 				this.setModel(oViewModel, "viewData");
 				
-				this._initForm();
+				this._initForm(this);
 				
 				// set message model
 				var oMessageManager = sap.ui.getCore().getMessageManager();
@@ -86,6 +86,7 @@ sap.ui.define([
 				
 				this.PlantID = "";
 				this.aMatUnitCvr = [];
+				this.bIsDirty = false;
 				
 				this._oRouter = this.getRouter();
 				this._oRouter.getRoute("uomconversion").attachPatternMatched(this.__onRouteMatched, this);
@@ -97,7 +98,7 @@ sap.ui.define([
 		},
 		
 		onNew: function() {
-			this._initForm();
+			this._initForm(this);
 
 			var oViewModel = this.getModel("viewData");
 				oViewModel.setProperty("/Mode", "New");
@@ -114,15 +115,15 @@ sap.ui.define([
 			
 			var oViewModel = this.getModel("viewData");
 			var oModel = this.getModel();
-			var oThis = this;
+			
 			
 			var sMode = oViewModel.getProperty("/Mode");
 			
 			var oFormModel = this.getModel("form"),
-				oFormData = oFormModel.getData();
-
-
+			 	oFormData = oFormModel.getData();
+			
 			sap.ui.getCore().getMessageManager().removeAllMessages();
+			
 			
 			if (this._validateForm(oFormData)) {
 				var oData = {
@@ -136,9 +137,9 @@ sap.ui.define([
 					oModel.create("/CookingUnitSet", oData, {
 						method: "POST",
 						success: function(data) {
-							oThis._initForm();
+							this._initForm();
 							MessageToast.show(_oBundle.getText("msgUnitCodeCreated"));
-						},
+						}.bind(this),
 						error: function(e) {
 							var oMessage= JSON.parse(e.responseText).error.message.value;
 							if (oMessage) {
@@ -148,20 +149,60 @@ sap.ui.define([
 							}
 						}
 					});
+					this.bIsDirty = false;
 				} else {
-					oModel.update("/CookingUnitSet(Werks='" + this.PlantID + "',Msehi='" + oFormData.Msehi + "')", oData,null,
-					function(){
-						oThis._initForm();
-						MessageToast.show(_oBundle.getText("msgUnitCodeUpdated"));
-					},
-					function(e){
-						var oMessage= JSON.parse(e.responseText).error.message.value;
-						if (oMessage) {
-							MessageToast.show(oMessage);
-						} else {
-							MessageToast.show(_oBundle.getText("msgErr"));
+					
+					if (this.bIsDirty){
+						
+						oModel.update("/CookingUnitSet(Werks='" + this.PlantID + "',Msehi='" + oFormData.Msehi + "')", oData,null,
+						function(){
+							this._initForm();
+							
+							
+							MessageToast.show(_oBundle.getText("msgUnitCodeUpdated"));
+							
+						}.bind(this),
+						function(e){
+							var oMessage= JSON.parse(e.responseText).error.message.value;
+							if (oMessage) {
+								MessageToast.show(oMessage);
+							} else {
+								MessageToast.show(_oBundle.getText("msgErr"));
+							}
+						});
+						
+						this.bIsDirty = false;
+					}
+					
+					//Save Material Unit Conversion
+					if (this.aMatUnitCvr.length > 0) {
+						oModel.setUseBatch(true);
+						oModel.setDeferredGroups(["batchMatCookingUnit"]);
+						var mParameters = {
+							method: "POST",
+							groupId:"batchMatCookingUnit",
+							success:function(odata, resp){ MessageToast.show(_oBundle.getText("msgSuccessSaved")); this.aMatUnitCvr = []; }.bind(this),
+							error: function(odata, resp) { MessageToast.show(_oBundle.getText("msgErr")); }
+							
+						};
+						for (var i = 0; i < this.aMatUnitCvr.length; i++) {
+							var oObject =  this.aMatUnitCvr[i];
+							var oRecord = {
+								"Werks" : oObject.Werks,
+								"Matnr" : oObject.Matnr,
+								"Cookunit" : oObject.Cookunit,
+								"Cookqty" : oObject.Cookqty
+								 //"Purcunit" : "",
+								 //"Purcqty" : "",
+								 //"Maktx" : ""
+							};
+							
+						
+							oModel.update("/MatCookingUnitSet(Werks='" + oObject.Werks + "',Matnr='" + oObject.Matnr + "',Cookunit='" + oObject.Cookunit + "')", oRecord, mParameters);
 						}
-					});
+						oModel.submitChanges(mParameters);
+	
+					}
 				}
 			}
 
@@ -173,29 +214,16 @@ sap.ui.define([
 			var oData = oRow.getBindingContext().getObject();
 			var oItem = oEvent.getParameter("item");
 			var oViewModel = this.getModel("viewData");
+			var oFormModel,oFormData;
+			var aFilters;
 			
 			sap.ui.getCore().getMessageManager().removeAllMessages();
 		
 			if (oItem.getText() === "Edit") {
 				
+				oViewModel.setProperty("/Mode", "Edit");
 				
-				var oFormModel = this.getModel("form"),
-						oFormData = oFormModel.getData();
-					
-					oFormData.Werks = oData.Werks;
-					oFormData.Msehi = oData.Msehi;
-					oFormData.Text = oData.Text;
-	
-					oFormModel.setProperty("/", oFormData);
-					oViewModel.setProperty("/Mode", "Edit");
-					
-					var aFilters = [
-						new Filter("Werks", FilterOperator.EQ, oData.Werks),
-				    	new Filter("Cookunit", FilterOperator.EQ, oData.Msehi)
-					];
-					
-				
-				if (this.aMatUnitCvr.length > 0 ){
+				if (this.aMatUnitCvr.length > 0 || this.bIsDirty ){
 						
 					MessageBox.confirm(_oBundle.getText("msgInfoUnsaved"), {
 						actions: [MessageBox.Action.YES, MessageBox.Action.CANCEL],
@@ -204,16 +232,44 @@ sap.ui.define([
 							if (sAction === 'YES') {
 							
 								this.aMatUnitCvr = [];
+								this.bIsDirty = false;
+								
+								oFormModel = this.getModel("form");
+								oFormData = oFormModel.getData();
+								
+								oFormData.Werks = oData.Werks;
+								oFormData.Msehi = oData.Msehi;
+								oFormData.Text = oData.Text;
+								oFormModel.setProperty("/", oFormData);
+								
+								aFilters = [
+									new Filter("Werks", FilterOperator.EQ, oData.Werks),
+							    	new Filter("Cookunit", FilterOperator.EQ, oData.Msehi)
+								];
+					
 								this._refreshConvertTable(aFilters);
 								
 							}
 						}.bind(this)
 					});		
 				} else {
+					
+					oFormModel = this.getModel("form");
+					oFormData = oFormModel.getData();
+					
+					oFormData.Werks = oData.Werks;
+					oFormData.Msehi = oData.Msehi;
+					oFormData.Text = oData.Text;
+					
+					aFilters = [
+						new Filter("Werks", FilterOperator.EQ, oData.Werks),
+				    	new Filter("Cookunit", FilterOperator.EQ, oData.Msehi)
+					];
+				
+					oFormModel.setProperty("/", oFormData);
+								
 					this._refreshConvertTable(aFilters);
 				}
-				
-			
 				
 
 			} else {
@@ -266,15 +322,21 @@ sap.ui.define([
 				sValue = oSource.getValue(),
 				oParent = oSource.getParent();
 			var oData = oParent.getBindingContext().getObject();
-			oData.Cookqty = sValue;
 			
-			var idx = this.aMatUnitCvr.findIndex(item => item.Matnr === oData.Matnr);
+			var oRecord = {
+				"Werks" : oData.Werks,
+				"Matnr": oData.Matnr,
+				"Cookunit": oData.Cookunit,
+				"Cookqty": sValue
+				
+			};
+			
+			var idx = this.aMatUnitCvr.findIndex(item => item.Matnr === oRecord.Matnr);
 			
 			if(idx > -1) {
-				
-				this.aMatUnitCvr[idx] = oData;	
+				this.aMatUnitCvr[idx] = oRecord;	
 			} else {	
-			    this.aMatUnitCvr.push(oData);
+			    this.aMatUnitCvr.push(oRecord);
 			}
 				
 		},
@@ -282,6 +344,10 @@ sap.ui.define([
 			var input = oEvent.getSource();
 
     		input.setValue(input.getValue().toUpperCase());
+		},
+		
+		onTextChange: function(oEvent){
+			this.bIsDirty = true;
 		},
 		onMessagePopoverPress: function(oEvent) {
 			var oSource = oEvent.getSource();
@@ -292,10 +358,11 @@ sap.ui.define([
 		_refreshConvertTable: function(aFilters){
 			var oTable = this.byId("matcookunittbl");
 			var oBinding = oTable.getBinding("rows");
-		
+			
 			if (oBinding) {
 				oBinding.filter(aFilters,sap.ui.model.FilterType.Application);
 			}
+			
 		},
 		
 		_validateForm: function(oFormData) {
@@ -361,6 +428,16 @@ sap.ui.define([
 			});
 		},
 		onVHMaterialRequested: function() {
+			
+			var oFormModel = this.getModel("form"),
+				oData = oFormModel.getProperty("/");
+				
+			if (oData.Werks === "" || oData.Msehi === ""){
+				MessageBox.error(_oBundle.getText("msgWrgSelectCookUnit"));
+				return;
+			}
+			
+			
 			var aCols = this.oColModel.getData().cols;
 
 			this._oBasicSearchField = new sap.m.SearchField({
@@ -493,11 +570,6 @@ sap.ui.define([
 			var oFormModel = this.getModel("form"),
 				oData = oFormModel.getProperty("/");
 				
-			if (oData.Werks === "" || oData.Msehi === ""){
-				MessageBox.error(_oBundle.getText("msgWrgSelectCookUnit"));
-				return;
-			}
-			
 			var aTokens = oEvent.getParameter("tokens");
 
 			if (aTokens.length) {

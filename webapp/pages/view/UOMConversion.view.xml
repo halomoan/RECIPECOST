@@ -31,7 +31,7 @@
 										<f:ColumnElementData cellsSmall="1" cellsLarge="1"/>
 									</layoutData>
 								</Text>
-								<Input value="{ path: 'form>/Text' }" visible="true"/>
+								<Input value="{ path: 'form>/Text' }" visible="true" liveChange="onTextChange" />
 							</f:fields>
 						</f:FormElement>
 					</f:formElements>
@@ -41,7 +41,7 @@
 		<l:BlockLayout >
 			<l:BlockLayoutRow  class="sapUiNoContentPadding">
 				<l:BlockLayoutCell width="1" class="sapUiMediumMarginEnd">
-					<t:Table id="uomtbl" rows="{/CookingUnitSet}" selectionMode="Single" visibleRowCount="18" paste="onPaste" ariaLabelledBy="title">
+					<t:Table id="uomtbl" rows="{/CookingUnitSet}" selectionMode="Single" visibleRowCount="18" paste="onPaste">
 						<t:extension>
 							<OverflowToolbar style="Clear">
 								<Title text="{i18n>CookingUOM}"/>
@@ -65,7 +65,7 @@
 				</l:BlockLayoutCell>
 				<l:BlockLayoutCell width="2">
 					<t:Table id="matcookunittbl" rows="{ path: '/MatCookingUnitSet', filters : [{ path : 'Werks', operator : 'EQ', value1 : ''}] }"
-						selectionMode="Single" visibleRowCount="18" paste="onPaste" ariaLabelledBy="title">
+						selectionMode="Single" visibleRowCount="18" paste="onPaste">
 						<t:extension>
 							<OverflowToolbar style="Clear">
 								<Title text="{i18n>MatCookUnitConvert}"/>
@@ -86,7 +86,7 @@
 									<Text text="{Maktx}" wrapping="false"/>
 								</t:template>
 							</t:Column>
-							<t:Column width="8rem" filterProperty="Purcunit">
+							<t:Column width="8rem" filterProperty="Purcunit" hAlign="End">
 								<Label text="{i18n>QtyPurchased}"/>
 								<t:template>
 									<Text text="{Purcqty} {Purcunit}" wrapping="false"/>
@@ -95,7 +95,7 @@
 							<t:Column width="5rem" filterProperty="Cookqty" headerSpan="2,1" hAlign="Center">
 								<Label text="{i18n>QtyCooking}"/>
 								<t:template>
-									<Input value="{Cookqty}" change=".onCookQtyChange"/>
+									<Input value="{Cookqty}" type="Number" change=".onCookQtyChange"/>
 								</t:template>
 							</t:Column>
 							<t:Column width="3rem" filterProperty="Cookunit">
