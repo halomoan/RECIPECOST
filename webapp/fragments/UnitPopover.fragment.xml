@@ -1,0 +1,46 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core">
+	<Popover
+		showHeader="false"
+		contentWidth="320px"
+		contentHeight="400px"
+		placement="Top"
+		ariaLabelledBy="master-title">
+		<NavContainer id="unitnav">
+			<Page
+				id="selectunit"
+				class="sapUiResponsivePadding--header"
+				title="{i18n>AvailableUnits}">
+				<List
+					id="unitlist"
+					items="{path: '/MatCookingUnitSet', filters : [{ path : 'Werks', operator : 'EQ', value1 : ''}] }" >
+					<StandardListItem
+						title="{v}"
+						description="{ProductId}"
+						type="Active"
+						icon="{ProductPicUrl}"
+						press="onNavToProduct"
+						iconDensityAware="false"
+						iconInset="false" />
+				</List>
+			</Page>
+			<Page
+				id="createunit"
+				class="sapUiResponsivePadding--header"
+				showNavButton="true"
+				navButtonPress="onNavBack"
+				title="Product">
+				<content>
+					<ObjectHeader title="{Name}" >
+						<attributes>
+							<ObjectAttribute text="{WeightMeasure} {WeightUnit}" />
+							<ObjectAttribute text="{Width} x {Depth} x {Height} {DimUnit}" />
+						</attributes>
+					</ObjectHeader>
+					<Text class="sapUiSmallMargin" text="{Description}" />
+				</content>
+			</Page>
+		</NavContainer>
+	</Popover>
+</core:FragmentDefinition>

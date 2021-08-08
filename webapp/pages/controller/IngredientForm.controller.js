@@ -111,6 +111,28 @@ sap.ui.define([
 
 		},
 
+		onUnitPress: function(oEvent){
+			var oSource = oEvent.getSource();
+			var sPath = oSource.getBindingContext("Ingredients").getPath();
+			var oData = oSource.getBindingContext("Ingredients").getObject();
+			
+			console.log(oData);
+			var aFilter = [
+				new Filter("Werks", FilterOperator.EQ, this.PlantID),
+				new Filter("Matnr", FilterOperator.EQ, oData.Matnr)
+			];
+		
+			this.showPopOverFragment(this.getView(), oSource, this._formFragments, "halo.sap.mm.RECIPECOST.fragments.UnitPopover", this);
+
+			this.byId("unitnav").bindElement({
+				path: sPath
+			});
+			
+			var oList = this.byId("unitlist");
+			var oBinding = oList.getBinding("items");
+			oBinding.filter(aFilter,"Application");
+			
+		},
 		onNavBack: function() {
 			this.navBack();
 		
@@ -271,11 +293,11 @@ sap.ui.define([
 						},
 						"Waers": aIngredients[i].Waers,
 						"Ebeln": aIngredients[i].Ebeln,
-						"TPeinh": {
+						"QtyUsed": {
 							Curr: aIngredients[i].QtyUsed,
 							Prev1: 0
 						},
-						"TNetpr": {
+						"CalcCost": {
 							Curr: aIngredients[i].CalcCost,
 							Prev1: 0.00
 						},
@@ -297,8 +319,8 @@ sap.ui.define([
 							oMaterial = aMaterials[idx];
 							oMaterial.Peinh.Prev1 = aIngredients[i].Peinh;
 							oMaterial.Netpr.Prev1 = aIngredients[i].Netpr;
-							oMaterial.TPeinh.Prev1 = aIngredients[i].QtyUsed;
-							oMaterial.TNetpr.Prev1 = aIngredients[i].CalcCost;
+							oMaterial.QtyUsed.Prev1 = aIngredients[i].QtyUsed;
+							oMaterial.CalcCost.Prev1 = aIngredients[i].CalcCost;
 
 						} else {
 							oMaterial = {
@@ -316,11 +338,11 @@ sap.ui.define([
 								},
 								"Waers": aIngredients[i].Waers,
 								"Ebeln": aIngredients[i].Ebeln,
-								"TPeinh": {
+								"QtyUsed": {
 									Curr: null,
 									Prev1: aIngredients[i].QtyUsed
 								},
-								"TNetpr": {
+								"CalcCost": {
 									Curr: null,
 									Prev1: aIngredients[i].CalcCost
 								},
@@ -368,11 +390,11 @@ sap.ui.define([
 						},
 						"Waers": oObject.Waers,
 						"Ebeln": oObject.Ebeln,
-						"TPeinh": {
+						"QtyUsed": {
 							Curr: 0.00,
 							Prev1: 0.00
 						},
-						"TNetpr": {
+						"CalcCost": {
 							Curr: 0.00,
 							Prev1: 0.00
 						},
@@ -387,15 +409,15 @@ sap.ui.define([
 						if (oIngredientData[idx].Netpr.Curr === null) {
 							oIngredientData[idx].Netpr.Curr = oMaterial.Netpr.Curr;
 							oIngredientData[idx].Peinh.Curr = oMaterial.Peinh.Curr;
-							oIngredientData[idx].TNetpr.Curr = 0.00;
-							oIngredientData[idx].TPeinh.Curr = 0.00;
+							oIngredientData[idx].CalcCost.Curr = 0.00;
+							oIngredientData[idx].QtyUsed.Curr = 0.00;
 							oIngredientData[idx].Status = "Success";
 						}
 					} else{
 
 						if (oIngredientData.length > 0) {
 							var idx = oIngredientData.findIndex(ele => {
-								return ele.TPeinh.Curr === null;
+								return ele.QtyUsed.Curr === null;
 							});
 							if (idx > -1) {
 								oIngredientData.splice(idx, 0, oMaterial);
@@ -422,7 +444,7 @@ sap.ui.define([
 		
 		_sortMaterials: function(aMaterials){
 			aMaterials.sort(function(a,b){
-				if(a.TPeinh.Curr) {
+				if(a.QtyUsed.Curr) {
 					return -1;
 				} else {
 					return 1;
@@ -443,12 +465,12 @@ sap.ui.define([
 				"ID": "SubTotal",
 				"Matnr": "",
 				"Maktx": _oBundle.getText("SubTotal"),
-				"TPeinh": null,
+				"QtyUsed": null,
 				"Bprme": null,
 				"Peinh": null,
 				"Netpr": null,
 				"Waers": "SGD",
-				"TNetpr": {
+				"CalcCost": {
 					Curr: (aVersions.length > 0 ? aVersions[0].SubTotal : 0),
 					Prev1: (aVersions.length > 1 ? aVersions[1].SubTotal : 0)
 				}
@@ -458,12 +480,12 @@ sap.ui.define([
 				"ID": "AddMisc",
 				"Matnr": null,
 				"Maktx": _oBundle.getText("AddMisc"),
-				"TPeinh": null,
+				"QtyUsed": null,
 				"Bprme": null,
 				"Peinh": null,
 				"Netpr": null,
 				"Waers": "%",
-				"TNetpr": 0.00,
+				"CalcCost": 0.00,
 				"AddMisc": {
 					Curr: (aVersions.length > 0 ? aVersions[0].AddMisc * 100 : 0),
 					Prev1: (aVersions.length > 1 ? aVersions[1].AddMisc * 100 : 0)
@@ -473,12 +495,12 @@ sap.ui.define([
 				"ID": "TotRecipeCost",
 				"Matnr": "",
 				"Maktx": _oBundle.getText("TotalRecipeCost"),
-				"TPeinh": null,
+				"QtyUsed": null,
 				"Bprme": null,
 				"Peinh": null,
 				"Netpr": null,
 				"Waers": "SGD",
-				"TNetpr": {
+				"CalcCost": {
 					Curr: (aVersions.length > 0 ? aVersions[0].TotRecipeCost : 0),
 					Prev1: (aVersions.length > 1 ? aVersions[1].TotRecipeCost : 0)
 				}
@@ -488,12 +510,12 @@ sap.ui.define([
 				"ID": "CostPerUnit",
 				"Matnr": "",
 				"Maktx": _oBundle.getText("CostPerPortion"),
-				"TPeinh": null,
+				"QtyUsed": null,
 				"Bprme": null,
 				"Peinh": null,
 				"Netpr": null,
 				"Waers": "SGD",
-				"TNetpr": {
+				"CalcCost": {
 					Curr: (aVersions.length > 0 ? aVersions[0].CostPerUnit : 0),
 					Prev1: (aVersions.length > 1 ? aVersions[1].CostPerUnit : 0)
 				}
@@ -502,12 +524,12 @@ sap.ui.define([
 				"ID": "UnitSellPrice",
 				"Matnr": null,
 				"Maktx": _oBundle.getText("UnitSellPrice"),
-				"TPeinh": null,
+				"QtyUsed": null,
 				"Bprme": null,
 				"Peinh": null,
 				"Netpr": null,
 				"Waers": "SGD",
-				"TNetpr": null,
+				"CalcCost": null,
 				"SellPrice": {
 					Curr: (aVersions.length > 0 ? aVersions[0].UnitSellPrice : 0),
 					Prev1: (aVersions.length > 1 ? aVersions[1].UnitSellPrice : 0)
@@ -519,12 +541,12 @@ sap.ui.define([
 				"ID": "readonly",
 				"Matnr": "",
 				"Maktx": _oBundle.getText("Cost%PerPortion"),
-				"TPeinh": null,
+				"QtyUsed": null,
 				"Bprme": null,
 				"Peinh": null,
 				"Netpr": null,
 				"Waers": "% ",
-				"TNetpr": {
+				"CalcCost": {
 					Curr: (aVersions.length > 0 ? (aVersions[0].CostPerUnit / aVersions[0].UnitSellPrice) * 100 : 0),
 					Prev1: (aVersions.length > 1 ? (aVersions[1].CostPerUnit / aVersions[1].UnitSellPrice) * 100 : 0)
 				}
@@ -685,9 +707,9 @@ sap.ui.define([
 				if (arrItems[i] < oRows.length - 7) {
 					var oMaterial = oRows[arrItems[i]];
 					
-					if (oMaterial.TPeinh.Prev1 !== 0 ) {
-						if (oMaterial.TPeinh.Curr) {
-							oMaterial.TPeinh.Curr = 0.00;	
+					if (oMaterial.QtyUsed.Prev1 !== 0 ) {
+						if (oMaterial.QtyUsed.Curr) {
+							oMaterial.QtyUsed.Curr = 0.00;	
 						}
 					} else {		
 						oRows.splice(arrItems[i], 1);
@@ -708,7 +730,7 @@ sap.ui.define([
 
 			if (oRow.Peinh.Curr > 0) {
 				var iTotalCost = (iValue / oRow.Peinh.Curr) * oRow.Netpr.Curr;
-				oRow.TNetpr.Curr = iTotalCost.toFixed(2);
+				oRow.CalcCost.Curr = iTotalCost.toFixed(2);
 			}
 
 			oModel.setProperty(sPath, oRow);
@@ -753,7 +775,7 @@ sap.ui.define([
 			for (i = 0; i < oRows.length; i++) {
 
 				if (i < oRows.length - 7) {
-					if (oRows[i].TPeinh.Curr > 0) {
+					if (oRows[i].QtyUsed.Curr > 0) {
 						var oIngredient = {
 							"Werks": this.PlantID,
 							"RecipeID": this.RecipeID,
@@ -767,8 +789,8 @@ sap.ui.define([
 							"Netpr": oRows[i].Netpr.Curr,
 							"Peinh": oRows[i].Peinh.Curr,
 							"Bprme": oRows[i].Bprme,
-							"CalcCost": oRows[i].TNetpr.Curr,
-							"QtyUsed": "" + oRows[i].TPeinh.Curr
+							"CalcCost": oRows[i].CalcCost.Curr,
+							"QtyUsed": "" + oRows[i].QtyUsed.Curr
 						};
 
 						oRecipeVersion.Ingredients.push(oIngredient);
@@ -777,16 +799,16 @@ sap.ui.define([
 				} else {
 					switch (oRows[i].ID) {
 						case "SubTotal":
-							oRecipeVersion.SubTotal = "" + oRows[i].TNetpr.Curr;
+							oRecipeVersion.SubTotal = "" + oRows[i].CalcCost.Curr;
 							break;
 						case "AddMisc":
 							oRecipeVersion.AddMisc = "" + (oRows[i].AddMisc.Curr / 100);
 							break;
 						case "TotRecipeCost":
-							oRecipeVersion.TotRecipeCost = "" + oRows[i].TNetpr.Curr;
+							oRecipeVersion.TotRecipeCost = "" + oRows[i].CalcCost.Curr;
 							break;
 						case "CostPerUnit":
-							oRecipeVersion.CostPerUnit = "" + oRows[i].TNetpr.Curr;
+							oRecipeVersion.CostPerUnit = "" + oRows[i].CalcCost.Curr;
 							break;
 						case "UnitSellPrice":
 							oRecipeVersion.UnitSellPrice = "" + oRows[i].SellPrice.Curr;
@@ -879,14 +901,14 @@ sap.ui.define([
 			//SubTotal
 			var iSubTotal = 0.00;
 			for (var i = 0; i < oRows.length - 7; i++) {
-				if (oRows[i].TNetpr.Curr) {
-					iSubTotal = parseFloat(iSubTotal) + parseFloat(oRows[i].TNetpr.Curr);
+				if (oRows[i].CalcCost.Curr) {
+					iSubTotal = parseFloat(iSubTotal) + parseFloat(oRows[i].CalcCost.Curr);
 				}
 			}
 
 			var oRowSubTotal = oRows[oRows.length - 6];
 
-			oRowSubTotal.TNetpr.Curr = iSubTotal;
+			oRowSubTotal.CalcCost.Curr = iSubTotal;
 			//oModel.setProperty("/Items/" + (oRows.length - 6), oRowSubTotal);
 
 			var oRowAddMisc = oRows[oRows.length - 5];
@@ -895,15 +917,15 @@ sap.ui.define([
 			var iTotalCost = iSubTotal * (1 + (iAddMisc / 100));
 
 			var oRowTotalCost = oRows[oRows.length - 4];
-			oRowTotalCost.TNetpr.Curr = iTotalCost;
+			oRowTotalCost.CalcCost.Curr = iTotalCost;
 
 			//oModel.setProperty("/Items/" + (oRows.length - 4), oRowTotalCost);
 
 			//Cost Per Portion
 			var iQty = oRecipeData.Qty;
 			var oRowCostPerPortion = oRows[oRows.length - 3];
-			var iCostPerPortion = (oRowTotalCost.TNetpr.Curr / iQty).toFixed(2);
-			oRowCostPerPortion.TNetpr.Curr = iCostPerPortion;
+			var iCostPerPortion = (oRowTotalCost.CalcCost.Curr / iQty).toFixed(2);
+			oRowCostPerPortion.CalcCost.Curr = iCostPerPortion;
 
 			//oModel.setProperty("/Items/" + (oRows.length - 3), oRowCostPerPortion);
 
@@ -915,7 +937,7 @@ sap.ui.define([
 			}
 			var oRowCostPctg = oRows[oRows.length - 1];
 
-			oRowCostPctg.TNetpr.Curr = iCostPctg;
+			oRowCostPctg.CalcCost.Curr = iCostPctg;
 
 			//oModel.setProperty("/Items/" + (oRows.length - 1), oRowCostPctg);
 

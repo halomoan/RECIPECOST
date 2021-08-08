@@ -88,8 +88,14 @@
 							<Label text="{i18n>QtyUsed}" design="Bold" textAlign="Center" width="100%"/>
 						</t:multiLabels>
 						<t:template>
-							<Input textAlign="End" value="{ parts: [{path: 'Ingredients>TPeinh/Curr'}, {path: 'Ingredients>Bprme'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: false,maxFractionDigits:3 } }" description="{Ingredients>Bprme}" visible="{= ${Ingredients>Netpr/Curr} !== null }" change=".onQtyChanged"/>
-							
+							<l:HorizontalLayout>
+							<Input textAlign="End" value="{ parts: [{path: 'Ingredients>QtyUsed/Curr'}, {path: 'Ingredients>Bprme'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: false,maxFractionDigits:3 } }" visible="{= ${Ingredients>Netpr/Curr} !== null }" change=".onQtyChanged" width="5rem"/>
+							<Link
+								text="{Ingredients>Bprme}"
+								press="onUnitPress"
+								class="sapUiTinyMarginTop sapUiTinyMarginBegin"
+								ariaHasPopup="Dialog"/>
+							</l:HorizontalLayout>	
 						</t:template>
 					</t:Column>
 					<t:Column width="10rem" hAlign="End">
@@ -117,7 +123,7 @@
 						</t:multiLabels>
 						<t:template>
 							<FlexBox alignItems="Start" justifyContent="End">
-								<Text text="{ parts: [{path: 'Ingredients>TNetpr/Curr'}, {path: 'Ingredients>Waers'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: true, minFractionDigits:2, maxFractionDigits:2 } }" wrapping="false" visible="{= ${Ingredients>Matnr} !== null  }"/>
+								<Text text="{ parts: [{path: 'Ingredients>CalcCost/Curr'}, {path: 'Ingredients>Waers'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: true, minFractionDigits:2, maxFractionDigits:2 } }" wrapping="false" visible="{= ${Ingredients>Matnr} !== null  }"/>
 								<Input textAlign="End" value="{ parts: [{path: 'Ingredients>AddMisc/Curr'}, {path: 'Ingredients>Waers'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: false } }" description="{Ingredients>Waers}" visible="{= ${Ingredients>ID} === 'AddMisc' }" change="onAddMiscChanged"/>
 								<Input textAlign="End" value="{ parts: [{path: 'Ingredients>SellPrice/Curr'}, {path: 'Ingredients>Waers'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: false } }" description="{Ingredients>Waers}" visible="{= ${Ingredients>ID} === 'UnitSellPrice' }" change="onUnitSellPriceChanged"/>
 								
@@ -132,7 +138,7 @@
 							<Label text="{i18n>QtyUsed}" textAlign="Center" width="100%"/>
 						</t:multiLabels>
 						<t:template>
-							<Text text="{Ingredients>TPeinh/Prev1} {Ingredients>Bprme}" wrapping="false"/>
+							<Text text="{Ingredients>QtyUsed/Prev1} {Ingredients>Bprme}" wrapping="false"/>
 						</t:template>
 					</t:Column>
 					<t:Column width="10rem" hAlign="End">
@@ -160,7 +166,7 @@
 						</t:multiLabels>
 						<t:template>
 							<FlexBox alignItems="Start" justifyContent="End">
-								<Text text="{ parts: [{path: 'Ingredients>TNetpr/Prev1'}, {path: 'Ingredients>Waers'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: true, minFractionDigits:2, maxFractionDigits:2 } }"  visible="{= ${Ingredients>Matnr} !== null  }"/>
+								<Text text="{ parts: [{path: 'Ingredients>CalcCost/Prev1'}, {path: 'Ingredients>Waers'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: true, minFractionDigits:2, maxFractionDigits:2 } }"  visible="{= ${Ingredients>Matnr} !== null  }"/>
 								<Text text="{ parts: [{path: 'Ingredients>AddMisc/Prev1'}, {path: 'Ingredients>Waers'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: true, minFractionDigits:2, maxFractionDigits:2 } }"  visible="{= ${Ingredients>ID} === 'AddMisc' }"/>
 								<Text text="{ parts: [{path: 'Ingredients>SellPrice/Prev1'}, {path: 'Ingredients>Waers'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: true, minFractionDigits:2, maxFractionDigits:2 } }"  visible="{= ${Ingredients>ID} === 'UnitSellPrice' }"/>								
 							</FlexBox>
