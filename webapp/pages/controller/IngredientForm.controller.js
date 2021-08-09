@@ -141,6 +141,7 @@ sap.ui.define([
 				
 			oItem.QtyUnit.Curr = oData.Cookunit;
 			oItem.QtyRatio.Curr = oData.Cookqty;
+			oItem.QtyUnitx.Curr = oData.Cookunitx;
 		
 			if (oItem.Peinh.Curr > 0) {
 				var iTotalCost = (oItem.QtyUsed.Curr / oItem.Peinh.Curr) * oItem.Netpr.Curr * oItem.QtyRatio.Curr;
