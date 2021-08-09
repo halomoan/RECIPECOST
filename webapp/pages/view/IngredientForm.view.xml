@@ -82,20 +82,23 @@
 							<Text text="{Ingredients>Maktx}" wrapping="false"/>
 						</t:template>
 					</t:Column>
-					<t:Column width="10rem" hAlign="End" headerSpan="4,1">
+					<t:Column width="8rem" hAlign="End" headerSpan="4,1">
 						<t:multiLabels>
 							<Label text="{path: 'viewData>/Date/Curr', type: 'sap.ui.model.type.DateTime', formatOptions: { pattern: 'dd-MMM-yyyy' }  }" design="Bold" textAlign="Center" width="100%"/>
 							<Label text="{i18n>QtyUsed}" design="Bold" textAlign="Center" width="100%"/>
 						</t:multiLabels>
 						<t:template>
-							<l:HorizontalLayout>
-							<Input textAlign="End" value="{ parts: [{path: 'Ingredients>QtyUsed/Curr'}, {path: 'Ingredients>Bprme'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: false,maxFractionDigits:3 } }" visible="{= ${Ingredients>Netpr/Curr} !== null }" change=".onQtyChanged" width="5rem"/>
+							<FlexBox
+								alignItems="Start"
+								justifyContent="SpaceBetween">
+							<Input textAlign="End" value="{ parts: [{path: 'Ingredients>QtyUsed/Curr'}, {path: 'Ingredients>QtyUnit'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: false,maxFractionDigits:3 } }" visible="{= ${Ingredients>Netpr/Curr} !== null }" change=".onQtyChanged" width="5rem"/>
 							<Link
-								text="{Ingredients>Bprme}"
+								text="{Ingredients>QtyUnit/Curr}"
 								press="onUnitPress"
 								class="sapUiTinyMarginTop sapUiTinyMarginBegin"
+								tooltip="{Ingredients>QtyUnitx/Curr}"
 								ariaHasPopup="Dialog"/>
-							</l:HorizontalLayout>	
+							</FlexBox>
 						</t:template>
 					</t:Column>
 					<t:Column width="10rem" hAlign="End">
@@ -138,7 +141,7 @@
 							<Label text="{i18n>QtyUsed}" textAlign="Center" width="100%"/>
 						</t:multiLabels>
 						<t:template>
-							<Text text="{Ingredients>QtyUsed/Prev1} {Ingredients>Bprme}" wrapping="false"/>
+							<Text text="{Ingredients>QtyUsed/Prev1} {Ingredients>QtyUnit/Prev1}" wrapping="false"/>
 						</t:template>
 					</t:Column>
 					<t:Column width="10rem" hAlign="End">

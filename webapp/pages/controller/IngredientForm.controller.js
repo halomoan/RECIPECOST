@@ -115,8 +115,9 @@ sap.ui.define([
 			var oSource = oEvent.getSource();
 			var sPath = oSource.getBindingContext("Ingredients").getPath();
 			var oData = oSource.getBindingContext("Ingredients").getObject();
-			
-			console.log(oData);
+		
+			this._UnitPath = sPath;
+		
 			var aFilter = [
 				new Filter("Werks", FilterOperator.EQ, this.PlantID),
 				new Filter("Matnr", FilterOperator.EQ, oData.Matnr)
@@ -124,14 +125,33 @@ sap.ui.define([
 		
 			this.showPopOverFragment(this.getView(), oSource, this._formFragments, "halo.sap.mm.RECIPECOST.fragments.UnitPopover", this);
 
-			this.byId("unitnav").bindElement({
-				path: sPath
-			});
-			
+		
 			var oList = this.byId("unitlist");
 			var oBinding = oList.getBinding("items");
 			oBinding.filter(aFilter,"Application");
 			
+		},
+		
+		onCookUnitSelect: function(oEvent){
+			var oSource = oEvent.getSource(),
+				oData = oSource.getBindingContext().getObject();
+				
+			var oModel = this.getModel("Ingredients"),
+				oItem = oModel.getProperty(this._UnitPath);
+				
+			oItem.QtyUnit.Curr = oData.Cookunit;
+			oItem.QtyRatio.Curr = oData.Cookqty;
+		
+			if (oItem.Peinh.Curr > 0) {
+				var iTotalCost = (oItem.QtyUsed.Curr / oItem.Peinh.Curr) * oItem.Netpr.Curr * oItem.QtyRatio.Curr;
+				oItem.CalcCost.Curr = iTotalCost.toFixed(2);
+			}
+			
+			oModel.setProperty(this._UnitPath,oItem);
+			this._calcTotals();
+			
+			var oPopOver = this.getFragmentByName(this._formFragments, "halo.sap.mm.RECIPECOST.fragments.UnitPopover");
+			oPopOver.close();
 		},
 		onNavBack: function() {
 			this.navBack();
@@ -274,9 +294,12 @@ sap.ui.define([
 			var i, idx;
 		
 			if (aVersions.length > 0) {
+				
 				oVersion = aVersions[0];
-
+				
+				
 				aIngredients = oVersion.Ingredients.results;
+				
 				for (i = 0; i < aIngredients.length; i++) {
 					oMaterial = {
 						"Matnr": aIngredients[i].Matnr,
@@ -296,6 +319,18 @@ sap.ui.define([
 						"QtyUsed": {
 							Curr: aIngredients[i].QtyUsed,
 							Prev1: 0
+						},
+						"QtyUnit": { 
+							Curr: aIngredients[i].QtyUnit,
+							Prev1: aIngredients[i].Bprme
+						},
+						"QtyUnitx" : {
+							Curr: aIngredients[i].QtyUnitx ? aIngredients[i].QtyUnitx : aIngredients[i].Bprmex ,
+							Prev1: aIngredients[i].Bprmex,
+						},
+						"QtyRatio": { 
+							Curr: aIngredients[i].QtyRatio,
+							Prev1: null
 						},
 						"CalcCost": {
 							Curr: aIngredients[i].CalcCost,
@@ -341,6 +376,14 @@ sap.ui.define([
 								"QtyUsed": {
 									Curr: null,
 									Prev1: aIngredients[i].QtyUsed
+								},
+								"QtyUnit": { 
+									Curr: null ,
+									Prev1: aIngredients[i].QtyUnit
+								},
+								"QtyRatio": { 
+									Curr: null,
+									Prev1:  aIngredients[i].QtyRatio
 								},
 								"CalcCost": {
 									Curr: null,
@@ -392,6 +435,14 @@ sap.ui.define([
 						"Ebeln": oObject.Ebeln,
 						"QtyUsed": {
 							Curr: 0.00,
+							Prev1: 0.00
+						},
+						"QtyUnit": {
+							Curr: oObject.Bprme,
+							Prev1: oObject.Bprme
+						},
+						"QtyRatio": {
+							Curr: 1.00,
 							Prev1: 0.00
 						},
 						"CalcCost": {
@@ -587,8 +638,6 @@ sap.ui.define([
 				path: sPath
 			});
 			
-			console.log(sPath);
-			
 			var sPhotoPath = "/sap/opu/odata/sap/zrecipecost_odata_srv" + sPath.replace("RecipeSet","RecipePhotoSet") + "/$value?" + "?" + new Date().getTime();
 			var oPreviewImage = this.byId("imgPreview");
 			oPreviewImage.setSrc(sPhotoPath);
@@ -721,15 +770,13 @@ sap.ui.define([
 		},
 		onQtyChanged: function(oEvent) {
 			var oSource = oEvent.getSource();
-
-			var iValue = oSource.getValue();
 			var sPath = oSource.getBindingContext("Ingredients").getPath();
 			var oModel = this.getModel("Ingredients");
 			var oRow = oModel.getProperty(sPath);
 
 
 			if (oRow.Peinh.Curr > 0) {
-				var iTotalCost = (iValue / oRow.Peinh.Curr) * oRow.Netpr.Curr;
+				var iTotalCost = (oRow.QtyUsed.Curr / oRow.Peinh.Curr) * oRow.Netpr.Curr * oRow.QtyRatio.Curr;
 				oRow.CalcCost.Curr = iTotalCost.toFixed(2);
 			}
 
@@ -790,7 +837,9 @@ sap.ui.define([
 							"Peinh": oRows[i].Peinh.Curr,
 							"Bprme": oRows[i].Bprme,
 							"CalcCost": oRows[i].CalcCost.Curr,
-							"QtyUsed": "" + oRows[i].QtyUsed.Curr
+							"QtyUsed": "" + oRows[i].QtyUsed.Curr,
+							"QtyUnit": oRows[i].QtyUnit.Curr,
+							"QtyRatio" : oRows[i].QtyRatio.Curr
 						};
 
 						oRecipeVersion.Ingredients.push(oIngredient);

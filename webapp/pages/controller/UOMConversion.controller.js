@@ -191,12 +191,14 @@ sap.ui.define([
 								"Werks" : oObject.Werks,
 								"Matnr" : oObject.Matnr,
 								"Cookunit" : oObject.Cookunit,
-								"Cookqty" : oObject.Cookqty
-								 //"Purcunit" : "",
-								 //"Purcqty" : "",
-								 //"Maktx" : ""
+								"Cookqty" : oObject.Cookqty,
+								// "Purcunit" : oObject.Purcunit,
+								// "Purcqty" : oObject.Purcqty,
+								// "Maktx": "",
+								// "Cookunitx":"",
+								// "Purcunitx" : ""
+								
 							};
-							
 						
 							oModel.update("/MatCookingUnitSet(Werks='" + oObject.Werks + "',Matnr='" + oObject.Matnr + "',Cookunit='" + oObject.Cookunit + "')", oRecord, mParameters);
 						}
@@ -327,7 +329,9 @@ sap.ui.define([
 				"Werks" : oData.Werks,
 				"Matnr": oData.Matnr,
 				"Cookunit": oData.Cookunit,
-				"Cookqty": sValue
+				"Cookqty": sValue,
+				// "Purcunit": oData.Purcunit,
+				// "Purcqty": oData.Purcqty
 				
 			};
 			
