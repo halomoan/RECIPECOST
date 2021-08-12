@@ -38,6 +38,7 @@ sap.ui.define([
 			});
 			this._sVersionID = "";
 			this._oDate = null;
+			this._bDirty = false;
 
 			this.getView().setModel(oIngredientModel, "Ingredients");
 
@@ -108,55 +109,58 @@ sap.ui.define([
 				}
 			});
 
-
 		},
 
-		onUnitPress: function(oEvent){
+		onUnitPress: function(oEvent) {
 			var oSource = oEvent.getSource();
 			var sPath = oSource.getBindingContext("Ingredients").getPath();
 			var oData = oSource.getBindingContext("Ingredients").getObject();
-		
+
 			this._UnitPath = sPath;
-		
+
 			var aFilter = [
 				new Filter("Werks", FilterOperator.EQ, this.PlantID),
 				new Filter("Matnr", FilterOperator.EQ, oData.Matnr)
 			];
-		
+
 			this.showPopOverFragment(this.getView(), oSource, this._formFragments, "halo.sap.mm.RECIPECOST.fragments.UnitPopover", this);
 
-		
 			var oList = this.byId("unitlist");
 			var oBinding = oList.getBinding("items");
-			oBinding.filter(aFilter,"Application");
-			
+			oBinding.filter(aFilter, "Application");
+
 		},
-		
-		onCookUnitSelect: function(oEvent){
+
+		onCookUnitSelect: function(oEvent) {
 			var oSource = oEvent.getSource(),
 				oData = oSource.getBindingContext().getObject();
-				
+
 			var oModel = this.getModel("Ingredients"),
 				oItem = oModel.getProperty(this._UnitPath);
-				
-			oItem.QtyUnit.Curr = oData.Cookunit;
-			oItem.QtyRatio.Curr = oData.Cookqty;
-			oItem.QtyUnitx.Curr = oData.Cookunitx;
-		
+
+			if (oItem.QtyUnit.Curr !== oData.Cookunit) {
+
+				oItem.QtyUnit.Curr = oData.Cookunit;
+				oItem.QtyRatio.Curr = oData.Cookqty;
+				oItem.QtyUnitx.Curr = oData.Cookunitx;
+
+				this._bDirty = true;
+			}
+
 			if (oItem.Peinh.Curr > 0) {
 				var iTotalCost = (oItem.QtyUsed.Curr / oItem.Peinh.Curr) * oItem.Netpr.Curr * oItem.QtyRatio.Curr;
 				oItem.CalcCost.Curr = iTotalCost.toFixed(2);
 			}
-			
-			oModel.setProperty(this._UnitPath,oItem);
+
+			oModel.setProperty(this._UnitPath, oItem);
 			this._calcTotals();
-			
+
 			var oPopOver = this.getFragmentByName(this._formFragments, "halo.sap.mm.RECIPECOST.fragments.UnitPopover");
 			oPopOver.close();
 		},
 		onNavBack: function() {
 			this.navBack();
-		
+
 		},
 
 		onVHMaterialRequested: function() {
@@ -293,14 +297,13 @@ sap.ui.define([
 				aMaterials = [];
 			var oVersion, aIngredients, oMaterial;
 			var i, idx;
-		
+
 			if (aVersions.length > 0) {
-				
+
 				oVersion = aVersions[0];
-				
-				
+
 				aIngredients = oVersion.Ingredients.results;
-				
+
 				for (i = 0; i < aIngredients.length; i++) {
 					oMaterial = {
 						"Matnr": aIngredients[i].Matnr,
@@ -321,15 +324,15 @@ sap.ui.define([
 							Curr: aIngredients[i].QtyUsed,
 							Prev1: 0
 						},
-						"QtyUnit": { 
+						"QtyUnit": {
 							Curr: aIngredients[i].QtyUnit,
 							Prev1: aIngredients[i].Bprme
 						},
-						"QtyUnitx" : {
-							Curr: aIngredients[i].QtyUnitx ? aIngredients[i].QtyUnitx : aIngredients[i].Bprmex ,
+						"QtyUnitx": {
+							Curr: aIngredients[i].QtyUnitx ? aIngredients[i].QtyUnitx : aIngredients[i].Bprmex,
 							Prev1: aIngredients[i].Bprmex,
 						},
-						"QtyRatio": { 
+						"QtyRatio": {
 							Curr: aIngredients[i].QtyRatio,
 							Prev1: null
 						},
@@ -378,13 +381,13 @@ sap.ui.define([
 									Curr: null,
 									Prev1: aIngredients[i].QtyUsed
 								},
-								"QtyUnit": { 
-									Curr: null ,
+								"QtyUnit": {
+									Curr: null,
 									Prev1: aIngredients[i].QtyUnit
 								},
-								"QtyRatio": { 
+								"QtyRatio": {
 									Curr: null,
-									Prev1:  aIngredients[i].QtyRatio
+									Prev1: aIngredients[i].QtyRatio
 								},
 								"CalcCost": {
 									Curr: null,
@@ -394,11 +397,11 @@ sap.ui.define([
 							}
 							aMaterials.push(oMaterial);
 						}
-							
+
 					}
-					
+
 				}
-				
+
 				this._showSubTotal(aMaterials, aVersions);
 			}
 			oIngredientModel.setProperty("/Items", aMaterials);
@@ -465,7 +468,7 @@ sap.ui.define([
 							oIngredientData[idx].QtyUsed.Curr = 0.00;
 							oIngredientData[idx].Status = "Success";
 						}
-					} else{
+					} else {
 
 						if (oIngredientData.length > 0) {
 							var idx = oIngredientData.findIndex(ele => {
@@ -473,7 +476,7 @@ sap.ui.define([
 							});
 							if (idx > -1) {
 								oIngredientData.splice(idx, 0, oMaterial);
-							} else{
+							} else {
 								oIngredientData.push(oMaterial);
 							}
 						} else {
@@ -484,19 +487,17 @@ sap.ui.define([
 					}
 				}
 			}
-			
-			
-			
+
 			this._sortMaterials(oIngredientData);
 			this._showSubTotal(oIngredientData, []);
-			
+
 			this._calcTotals(oIngredientData);
 			this._oValueHelpDialog.close();
 		},
-		
-		_sortMaterials: function(aMaterials){
-			aMaterials.sort(function(a,b){
-				if(a.QtyUsed.Curr) {
+
+		_sortMaterials: function(aMaterials) {
+			aMaterials.sort(function(a, b) {
+				if (a.QtyUsed.Curr) {
 					return -1;
 				} else {
 					return 1;
@@ -587,8 +588,7 @@ sap.ui.define([
 					Prev1: (aVersions.length > 1 ? aVersions[1].UnitSellPrice : 0)
 				}
 			});
-			
-			
+
 			aMaterials.push({
 				"ID": "readonly",
 				"Matnr": "",
@@ -638,19 +638,19 @@ sap.ui.define([
 			this.byId("ImagePopover").bindElement({
 				path: sPath
 			});
-			
-			var sPhotoPath = "/sap/opu/odata/sap/zrecipecost_odata_srv" + sPath.replace("RecipeSet","RecipePhotoSet") + "/$value?" + "?" + new Date().getTime();
+
+			var sPhotoPath = "/sap/opu/odata/sap/zrecipecost_odata_srv" + sPath.replace("RecipeSet", "RecipePhotoSet") + "/$value?" + "?" + new Date()
+				.getTime();
 			var oPreviewImage = this.byId("imgPreview");
 			oPreviewImage.setSrc(sPhotoPath);
 			this._imageSelected = oSource;
 
 		},
-	
+
 		onUploadImage: function() {
 			var oUploader = this.byId("ImageUploader");
 			var sPath = this.byId("ImagePopover").getBindingContext().getPath();
-			sPath = sPath  + "/Photo";
-
+			sPath = sPath + "/Photo";
 
 			if (!oUploader.getValue()) {
 				MessageToast.show("Choose a file first");
@@ -663,10 +663,10 @@ sap.ui.define([
 				var csrfToken = this.getView().getModel().oHeaders['x-csrf-token'];
 				oUploader.setSendXHR(true);
 				var headerParma = new sap.ui.unified.FileUploaderParameter();
-					headerParma.setName('x-csrf-token');
-					headerParma.setValue(csrfToken);
+				headerParma.setName('x-csrf-token');
+				headerParma.setValue(csrfToken);
 
-					oUploader.addHeaderParameter(headerParma);
+				oUploader.addHeaderParameter(headerParma);
 				oUploader.upload();
 			}.bind(this), function(error) {
 				MessageToast.show("The file cannot be read. It may have changed.");
@@ -674,14 +674,14 @@ sap.ui.define([
 				oUploader.clear();
 			});
 		},
-		onUploadComplete: function(){
-			this._imageSelected.setSrc( this._imageSelected.getSrc() + "?" + new Date().getTime());
-			
+		onUploadComplete: function() {
+			this._imageSelected.setSrc(this._imageSelected.getSrc() + "?" + new Date().getTime());
+
 			var oPopOver = this.getFragmentByName(this._formFragments, "halo.sap.mm.RECIPECOST.fragments.ImageUploadPopover");
 			oPopOver.close();
-			
+
 		},
-		
+
 		onImgUploaderClose: function() {
 			var oPopOver = this.getFragmentByName(this._formFragments, "halo.sap.mm.RECIPECOST.fragments.ImageUploadPopover");
 			oPopOver.close();
@@ -725,13 +725,13 @@ sap.ui.define([
 		},
 
 		onDeleteMaterial: function() {
-		
+
 			var oTable = this.byId("ingredienttbl");
 			var oPlugin = oTable.getPlugins()[0];
 			var aIndices = oPlugin.getSelectedIndices();
-			
+
 			if (aIndices.length > 0) {
-				
+
 				MessageBox.confirm(_oBundle.getText("msgCfrmDelMaterial"), {
 					actions: ["Delete", MessageBox.Action.CANCEL],
 					emphasizedAction: "CANCEL",
@@ -744,28 +744,27 @@ sap.ui.define([
 
 				});
 			}
-			
-			
+
 		},
-		
-		_deleteMaterial: function(arrItems){
+
+		_deleteMaterial: function(arrItems) {
 			var oModel = this.getModel("Ingredients");
 			var oRows = oModel.getProperty("/Items");
-			
+
 			for (var i = arrItems.length - 1; i >= 0; i--) {
 
 				if (arrItems[i] < oRows.length - 7) {
 					var oMaterial = oRows[arrItems[i]];
-					
-					if (oMaterial.QtyUsed.Prev1 !== 0 ) {
+
+					if (oMaterial.QtyUsed.Prev1 !== 0) {
 						if (oMaterial.QtyUsed.Curr) {
-							oMaterial.QtyUsed.Curr = 0.00;	
+							oMaterial.QtyUsed.Curr = 0.00;
 						}
-					} else {		
+					} else {
 						oRows.splice(arrItems[i], 1);
 					}
 				}
-				
+
 			}
 			this._calcTotals(oRows);
 		},
@@ -774,7 +773,6 @@ sap.ui.define([
 			var sPath = oSource.getBindingContext("Ingredients").getPath();
 			var oModel = this.getModel("Ingredients");
 			var oRow = oModel.getProperty(sPath);
-
 
 			if (oRow.Peinh.Curr > 0) {
 				var iTotalCost = (oRow.QtyUsed.Curr / oRow.Peinh.Curr) * oRow.Netpr.Curr * oRow.QtyRatio.Curr;
@@ -840,7 +838,7 @@ sap.ui.define([
 							"CalcCost": oRows[i].CalcCost.Curr,
 							"QtyUsed": "" + oRows[i].QtyUsed.Curr,
 							"QtyUnit": oRows[i].QtyUnit.Curr,
-							"QtyRatio" : oRows[i].QtyRatio.Curr
+							"QtyRatio": oRows[i].QtyRatio.Curr
 						};
 
 						oRecipeVersion.Ingredients.push(oIngredient);
@@ -867,7 +865,7 @@ sap.ui.define([
 				}
 
 			}
-			
+
 			var oModel = this.getModel();
 
 			BusyIndicator.show(1000);
@@ -876,18 +874,25 @@ sap.ui.define([
 				method: "POST",
 				success: function(oData) {
 					BusyIndicator.hide();
+					this._bDirty = false;
 				}.bind(this),
 				error: function(e) {
 					BusyIndicator.hide();
 					MessageToast.show("Error Detected");
 				}
 			});
+			
+			
 
 		},
 
 		onCreateNewVersion: function() {
-			
-			MessageBox.confirm(_oBundle.getText("msgCfrmNewVersion"), {
+
+			if (this._bDirty) {
+				MessageBox.alert(_oBundle.getText("msgAlertUnsaved"));	
+			} else {
+
+				MessageBox.confirm(_oBundle.getText("msgCfrmNewVersion"), {
 					actions: [MessageBox.Action.YES, MessageBox.Action.CANCEL],
 					emphasizedAction: "CANCEL",
 					onClose: function(sAction) {
@@ -896,9 +901,9 @@ sap.ui.define([
 						}
 					}.bind(this)
 				});
-				
+			}
 		},
-		
+
 		_createNewVersion: function() {
 			this._sVersionID = "";
 			this._oDate = new Date();
@@ -930,7 +935,7 @@ sap.ui.define([
 				}
 				return bSkip;
 			});
-			
+
 			oViewModel.setProperty("/Date/Prev1", oViewModel.getProperty("/Date/Curr"));
 			oViewModel.setProperty("/Date/Curr", this._oDate);
 
@@ -940,7 +945,7 @@ sap.ui.define([
 
 		_calcTotals: function(oRows) {
 			var oModel = this.getModel("Ingredients");
-			
+
 			if (!oRows) {
 				oRows = oModel.getProperty("/Items");
 			}

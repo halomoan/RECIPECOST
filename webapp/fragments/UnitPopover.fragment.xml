@@ -3,33 +3,13 @@
 		<NavContainer id="unitnav">
 			<Page id="selectunit" class="sapUiResponsivePadding--header" title="{i18n>AvailConvUnits}">
 				<List id="unitlist" items="{path: '/MatCookingUnitSet', filters : [{ path : 'Werks', operator : 'EQ', value1 : ''}] }">
-					
-						<headerToolbar>
-			<OverflowToolbar>
-				<ToolbarSpacer />
-				<Button
-					icon="sap-icon://add"
-					press="onAddUnitConvert" />
-			</OverflowToolbar>
-		</headerToolbar>
-					
 					<ObjectListItem title="{Cookunit} - {Cookunitx}" type="Active" press="onCookUnitSelect"
 						number="{ parts:[{path:'Cookqty'},{path:'Cookunit'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: false,maxFractionDigits:3} }"
-						numberUnit="{Purcunit}">
-						
-					</ObjectListItem>
+						numberUnit="{Purcunit}"></ObjectListItem>
 				</List>
 			</Page>
 			<Page id="createunit" class="sapUiResponsivePadding--header" showNavButton="true" navButtonPress="onNavBack" title="Product">
-				<content>
-					<ObjectHeader title="{Matnr} - {Maktx}">
-						<attributes>
-							<ObjectAttribute text="{WeightMeasure} {WeightUnit}"/>
-							<ObjectAttribute text="{Width} x {Depth} x {Height} {DimUnit}"/>
-						</attributes>
-					</ObjectHeader>
-					<Text class="sapUiSmallMargin" text="{Description}"/>
-				</content>
+				<content></content>
 			</Page>
 		</NavContainer>
 	</Popover>
