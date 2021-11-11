@@ -1,0 +1,36 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.f"
+	controllerName="halo.sap.mm.RECIPECOST.pages.controller.RecipeGroupTiles" xmlns:html="http://www.w3.org/1999/xhtml">
+	<Page showHeader="false">
+		<subHeader>
+			<Toolbar>
+				<Button type="Back" tooltip="Back" press="onNavBack"/>
+				<ToolbarSpacer/>
+				<Title text="{i18n>RecipeGroup}" level="H3"/>
+				<ToolbarSpacer/>
+				<Label text="{i18n>Search}"/>
+				<Input width="250px" valueLiveUpdate="true" liveChange=".onLiveSearch"/>
+			</Toolbar>
+		</subHeader>
+		<f:GridList id="repicegroupGrid"
+			items="{ path: '/StatisticSet' , filters : [{ path : 'StatID' , operator : 'EQ' , value1 : 'RecipeByGroup' } ], sorter: [ { path: 'Label', descending: 'false', group: 'true' }] }"
+			selectionChange="onGridSelectChange" growingThreshold="50" growing="true" class="sapUiResponsiveContentPadding customCSS">
+			<f:GridListItem detailPress="onDetailPress" type="{type}">
+				<VBox height="100%" justifyContent="SpaceBetween">
+					<OverflowToolbar design="Info" class="sapContrast">
+						<Title text="{Label}" class="sapUiTinyMarginBegin"/>
+						<ToolbarSpacer/>
+					</OverflowToolbar>
+					<VBox class="sapUiSmallMargin">
+						<HBox justifyContent="SpaceBetween">
+							<core:Icon src="sap-icon://basket" size="2rem" color="Default" class="sapUiTinyMarginBottom"/>
+							<HBox justifyContent="End">
+								<Text text="{ path: 'Value', formatter: '.formatter.NoDecimal' }" class="fontSize2 green"></Text>
+							</HBox>
+						</HBox>
+						<Link text="{i18n>GotoRecipes}" press="onGotoRecipes(${SecondID})"/>
+					</VBox>
+				</VBox>
+			</f:GridListItem>
+		</f:GridList>
+	</Page>
+</mvc:View>

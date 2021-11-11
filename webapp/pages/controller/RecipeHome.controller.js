@@ -81,7 +81,8 @@ sap.ui.define([
 					styleClass: "sapUiSizeCompact"
 				});
 			} else {
-				this._oRouter.navTo("recipes", {Ekorg: this.PurchOrgID, Werks: this.PlantID}); 	
+				//this._oRouter.navTo("recipes", {Ekorg: this.PurchOrgID, Werks: this.PlantID}); 	
+				this._oRouter.navTo("recipegrouptiles", {Ekorg: this.PurchOrgID, Werks: this.PlantID}); 	
 			}
 		},
 		

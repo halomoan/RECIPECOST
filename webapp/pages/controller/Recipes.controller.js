@@ -103,9 +103,12 @@ sap.ui.define([
 			var oArguments = oEvent.getParameter("arguments");
 			this.PurchOrgID = oArguments.Ekorg;
 			this.PlantID = oArguments.Werks;
+			this.GroupID = oArguments.GroupId;
 
 			this.oFilterWerks = new Filter("Werks", FilterOperator.EQ, this.PlantID);
-			this.aFilterDefault = [this.oFilterWerks];
+			this.oFilterGroupID = new Filter("GroupID", FilterOperator.EQ, this.GroupID);
+			console.log(this.GroupID);
+			this.aFilterDefault = [this.oFilterWerks,this.oFilterGroupID];
 
 			this.getOwnerComponent().getModel().metadataLoaded().then(function() {
 				this._refreshList();
