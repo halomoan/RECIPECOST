@@ -91,7 +91,7 @@ sap.ui.define([
 
 			oTable.bindAggregation("items", {
 				path: "/RecipeSet",
-				filters: this.aFilterDefault,
+				filters: [...this.aFilterDefault, this.oFilterGroupID],
 				sorter: this.aUserSorter,
 				template: oTemplate
 			});
@@ -103,12 +103,12 @@ sap.ui.define([
 			var oArguments = oEvent.getParameter("arguments");
 			this.PurchOrgID = oArguments.Ekorg;
 			this.PlantID = oArguments.Werks;
-			this.GroupID = oArguments.GroupId;
+			this.GroupID = oArguments.GroupID;
 
 			this.oFilterWerks = new Filter("Werks", FilterOperator.EQ, this.PlantID);
 			this.oFilterGroupID = new Filter("GroupID", FilterOperator.EQ, this.GroupID);
-			console.log(this.GroupID);
-			this.aFilterDefault = [this.oFilterWerks,this.oFilterGroupID];
+			
+			this.aFilterDefault = [this.oFilterWerks];
 
 			this.getOwnerComponent().getModel().metadataLoaded().then(function() {
 				this._refreshList();
@@ -233,6 +233,7 @@ sap.ui.define([
 			oViewModel.setProperty("/Mode", "Add");
 			var oFormModel = this.getModel("form");
 			var oFormData = oFormModel.getData();
+			
 
 			oFormData.RecipeID = "";
 			oFormData.Name = null;
@@ -247,22 +248,24 @@ sap.ui.define([
 			this.showFormDialogFragment(this.getView(), this._formFragments, "halo.sap.mm.RECIPECOST.fragments.RecipeForm", this);
 
 			// Filter Location List
+			
 			var oLocList = this.getView().byId("location");
 			var oLocBinding = oLocList.getBinding("items");
 			oLocBinding.filter(this.aFilterDefault, "Application");
 
 			// Filter Location List
+			
 			var oGroupList = this.getView().byId("group");
 			oGroupList.bindAggregation("items", {
 				path: "/RecipeGroupSet",
-				filters: this.aFilterDefault,
+				filters: [...this.aFilterDefault,this.oFilterGroupID],
 				sorter: new Sorter({
 					path: 'Text',
 					descending: true
 				}),
 				template: new sap.ui.core.ListItem({
 					text: "{Text}",
-					key: "{Groupid}"
+					key: "{GroupID}"
 				})
 			});
 
@@ -307,7 +310,7 @@ sap.ui.define([
 					}),
 					template: new sap.ui.core.ListItem({
 						text: "{Text}",
-						key: "{Groupid}"
+						key: "{GroupID}"
 					})
 				});
 
@@ -354,7 +357,7 @@ sap.ui.define([
 				}),
 				template: new sap.ui.core.ListItem({
 					text: "{Text}",
-					key: "{Groupid}"
+					key: "{GroupID}"
 				})
 			});
 

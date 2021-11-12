@@ -28,9 +28,9 @@
 			</l:BlockLayoutCell>
 		</l:BlockLayoutRow>
 		<l:BlockLayoutRow>
-			<l:BlockLayoutCell title="{i18n>RecipeByGroup}" backgroundColorSet="ColorSet1" backgroundColorShade="ShadeF">
+			<l:BlockLayoutCell title="{i18n>RecipeByGroup} - Top 5" backgroundColorSet="ColorSet1" backgroundColorShade="ShadeF">
 				<mc:InteractiveBarChart id="recipebygroup" labelWidth="25%" displayedBars="5"
-					bars="{ path: '/StatisticSet' , filters : [{ path : 'StatID' , operator : 'EQ' , value1 : 'RecipeByGroup' } ], sorter: [ { path: 'Label', descending: 'false', group: 'true' }] }">
+					bars="{ path: '/StatisticSet',length: 5 , filters : [{ path : 'StatID' , operator : 'EQ' , value1 : 'RecipeByGroup' } ], sorter: [ { path: 'Value', descending: 'false', group: 'true' }] }">
 					<mc:bars>
 						<mc:InteractiveBarChartBar label="{Label}" value="{= ${Value} * 1}" color="Neutral"/>
 					</mc:bars>

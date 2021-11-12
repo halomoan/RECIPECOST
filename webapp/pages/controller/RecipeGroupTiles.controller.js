@@ -43,7 +43,7 @@ sap.ui.define([
 		},
 		onGotoRecipes: function(GroupID){
 			//console.log(GroupID);
-			this._oRouter.navTo("recipes", {Ekorg: this.PurchOrgID, Werks: this.PlantID, GroupId: GroupID}); 		
+			this._oRouter.navTo("recipes", {Ekorg: this.PurchOrgID, Werks: this.PlantID, GroupID: GroupID}); 		
 		},
 		onNavBack: function(){
 			this.navBack();	

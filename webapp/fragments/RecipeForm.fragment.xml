@@ -25,7 +25,7 @@
 									<f:FormElement label="{i18n>Group}">
 										<f:fields>
 											<ComboBox id="group" selectedKey="{path:'form>/GroupID', type: 'sap.ui.model.type.String', constraints: { minLength:5 }}">
-												<core:Item key="{Groupid}" text="{Text}"/>
+												<core:Item key="{GroupID}" text="{Text}"/>
 											</ComboBox>
 										</f:fields>
 									</f:FormElement>
@@ -47,7 +47,7 @@
 											<Input value="{form>/VideoLink}" enabled="{= ! ${viewData>/IsMultiSelected} }"/>
 										</f:fields>
 									</f:FormElement>
-									<f:FormElement label="{i18n>AllowAsSubMaterial}">
+									<f:FormElement label="{i18n>AsSubMaterial}">
 										<f:fields>
 											<Switch state="{form>/IsSubMaterial}" customTextOn="Yes" customTextOff="No">
 												<layoutData>

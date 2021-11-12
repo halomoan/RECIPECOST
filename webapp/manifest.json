@@ -110,7 +110,7 @@
 					"target": "recipehome"
 				},
 				{
-					"pattern": "recipes/{Ekorg}/{Werks}/{GroupId}",
+					"pattern": "recipes/{Ekorg}/{Werks}/{GroupID}",
 					"name": "recipes",
 					"target": "recipes"
 				},
