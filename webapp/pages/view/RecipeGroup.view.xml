@@ -53,7 +53,7 @@
 				<t:Column width="10rem" filterProperty="Groupid">
 					<Label text="{i18n>ID}"/>
 					<t:template>
-						<Text text="{Groupid}" wrapping="false"/>
+						<Text text="{GroupID}" wrapping="false"/>
 					</t:template>
 				</t:Column>
 					<t:Column width="20rem" filterProperty="Text">

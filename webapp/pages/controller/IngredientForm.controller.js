@@ -838,7 +838,7 @@ sap.ui.define([
 							"CalcCost": oRows[i].CalcCost.Curr,
 							"QtyUsed": "" + oRows[i].QtyUsed.Curr,
 							"QtyUnit": oRows[i].QtyUnit.Curr,
-							"QtyRatio": oRows[i].QtyRatio.Curr
+							"QtyRatio": "" + oRows[i].QtyRatio.Curr
 						};
 
 						oRecipeVersion.Ingredients.push(oIngredient);
