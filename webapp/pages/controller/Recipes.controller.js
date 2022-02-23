@@ -70,6 +70,9 @@ sap.ui.define([
 				}
 
 			};
+			
+			//RecipeGroup Filter List
+			this.oFilterStatID = new Filter("StatID", FilterOperator.EQ, "RecipeByGroup");
 
 			_oBundle = this.getResourceBundle();
 
@@ -313,7 +316,7 @@ sap.ui.define([
 						key: "{GroupID}"
 					})
 				});
-
+				
 			} else {
 				MessageBox.error(_oBundle.getText("msgErrSelect1Recipe"));
 			}
@@ -362,6 +365,93 @@ sap.ui.define([
 			});
 
 		},
+		onChangeGrpRecipe: function(){
+			var oViewModel = this.getModel("viewData");
+			oViewModel.setProperty("/Mode", "ChangeGrp");
+			
+			this.showFormDialogFragment(this.getView(), this._formFragments, "halo.sap.mm.RECIPECOST.fragments.RecipeGroup", this);
+			
+			var oList = this.byId("repicegroupGrid");
+			
+			oList.getBinding("items").filter([this.oFilterStatID, this.oFilterWerks]);
+			
+			
+		},
+		
+		onRecipeGroupSearch: function(oEvent){
+			var oList = this.byId("repicegroupGrid");
+			var sValue = oEvent.getParameter("value");
+			var oFilter = new Filter("Label", FilterOperator.Contains, sValue);
+			var oBinding = oEvent.getParameter("itemsBinding");
+			oBinding.filter([oFilter],sap.ui.model.FilterType.Application);
+		},
+		
+		onRecipeGroupConfirm: function(oEvent){
+		
+			var aContexts = oEvent.getParameter("selectedContexts");
+			if (aContexts && aContexts.length) {
+				
+				var sGroupID = aContexts[0].getObject().SecondID;
+				var sGroupLabel = aContexts[0].getObject().Label;
+				
+				var oModel = this.getModel();
+				var oTable = this.getView().byId("recipeTable");
+				var mParameters = {
+					method: "PUT",
+					groupId: "batchRecipeUpdate",
+					success: function(oResponse) {
+					
+	
+					},
+					error: function(e) {
+						var sMsg = JSON.parse(e.responseText).error.message.value;
+						var oMessage = new Message({
+							message: sMsg,
+							type: "Error",
+							target: "",
+							processor: ""
+						});
+						sap.ui.getCore().getMessageManager().addMessages(oMessage);
+						MessageToast.show("Error Detected");
+					}
+	
+				};
+			
+				MessageBox.confirm(_oBundle.getText("msgCfrmChgRecipeGrp",sGroupLabel),{
+					actions: ["Yes", MessageBox.Action.CLOSE],
+					onClose: function(sAction){
+						if (sAction == "Yes") {
+							
+							
+							var arrItems = oTable.getSelectedItems();
+							
+							oModel.setUseBatch(true);
+							oModel.setDeferredGroups(["batchRecipeUpdate"]);
+							
+							for(var i = 0; i < arrItems.length; i++){
+								var oData = arrItems[i].getBindingContext().getObject();
+								oData.GroupID = sGroupID;
+								oData.GroupTxt = sGroupLabel;
+								console.log(oData);
+								oModel.update("/RecipeSet(Werks='" + oData.Werks + "',RecipeID='" + oData.RecipeID + "')", oData, mParameters);
+								
+							}
+							//Submitting the function import batch call
+							oModel.submitChanges(mParameters);
+						}
+					}
+				});
+			} 
+			
+		
+			
+			oEvent.getSource().getBinding("items").filter([],sap.ui.model.FilterType.Application);
+		},
+		
+		onRecipeGroupCancel: function(oEvent){
+			oEvent.getSource().getBinding("items").filter([],sap.ui.model.FilterType.Application);
+		},
+		
 		onSaveRecipe: function() {
 			var oFormData = this.getView().getModel("form").getData();
 			var oViewModel = this.getModel("viewData");
