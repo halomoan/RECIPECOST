@@ -17,3 +17,7 @@
 .customCSS .fontSize5 {
     font-size: 5rem;
 }
+
+.customCSS .italic {
+	font-style: italic;
+}

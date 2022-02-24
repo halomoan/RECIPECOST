@@ -145,6 +145,11 @@
 					"target": "planttopurchorg"
 				},
 				{
+					"pattern": "rptsellprice",
+					"name": "rptsellprice",
+					"target": "rptsellprice"
+				},
+				{
 					"pattern": "ingredientform/{Ekorg}/{Werks}/{RecipeID}",
 					"name": "ingredientform",
 					"target": "ingredientForm"
@@ -164,6 +169,16 @@
 				"imageeditor": {
 					"viewId": "imageeditor",
 					"viewName": "ImageEditor",
+					"viewLevel": 1
+				},
+				"rptcost": {
+					"viewId": "rptcostprice",
+					"viewName": "RptCostPrice",
+					"viewLevel": 1
+				},
+				"rptsellprice": {
+					"viewId": "rptsellprice",
+					"viewName": "RptSellPrice",
 					"viewLevel": 1
 				},
 				"recipeloc": {
