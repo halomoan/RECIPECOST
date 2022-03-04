@@ -14,6 +14,10 @@ sap.ui.define([
 			
 			var oViewModel = new JSONModel(oViewData);
 			this.setModel(oViewModel, "viewData");	
+		},
+		
+		onRun: function(oEvent){
+			
 		}
 
 		

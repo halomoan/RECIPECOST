@@ -115,6 +115,11 @@
 					"target": "recipes"
 				},
 				{
+					"pattern": "recipes/{Ekorg}/{Werks}/{FilterType}/{P1}/{P2}",
+					"name": "recipes",
+					"target": "recipes"
+				},
+				{
 					"pattern": "imageeditor",
 					"name": "imageeditor",
 					"target": "imageeditor"

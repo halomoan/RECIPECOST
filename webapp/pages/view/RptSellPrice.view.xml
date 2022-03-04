@@ -7,6 +7,6 @@
 		<Label text="{i18n>SellingPrice} 2" labelFor="range2" />
 		<Input id="range2" value="{viewData>/SPR/1}" showClearIcon="true"></Input>
 		<RangeSlider showAdvancedTooltip="true" range="{viewData>/SPR}" min="0" max="1000" width="100%" class="sapUiMediumMarginBottom" />
-		<FlexBox alignItems="Start" justifyContent="End"><Button text="{i18n>Run}"></Button></FlexBox>
+		<FlexBox alignItems="Start" justifyContent="End"><Button text="{i18n>Run}" press="onRun"></Button></FlexBox>
 	</l:VerticalLayout>	
 </mvc:View>
