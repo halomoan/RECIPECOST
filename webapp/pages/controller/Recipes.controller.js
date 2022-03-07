@@ -103,6 +103,7 @@ sap.ui.define([
 		},
 
 		__onRouteMatched: function(oEvent) {
+			
 			var oArguments = oEvent.getParameter("arguments");
 			this.PurchOrgID = oArguments.Ekorg;
 			this.PlantID = oArguments.Werks;

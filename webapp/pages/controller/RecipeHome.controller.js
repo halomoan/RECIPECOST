@@ -131,6 +131,10 @@ sap.ui.define([
 			var oItem = oSource.getSelectedItem();
 			if (!oItem) return;
 			var oPlant = oItem.getBindingContext().getObject();
+			
+			var oStorage = jQuery.sap.storage(jQuery.sap.storage.Type.local);
+			oStorage.put("Plant", oPlant);
+			
 			this.PlantID = oPlant.Werks;
 			this.PurchOrgID = oPlant.Ekorg;
 			oViewModel.setProperty("/PurchOrg",oPlant.Name);
