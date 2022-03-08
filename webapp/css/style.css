@@ -6,6 +6,9 @@
 .customCSS .fontSize1 {
     font-size: 1rem;
 }
+.customCSS .fontSize1_5 {
+    font-size: 1.5rem;
+}
 
 .customCSS .fontSize2 {
     font-size: 2rem;
@@ -16,4 +19,8 @@
 }
 .customCSS .fontSize5 {
     font-size: 5rem;
+}
+
+.customCSS .italic {
+	font-style: italic;
 }

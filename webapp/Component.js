@@ -1,8 +1,9 @@
 sap.ui.define([
 	"sap/ui/core/UIComponent",
 	"sap/ui/Device",
-	"halo/sap/mm/RECIPECOST/model/models"
-], function(UIComponent, Device, models) {
+	"halo/sap/mm/RECIPECOST/model/models",
+	"halo/sap/mm/RECIPECOST/controller/PlantDialog"
+], function(UIComponent, Device, models, PlantDialog) {
 	"use strict";
 
 	return UIComponent.extend("halo.sap.mm.RECIPECOST.Component", {
@@ -25,6 +26,10 @@ sap.ui.define([
 			
 			//init Router
 			this.getRouter().initialize();
+			
+			//Plant Dialog
+			
+			this.plantDialog = new PlantDialog();
 		}
 	});
 });

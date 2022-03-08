@@ -43,9 +43,9 @@ sap.ui.define([
 				events : {
 					dataReceived: function(){
 						
-						var aItems = oPlantList.getItems();
-						oPlantList.setSelectedItem(aItems[0]);
-						oPlantList.fireSelectionChange();
+						//var aItems = oPlantList.getItems();
+						//oPlantList.setSelectedItem(aItems[0]);
+						//oPlantList.fireSelectionChange();
 					}
 				}
 			});
@@ -60,6 +60,19 @@ sap.ui.define([
 			this._updateChart1();
 			// this.getOwnerComponent().getModel().metadataLoaded().then(function() {
 			// }.bind(this));
+			
+			var oStorage = jQuery.sap.storage(jQuery.sap.storage.Type.local);
+			var oPlant = oStorage.get("Plant");
+			
+			if(oPlant) {
+			
+				this.PurchOrgID = oPlant.Ekorg;
+				this.PlantID = oPlant.Werks;
+				var oPlantList = this.getView().byId("cboPlant");
+				
+				oPlantList.setSelectedKey(this.PlantID);
+			}
+			
 		},
 		
 		onMenuAction: function(oEvent) {
@@ -131,6 +144,10 @@ sap.ui.define([
 			var oItem = oSource.getSelectedItem();
 			if (!oItem) return;
 			var oPlant = oItem.getBindingContext().getObject();
+			
+			var oStorage = jQuery.sap.storage(jQuery.sap.storage.Type.local);
+			oStorage.put("Plant", oPlant);
+			
 			this.PlantID = oPlant.Werks;
 			this.PurchOrgID = oPlant.Ekorg;
 			oViewModel.setProperty("/PurchOrg",oPlant.Name);

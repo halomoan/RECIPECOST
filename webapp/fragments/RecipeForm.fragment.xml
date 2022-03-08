@@ -24,7 +24,8 @@
 									</f:FormElement>
 									<f:FormElement label="{i18n>Group}">
 										<f:fields>
-											<ComboBox id="group" selectedKey="{path:'form>/GroupID', type: 'sap.ui.model.type.String', constraints: { minLength:5 }}">
+											<ComboBox id="group" selectedKey="{path:'form>/GroupID', type: 'sap.ui.model.type.String', constraints: { minLength:5 }}"
+												enabled="{= ${viewData>/Mode} !== 'Edit' }">
 												<core:Item key="{GroupID}" text="{Text}"/>
 											</ComboBox>
 										</f:fields>

@@ -1,0 +1,24 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+	<SelectDialog
+		id="repicegroupGrid"
+		noDataText="No Groups Found"
+		title="Select Group"
+		search=".onRecipeGroupSearch"
+		confirm=".onRecipeGroupConfirm"
+		cancel=".onRecipeGroupCancel"
+			items="{
+			path: '/StatisticSet',
+			sorter: {
+				path: 'Label',
+				descending: false
+			}
+		}">
+		<StandardListItem
+			title="{Label}"
+			description=""
+			icon="sap-icon://basket"
+			iconDensityAware="false"
+			iconInset="false"
+			type="Active" />
+	</SelectDialog>
+</core:FragmentDefinition>

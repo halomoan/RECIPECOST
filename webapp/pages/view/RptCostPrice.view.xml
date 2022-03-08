@@ -1,0 +1,13 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:l="sap.ui.layout"
+	controllerName="halo.sap.mm.RECIPECOST.pages.controller.RptCostPrice" xmlns:html="http://www.w3.org/1999/xhtml">
+	<l:VerticalLayout class="sapUiContentPadding customCSS" width="100%">
+		<Text text="{viewData>/PlantName} ({viewData>/PlantID})" class="fontSize2" /> 
+		<HBox> <Text text="{i18n>SellingPrice}" class="fontSize1_5" /> <Text text="{i18n>Between}" class="sapUiTinyMarginTop sapUiTinyMarginBegin italic"/></HBox>
+		<Label text="{i18n>SellingPrice} 1" labelFor="range1" />
+		<Input id="range1" value="{viewData>/SPR/0}" showClearIcon="true"></Input>
+		<Label text="{i18n>SellingPrice} 2" labelFor="range2" />
+		<Input id="range2" value="{viewData>/SPR/1}" showClearIcon="true"></Input>
+		<RangeSlider showAdvancedTooltip="true" range="{viewData>/SPR}" min="0" max="1000" width="100%" class="sapUiMediumMarginBottom" />
+		<FlexBox alignItems="Start" justifyContent="End"><Button text="{i18n>Run}" press="onRun"></Button></FlexBox>
+	</l:VerticalLayout>	
+</mvc:View>

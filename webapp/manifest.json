@@ -114,6 +114,7 @@
 					"name": "recipes",
 					"target": "recipes"
 				},
+			
 				{
 					"pattern": "imageeditor",
 					"name": "imageeditor",
@@ -145,6 +146,16 @@
 					"target": "planttopurchorg"
 				},
 				{
+					"pattern": "rptcostprice",
+					"name": "rptcostprice",
+					"target": "rptcostprice"
+				},
+				{
+					"pattern": "rptoutbartable/{Ekorg}/{Werks}/{FilterType}/{P1}/{P2}",
+					"name": "rptoutbartable",
+					"target": "rptoutbartable"
+				},
+				{
 					"pattern": "ingredientform/{Ekorg}/{Werks}/{RecipeID}",
 					"name": "ingredientform",
 					"target": "ingredientForm"
@@ -164,6 +175,16 @@
 				"imageeditor": {
 					"viewId": "imageeditor",
 					"viewName": "ImageEditor",
+					"viewLevel": 1
+				},
+				"rptcostprice": {
+					"viewId": "rptcostprice",
+					"viewName": "RptCostPrice",
+					"viewLevel": 1
+				},
+				"rptoutbartable": {
+					"viewId": "rptoutbartable",
+					"viewName": "RptOutBarTable",
 					"viewLevel": 1
 				},
 				"recipeloc": {

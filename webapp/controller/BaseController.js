@@ -26,6 +26,12 @@ sap.ui.define([
 			return this.getView().setModel(oModel, sName);
 		},
 		
+		getLocalStore: function(sName){
+			var oStorage = jQuery.sap.storage(jQuery.sap.storage.Type.local);
+			
+			return oStorage.get(sName);
+		},
+		
 		getResourceBundle : function () {
 			return this.getOwnerComponent().getModel("i18n").getResourceBundle();
 		},

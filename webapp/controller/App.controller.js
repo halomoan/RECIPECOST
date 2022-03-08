@@ -17,9 +17,10 @@ sap.ui.define([
 			switch(sTarget){
 				case "G001:RECIPES":			
 					this._oRouter.navTo("recipehome"); break;
-				
 				case "G001:IMAGEEDITOR":			
-					this._oRouter.navTo("imageeditor"); break;
+					this._oRouter.navTo("imageeditor"); break;	
+				case "G002:RPTCOSTPRICE":	
+					this._oRouter.navTo("rptcostprice"); break;	
 				case "SAPG1:PLANT":			
 					this._oRouter.navTo("planttopurchorg"); break;
 				default:

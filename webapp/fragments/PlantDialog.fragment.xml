@@ -1,0 +1,11 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:core="sap.ui.core">
+	<Dialog
+      title="{i18n>SelectPlant}">
+		<ComboBox id="cboPlant" class="sapUiSmallMargin" showSecondaryValues="true" width="90%" selectionChange="onPlantChange"></ComboBox>
+		<beginButton>
+        	<Button
+	            text="{i18n>OK}"
+	            press="onCloseDialog"/>
+    	</beginButton>
+    </Dialog>
+ </core:FragmentDefinition>
