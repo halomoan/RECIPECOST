@@ -79,6 +79,8 @@ sap.ui.define([
 				//filters: [  new Filter({ path: "VersionID",  operator:FilterOperator.EQ,  value1: "0000"}) ],
 				success: function(oData, oResponse) {
 					var aVersions = oData.results;
+				
+					
 					var oViewModel = this.getModel("viewData");
 
 					if (aVersions.length > 0) {
@@ -574,7 +576,7 @@ sap.ui.define([
 				}
 			});
 			aMaterials.push({
-				"ID": "UnitSellPrice",
+				"ID": "PricePerUnit",
 				"Matnr": null,
 				"Maktx": _oBundle.getText("UnitSellPrice"),
 				"QtyUsed": null,
@@ -584,8 +586,8 @@ sap.ui.define([
 				"Waers": "SGD",
 				"CalcCost": null,
 				"SellPrice": {
-					Curr: (aVersions.length > 0 ? aVersions[0].UnitSellPrice : 0),
-					Prev1: (aVersions.length > 1 ? aVersions[1].UnitSellPrice : 0)
+					Curr: (aVersions.length > 0 ? aVersions[0].PricePerUnit : 0),
+					Prev1: (aVersions.length > 1 ? aVersions[1].PricePerUnit : 0)
 				}
 			});
 
@@ -599,8 +601,8 @@ sap.ui.define([
 				"Netpr": null,
 				"Waers": "% ",
 				"CalcCost": {
-					Curr: (aVersions.length > 0 ? (aVersions[0].CostPerUnit / aVersions[0].UnitSellPrice) * 100 : 0),
-					Prev1: (aVersions.length > 1 ? (aVersions[1].CostPerUnit / aVersions[1].UnitSellPrice) * 100 : 0)
+					Curr: (aVersions.length > 0 ? (aVersions[0].CostPerUnit / aVersions[0].PricePerUnit) * 100 : 0),
+					Prev1: (aVersions.length > 1 ? (aVersions[1].CostPerUnit / aVersions[1].PricePerUnit) * 100 : 0)
 				}
 			});
 		},
