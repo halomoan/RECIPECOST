@@ -40,10 +40,14 @@ sap.ui.define([
 			}
 			return this._oDialog;
 		},
-		open : function (oView) {
+		open : function (oView, that, callback) {
 			var oDialog = this._getDialog();
 			// connect dialog to view (models, lifecycle)
 			oView.addDependent(oDialog);
+			
+			this.fcallback = callback;
+			this.oThat = that;
+			
 			// open dialog
 			oDialog.open();
 		},
@@ -58,6 +62,7 @@ sap.ui.define([
 			oStorage.put("Plant", oPlant);
 		},
 		onCloseDialog : function () {
+			this.fcallback(this.oThat);
 			this._getDialog().close();
 		}
 	});

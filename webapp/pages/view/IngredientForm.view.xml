@@ -129,7 +129,7 @@
 							<FlexBox alignItems="Start" justifyContent="End">
 								<Text text="{ parts: [{path: 'Ingredients>CalcCost/Curr'}, {path: 'Ingredients>Waers'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: true, minFractionDigits:2, maxFractionDigits:2 } }" wrapping="false" visible="{= ${Ingredients>Matnr} !== null  }"/>
 								<Input textAlign="End" value="{ parts: [{path: 'Ingredients>AddMisc/Curr'}, {path: 'Ingredients>Waers'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: false } }" description="{Ingredients>Waers}" visible="{= ${Ingredients>ID} === 'AddMisc' }" change="onAddMiscChanged"/>
-								<Input textAlign="End" value="{ parts: [{path: 'Ingredients>SellPrice/Curr'}, {path: 'Ingredients>Waers'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: false } }" description="{Ingredients>Waers}" visible="{= ${Ingredients>ID} === 'UnitSellPrice' }" change="onUnitSellPriceChanged"/>
+								<Input textAlign="End" value="{ parts: [{path: 'Ingredients>SellPrice/Curr'}, {path: 'Ingredients>Waers'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: false } }" description="{Ingredients>Waers}" visible="{= ${Ingredients>ID} === 'PricePerUnit' }" change="onUnitSellPriceChanged"/>
 								
 							</FlexBox>
 						</t:template>
@@ -172,7 +172,7 @@
 							<FlexBox alignItems="Start" justifyContent="End">
 								<Text text="{ parts: [{path: 'Ingredients>CalcCost/Prev1'}, {path: 'Ingredients>Waers'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: true, minFractionDigits:2, maxFractionDigits:2 } }"  visible="{= ${Ingredients>Matnr} !== null  }"/>
 								<Text text="{ parts: [{path: 'Ingredients>AddMisc/Prev1'}, {path: 'Ingredients>Waers'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: true, minFractionDigits:2, maxFractionDigits:2 } }"  visible="{= ${Ingredients>ID} === 'AddMisc' }"/>
-								<Text text="{ parts: [{path: 'Ingredients>SellPrice/Prev1'}, {path: 'Ingredients>Waers'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: true, minFractionDigits:2, maxFractionDigits:2 } }"  visible="{= ${Ingredients>ID} === 'UnitSellPrice' }"/>								
+								<Text text="{ parts: [{path: 'Ingredients>SellPrice/Prev1'}, {path: 'Ingredients>Waers'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: true, minFractionDigits:2, maxFractionDigits:2 } }"  visible="{= ${Ingredients>ID} === 'PricePerUnit' }"/>								
 							</FlexBox>
 						</t:template>
 					</t:Column>

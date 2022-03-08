@@ -19,10 +19,8 @@ sap.ui.define([
 					this._oRouter.navTo("recipehome"); break;
 				case "G001:IMAGEEDITOR":			
 					this._oRouter.navTo("imageeditor"); break;	
-				case "G002:RPTSELLPRICE":			
-					this._oRouter.navTo("rptsellprice"); break;	
-				case "G002:RPTCOSTPRICE":			
-					this._oRouter.navTo("rptcostprice"); break;		
+				case "G002:RPTCOSTPRICE":	
+					this._oRouter.navTo("rptcostprice"); break;	
 				case "SAPG1:PLANT":			
 					this._oRouter.navTo("planttopurchorg"); break;
 				default:

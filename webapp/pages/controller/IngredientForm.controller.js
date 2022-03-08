@@ -813,7 +813,7 @@ sap.ui.define([
 				"AddMisc": 0.00,
 				"TotRecipeCost": 0.00,
 				"CostPerUnit": 0.00,
-				"UnitSellPrice": 0.00,
+				"PricePerUnit": 0.00,
 				"Ingredients": []
 
 			};
@@ -858,8 +858,8 @@ sap.ui.define([
 						case "CostPerUnit":
 							oRecipeVersion.CostPerUnit = "" + oRows[i].CalcCost.Curr;
 							break;
-						case "UnitSellPrice":
-							oRecipeVersion.UnitSellPrice = "" + oRows[i].SellPrice.Curr;
+						case "PricePerUnit":
+							oRecipeVersion.PricePerUnit = "" + oRows[i].SellPrice.Curr;
 							break;
 					}
 				}
