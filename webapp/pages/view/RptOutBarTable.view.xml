@@ -6,7 +6,7 @@
 		showFullScreen="true"
 		showPersonalization="true"
 		autoAdjustHeight="false"
-		title="Revenue">
+		title="Report">
 		<content>
 			<ChartContainerContent
 				icon="sap-icon://line-chart"
@@ -24,10 +24,6 @@
 				</content>
 			</ChartContainerContent>
 		</content>
-		<customIcons>
-			<core:Icon id="customIcon" src="sap-icon://print" tooltip="Custom Content Print" press="onCustomActionPress"
-				></core:Icon>
-		</customIcons>
 		<toolbar>
 			<m:OverflowToolbar id="appToolbar">
 				<m:Button id="btnAction1" text="CustomAction" type="Transparent" press="onCustomActionPress"></m:Button>

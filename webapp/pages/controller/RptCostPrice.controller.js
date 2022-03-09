@@ -22,6 +22,9 @@ sap.ui.define([
 		onRun: function(oEvent){
 			
 			var oViewModel = this.getModel("viewData");
+			if (!this.oPlant){
+				this.oPlant = this.getLocalStore("Plant");
+			}
 			
 			var P = oViewModel.getProperty("/SPR");
 			
