@@ -17,6 +17,40 @@ sap.ui.define([
 	return BaseController.extend("halo.sap.mm.RECIPECOST.pages.controller.UOMConversion", {
 
 		_formFragments: {},
+			_VHMaterialColumns: {
+			"cols": [{
+					"label": "Material ID",
+					"template": "Matnr",
+					"width": "7rem"
+				}, {
+					"label": "Name",
+					"template": "Maktx",
+					"width": "20rem"
+				}, {
+					"label": "Group",
+					"template": "Matkltx"
+				}, {
+					"label": "Curr",
+					"template": "Waers",
+					"width": "3rem"
+				}, {
+					"label": "Price",
+					"template": "Netpr",
+					"demandPopin": "true",
+					"hAlign": "End"
+				}, {
+					"label": "Per",
+					"template": "Peinh",
+					"hAlign": "End",
+					"width": "3rem"
+				}, {
+					"label": "Unit",
+					"template": "Bprme"
+				}
+
+			]
+		},
+
 		onInit: function() {
 			var oViewData = {
 					"Mode": "New"
@@ -37,8 +71,9 @@ sap.ui.define([
 				
 				sap.ui.getCore().getMessageManager().removeAllMessages();
 				
-				this.oColModel = new JSONModel(sap.ui.require.toUrl("halo/sap/mm/RECIPECOST/fragments/") + "/VHMaterialColumnsModel.json");
-
+				//this.oColModel = new JSONModel(sap.ui.require.toUrl("halo/sap/mm/RECIPECOST/fragments/") + "/VHMaterialColumnsModel.json");
+				this.oColModel = new JSONModel(this._VHMaterialColumns);
+				
 				var fnTable1RowAction = this.onTable1RowAction.bind(this);
 				var fnTable2RowAction = this.onTable2RowAction.bind(this);
 

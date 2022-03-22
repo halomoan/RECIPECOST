@@ -4,8 +4,9 @@ sap.ui.define([
 	'sap/m/Column',
 	'sap/ui/model/json/JSONModel',
 	'sap/m/ColumnListItem',
-	'sap/m/library'
-], function(BaseController,Label,Column,JSONModel,ColumnListItem,MobileLibrary) {
+	'sap/m/library',
+	'sap/viz/ui5/data/FlattenedDataset'
+], function(BaseController,Label,Column,JSONModel,ColumnListItem,MobileLibrary,FlattenedDataset) {
 	"use strict";
 
 	return BaseController.extend("halo.sap.mm.RECIPECOST.pages.controller.RptOutBarTable", {
@@ -15,7 +16,45 @@ sap.ui.define([
 				itemBindingPath: "/table",
 				columnLabelTexts: ["Recipe ID", "Name", "Location", "Selling Price/Unit", "Cost/Unit"],
 				templateCellLabelTexts: ["{Recipe_ID}", "{Name}", "{Location}", "{Selling_Price}", "{Cost_Price}"]
-			}
+			},
+			vizFrames: {
+				id: "idoVizFrame",
+				config: {
+					height: "700px",
+					width: "100%",
+					uiConfig: {
+						applicationSet: "fiori"
+					}
+				},
+				dataset: {
+					dimensions: [{
+						name: 'Group',
+						value: "{Group}"
+					}],
+					measures: [{
+						name: 'Count',
+						value: '{Count}'
+					}],
+					data: {
+						path: "/aItems"
+					}
+				},
+				analysisObjectProps: {
+					uid: "Group",
+					type: "Dimension",
+					name: "Group"
+				},
+				type: "column",
+				feedItems: [{
+					'uid': "primaryValues",
+					'type': "Measure",
+					'values': ["Count"]
+				}, {
+					'uid': "axisLabels",
+					'type': "Dimension",
+					'values': []
+				}]
+			}	
 		},
 		onInit: function() {
 			this._oRouter = this.getRouter();
@@ -37,12 +76,78 @@ sap.ui.define([
 			
 			var oTable = this.getView().byId("idTable");
 			this._createTableContent(oTable);
+			
+			var oVizFrame = this.getView().byId(this._constants.vizFrames.id);
+			this._updateVizFrame(oVizFrame);
+		},
+		
+		_updateVizFrame: function(vizFrame) {
+			var oVizFrame = this._constants.vizFrames;
+			
+			
+			var oModel = this.getModel();
+			
+			this.oFilterStatID = new sap.ui.model.Filter({
+                path: "StatID",
+                operator: sap.ui.model.FilterOperator.EQ,
+                value1: 'SellPriceByGroup'
+            });
+            
+	        this.oFilterWerks = new sap.ui.model.Filter({
+                path: "Werks",
+                operator: sap.ui.model.FilterOperator.EQ,
+                value1: this.PlantID
+            });
+            
+            this.oFilter1 = new sap.ui.model.Filter({
+                path: "Filter1",
+                operator: sap.ui.model.FilterOperator.EQ,
+                value1: this.P1,
+            });
+            
+            this.oFilter2 = new sap.ui.model.Filter({
+                path: "Filter2",
+                operator: sap.ui.model.FilterOperator.EQ,
+                value1: this.P2
+            });
+			
+			var oStatData = {
+				aItems: []
+			};
+				
+			
+			oModel.read("/StatisticSet",{
+				filters: [this.oFilterStatID,this.oFilterWerks,this.oFilter1,this.oFilter2],
+				success: function(oResponse){
+					var aResult = oResponse.results;
+				
+					for (var i = 0; i < aResult.length ; i++){
+						var oItem = {
+							"Group" : aResult[i].Label,
+							"Count" : Number(aResult[i].Value),
+						};
+						oStatData.aItems.push(oItem);
+					}
+					
+				
+				}
+			});
+			
+
+			var oDataset = new FlattenedDataset(this._constants.vizFrames.dataset);
+			var oGraphDataModel = new JSONModel(oStatData);
+			console.log(oGraphDataModel);
+			vizFrame.setDataset(oDataset);
+			vizFrame.setModel(oGraphDataModel);
+			this._addFeedItems(vizFrame, oVizFrame.feedItems);
+			vizFrame.setVizType(oVizFrame.type);
 		},
 		
 		_createTableContent: function(oTable) {
 			var oTableConfig = this._constants.table;
 			var aColumns = this._createTableColumns(oTableConfig.columnLabelTexts);
 			
+			oTable.removeAllColumns();
 			
 			for (var i = 0; i < aColumns.length; i++) {
 				oTable.addColumn(aColumns[i]);
@@ -113,7 +218,7 @@ sap.ui.define([
 				aControls.push(new Control(oProps));
 			}
 			return aControls;
-		},
+		}
 		
 
 	});

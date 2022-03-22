@@ -9,8 +9,8 @@
 		title="Report">
 		<content>
 			<ChartContainerContent
-				icon="sap-icon://line-chart"
-				title="Line Chart">
+				icon="sap-icon://bar-chart"
+				title="Bar Chart">
 				<content>
 					<viz:VizFrame id="idoVizFrame" height="700px" width="100%"
 					              uiConfig="{applicationSet:'fiori'}"></viz:VizFrame>
@@ -26,16 +26,10 @@
 		</content>
 		<toolbar>
 			<m:OverflowToolbar id="appToolbar">
-				<m:Button id="btnAction1" text="CustomAction" type="Transparent" press="onCustomActionPress"></m:Button>
 				<m:ToolbarSpacer/>
-				<m:Button id="btnAction2" text="CustomAction" type="Transparent" press="onCustomActionPress"></m:Button>
 				<ChartContainerToolbarPlaceholder></ChartContainerToolbarPlaceholder>
 			</m:OverflowToolbar>
 		</toolbar>
-		<dimensionSelectors>
-			<m:Select id="idSelector">
-				<core:Item key="0" text="Sales by Country"/>
-			</m:Select>
-		</dimensionSelectors>
+	
 	</ChartContainer>
 </mvc:View>

@@ -114,7 +114,6 @@
 					"name": "recipes",
 					"target": "recipes"
 				},
-			
 				{
 					"pattern": "imageeditor",
 					"name": "imageeditor",

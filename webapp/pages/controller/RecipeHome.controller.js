@@ -45,11 +45,12 @@ sap.ui.define([
 						
 						//var aItems = oPlantList.getItems();
 						//oPlantList.setSelectedItem(aItems[0]);
-						//oPlantList.fireSelectionChange();
+						//oPlantList.fireSelectionChange(oPlantList.getSelectedItem()) ;
 					}
 				}
 			});
 			
+		
 			
 			this._oRouter.getRoute("recipehome").attachPatternMatched(this.__onRouteMatched, this);
 			
@@ -71,6 +72,8 @@ sap.ui.define([
 				var oPlantList = this.getView().byId("cboPlant");
 				
 				oPlantList.setSelectedKey(this.PlantID);
+				
+				oPlantList.fireSelectionChange(oPlantList.getSelectedItem()) ;
 			}
 			
 		},
@@ -135,24 +138,34 @@ sap.ui.define([
 				oBinding.filter([this.oFilterWerks]);
 			}
 		},
-		
+	
 		onPlantChange: function(oEvent){
+			
 			
 			var oViewModel = this.getModel("viewData");
 			var oSource = oEvent.getSource();
 			
 			var oItem = oSource.getSelectedItem();
-			if (!oItem) return;
-			var oPlant = oItem.getBindingContext().getObject();
 			
 			var oStorage = jQuery.sap.storage(jQuery.sap.storage.Type.local);
-			oStorage.put("Plant", oPlant);
+			var oPlant;
+			if (oItem) {
+				oPlant = oItem.getBindingContext().getObject();
+				oStorage.put("Plant", oPlant);
+			} else {
+				oPlant = oStorage.get("Plant");
+			}
+			
+			
+			if (!oPlant) return;
 			
 			this.PlantID = oPlant.Werks;
 			this.PurchOrgID = oPlant.Ekorg;
 			oViewModel.setProperty("/PurchOrg",oPlant.Name);
 			
 			this.oFilterWerks = new Filter("Werks", FilterOperator.EQ, this.PlantID);
+			
+			
 			this._updateChart1();
 			
 		},

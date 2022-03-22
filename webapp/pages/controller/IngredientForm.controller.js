@@ -18,6 +18,40 @@ sap.ui.define([
 		formatter: formatter,
 		_formFragments: {},
 
+		_VHMaterialColumns: {
+			"cols": [{
+					"label": "Material ID",
+					"template": "Matnr",
+					"width": "7rem"
+				}, {
+					"label": "Name",
+					"template": "Maktx",
+					"width": "20rem"
+				}, {
+					"label": "Group",
+					"template": "Matkltx"
+				}, {
+					"label": "Curr",
+					"template": "Waers",
+					"width": "3rem"
+				}, {
+					"label": "Price",
+					"template": "Netpr",
+					"demandPopin": "true",
+					"hAlign": "End"
+				}, {
+					"label": "Per",
+					"template": "Peinh",
+					"hAlign": "End",
+					"width": "3rem"
+				}, {
+					"label": "Unit",
+					"template": "Bprme"
+				}
+
+			]
+		},
+
 		onInit: function() {
 			var oViewModel = new JSONModel({
 				"isFullScreen": false,
@@ -42,7 +76,8 @@ sap.ui.define([
 
 			this.getView().setModel(oIngredientModel, "Ingredients");
 
-			this.oColModel = new JSONModel(sap.ui.require.toUrl("halo/sap/mm/RECIPECOST/fragments/") + "/VHMaterialColumnsModel.json");
+			//this.oColModel = new JSONModel(sap.ui.require.toUrl("halo/sap/mm/RECIPECOST/fragments/") + "/VHMaterialColumnsModel.json");
+			this.oColModel = new JSONModel(this._VHMaterialColumns);
 
 			this._oRouter = this.getRouter();
 			this._oRouter.getRoute("ingredientform").attachPatternMatched(this.__onRouteMatched, this);
@@ -79,8 +114,7 @@ sap.ui.define([
 				//filters: [  new Filter({ path: "VersionID",  operator:FilterOperator.EQ,  value1: "0000"}) ],
 				success: function(oData, oResponse) {
 					var aVersions = oData.results;
-				
-					
+
 					var oViewModel = this.getModel("viewData");
 
 					if (aVersions.length > 0) {
@@ -883,15 +917,13 @@ sap.ui.define([
 					MessageToast.show("Error Detected");
 				}
 			});
-			
-			
 
 		},
 
 		onCreateNewVersion: function() {
 
 			if (this._bDirty) {
-				MessageBox.alert(_oBundle.getText("msgAlertUnsaved"));	
+				MessageBox.alert(_oBundle.getText("msgAlertUnsaved"));
 			} else {
 
 				MessageBox.confirm(_oBundle.getText("msgCfrmNewVersion"), {
