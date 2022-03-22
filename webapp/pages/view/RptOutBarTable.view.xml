@@ -12,7 +12,7 @@
 				icon="sap-icon://bar-chart"
 				title="Bar Chart">
 				<content>
-					<viz:VizFrame id="idoVizFrame" height="700px" width="100%"
+					<viz:VizFrame id="vizFrame" height="700px" width="100%"
 					              uiConfig="{applicationSet:'fiori'}"></viz:VizFrame>
 				</content>
 			</ChartContainerContent>

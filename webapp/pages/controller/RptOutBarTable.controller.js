@@ -5,8 +5,9 @@ sap.ui.define([
 	'sap/ui/model/json/JSONModel',
 	'sap/m/ColumnListItem',
 	'sap/m/library',
-	'sap/viz/ui5/data/FlattenedDataset'
-], function(BaseController,Label,Column,JSONModel,ColumnListItem,MobileLibrary,FlattenedDataset) {
+	'sap/viz/ui5/data/FlattenedDataset',
+	'sap/viz/ui5/controls/common/feeds/FeedItem'
+], function(BaseController,Label,Column,JSONModel,ColumnListItem,MobileLibrary,FlattenedDataset,FeedItem) {
 	"use strict";
 
 	return BaseController.extend("halo.sap.mm.RECIPECOST.pages.controller.RptOutBarTable", {
@@ -17,44 +18,38 @@ sap.ui.define([
 				columnLabelTexts: ["Recipe ID", "Name", "Location", "Selling Price/Unit", "Cost/Unit"],
 				templateCellLabelTexts: ["{Recipe_ID}", "{Name}", "{Location}", "{Selling_Price}", "{Cost_Price}"]
 			},
-			vizFrames: {
-				id: "idoVizFrame",
-				config: {
-					height: "700px",
-					width: "100%",
-					uiConfig: {
-						applicationSet: "fiori"
-					}
+			vizFrame: {
+					id: "vizFrame",
+				
+					dataset: {
+						dimensions: [{
+							name: 'Group',
+							value: "{group}"
+						}],
+						measures: [{
+							name: 'Count',
+							value: '{count}'
+						}],
+						data: {
+							path: "/aItems"
+						}
+					},
+					analysisObjectProps: {
+						uid: "Group",
+						type: "Dimension",
+						name: "Group"
+					},
+					type: "column",
+					feedItems: [{
+						'uid': "primaryValues",
+						'type': "Measure",
+						'values': ["Count"]
+					}, {
+						'uid': "axisLabels",
+						'type': "Dimension",
+						'values': ["Group"]
+					}]
 				},
-				dataset: {
-					dimensions: [{
-						name: 'Group',
-						value: "{Group}"
-					}],
-					measures: [{
-						name: 'Count',
-						value: '{Count}'
-					}],
-					data: {
-						path: "/aItems"
-					}
-				},
-				analysisObjectProps: {
-					uid: "Group",
-					type: "Dimension",
-					name: "Group"
-				},
-				type: "column",
-				feedItems: [{
-					'uid': "primaryValues",
-					'type': "Measure",
-					'values': ["Count"]
-				}, {
-					'uid': "axisLabels",
-					'type': "Dimension",
-					'values': []
-				}]
-			}	
 		},
 		onInit: function() {
 			this._oRouter = this.getRouter();
@@ -77,12 +72,12 @@ sap.ui.define([
 			var oTable = this.getView().byId("idTable");
 			this._createTableContent(oTable);
 			
-			var oVizFrame = this.getView().byId(this._constants.vizFrames.id);
+			var oVizFrame = this.getView().byId(this._constants.vizFrame.id);
 			this._updateVizFrame(oVizFrame);
 		},
 		
 		_updateVizFrame: function(vizFrame) {
-			var oVizFrame = this._constants.vizFrames;
+			var oVizFrame = this._constants.vizFrame;
 			
 			
 			var oModel = this.getModel();
@@ -112,9 +107,10 @@ sap.ui.define([
             });
 			
 			var oStatData = {
-				aItems: []
+				"aItems": []
 			};
 				
+			var oThis = this;
 			
 			oModel.read("/StatisticSet",{
 				filters: [this.oFilterStatID,this.oFilterWerks,this.oFilter1,this.oFilter2],
@@ -123,24 +119,38 @@ sap.ui.define([
 				
 					for (var i = 0; i < aResult.length ; i++){
 						var oItem = {
-							"Group" : aResult[i].Label,
-							"Count" : Number(aResult[i].Value),
+							"group" : aResult[i].Label,
+							"count" : Number(aResult[i].Value)
 						};
 						oStatData.aItems.push(oItem);
 					}
 					
+					
+					
+					var oDataset = new FlattenedDataset(oThis._constants.vizFrame.dataset);
+					var oGraphDataModel = new JSONModel(oStatData);
+					
+					
+					console.log(oGraphDataModel);
+					
+					vizFrame.setDataset(oDataset);
+					vizFrame.setModel(oGraphDataModel);
+					oThis._addFeedItems(vizFrame, oVizFrame.feedItems);
+					
+					
+					vizFrame.setVizType(oVizFrame.type);
 				
 				}
 			});
 			
 
-			var oDataset = new FlattenedDataset(this._constants.vizFrames.dataset);
-			var oGraphDataModel = new JSONModel(oStatData);
-			console.log(oGraphDataModel);
-			vizFrame.setDataset(oDataset);
-			vizFrame.setModel(oGraphDataModel);
-			this._addFeedItems(vizFrame, oVizFrame.feedItems);
-			vizFrame.setVizType(oVizFrame.type);
+		
+		},
+		
+		_addFeedItems: function(vizFrame, feedItems) {
+			for (var i = 0; i < feedItems.length; i++) {
+				vizFrame.addFeed(new FeedItem(feedItems[i]));
+			}
 		},
 		
 		_createTableContent: function(oTable) {
