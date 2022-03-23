@@ -54,6 +54,12 @@ sap.ui.define([
 		onInit: function() {
 			this._oRouter = this.getRouter();
 			this._oRouter.getRoute("rptoutbartable").attachPatternMatched(this.__onRouteMatched, this);
+			
+			var oTable = this.getView().byId("idTable");
+			this._createTableContent(oTable);
+			
+			var oVizFrame = this.getView().byId(this._constants.vizFrame.id);
+			this._updateVizFrame(oVizFrame);
 		},
 
 		onNavBack: function(){
@@ -71,17 +77,33 @@ sap.ui.define([
 			this.P1 = oArguments.P1;
 			this.P2 = oArguments.P2;
 			
-			var oTable = this.getView().byId("idTable");
-			this._createTableContent(oTable);
 			
+			var oTable = this.getView().byId("idTable");
+			this._refreshTable(oTable);
 			var oVizFrame = this.getView().byId(this._constants.vizFrame.id);
-			this._updateVizFrame(oVizFrame);
+			this._refreshChart(oVizFrame);
+			
+			
 		},
 		
 		_updateVizFrame: function(vizFrame) {
 			var oVizFrame = this._constants.vizFrame;
+
+			var oDataset = new FlattenedDataset(this._constants.vizFrame.dataset);
+			vizFrame.setDataset(oDataset);
 			
-			
+			this._addFeedItems(vizFrame, oVizFrame.feedItems);
+			vizFrame.setVizType(oVizFrame.type);
+
+		},
+		
+		_addFeedItems: function(vizFrame, feedItems) {
+			for (var i = 0; i < feedItems.length; i++) {
+				vizFrame.addFeed(new FeedItem(feedItems[i]));
+			}
+		},
+		
+		_refreshChart: function(vizFrame){
 			var oModel = this.getModel();
 			
 			this.oFilterStatID = new sap.ui.model.Filter({
@@ -112,7 +134,6 @@ sap.ui.define([
 				"aItems": []
 			};
 				
-			var oThis = this;
 			
 			oModel.read("/StatisticSet",{
 				filters: [this.oFilterStatID,this.oFilterWerks,this.oFilter1,this.oFilter2],
@@ -129,32 +150,14 @@ sap.ui.define([
 					
 					
 				
-					var oGraphDataModel = new JSONModel(oStatData,"chart");
-				
+					var oGraphDataModel = new JSONModel(oStatData);
 					vizFrame.setModel(oGraphDataModel);
 				
 				
 				}
 			});
 			
-			
-			var oDataset = new FlattenedDataset(oThis._constants.vizFrame.dataset);
-			vizFrame.setDataset(oDataset);
-			var oGraphDataModel = new JSONModel(oStatData);
-			vizFrame.setModel(oGraphDataModel);
-				
-			oThis._addFeedItems(vizFrame, oVizFrame.feedItems);
-			vizFrame.setVizType(oVizFrame.type);
-
-		
 		},
-		
-		_addFeedItems: function(vizFrame, feedItems) {
-			for (var i = 0; i < feedItems.length; i++) {
-				vizFrame.addFeed(new FeedItem(feedItems[i]));
-			}
-		},
-		
 		_createTableContent: function(oTable) {
 			var oTableConfig = this._constants.table;
 			var aColumns = this._createTableColumns(oTableConfig.columnLabelTexts);
@@ -172,6 +175,11 @@ sap.ui.define([
 			
 			oTable.bindItems(oTableConfig.itemBindingPath, oTableItemTemplate, null, null);
 		
+		
+			
+		},
+		
+		_refreshTable: function(oTable){
 			var oModel = this.getModel();
 			
 	        this.oFilterWerks = new sap.ui.model.Filter({
@@ -196,7 +204,7 @@ sap.ui.define([
 						"table": []
 					};
 					
-					for (i = 0; i < aResult.length ; i++){
+					for (var i = 0; i < aResult.length ; i++){
 						var oItem = {
 							"Recipe_ID" : aResult[i].RecipeID,
 							"Name" : aResult[i].Name,
@@ -210,8 +218,7 @@ sap.ui.define([
 					var oTableModel = new JSONModel(aItems);
 					oTable.setModel(oTableModel);
 				}
-			});
-			
+			});	
 		},
 		_createTableColumns: function(labels) {
 		
