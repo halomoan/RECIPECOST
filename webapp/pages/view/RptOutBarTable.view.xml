@@ -6,7 +6,7 @@
 		showFullScreen="true"
 		showPersonalization="true"
 		autoAdjustHeight="false"
-		title="Report">
+		>
 		<content>
 			<ChartContainerContent
 				icon="sap-icon://bar-chart"
@@ -26,6 +26,7 @@
 		</content>
 		<toolbar>
 			<m:OverflowToolbar id="appToolbar">
+				<m:Button icon="sap-icon://nav-back" press=".onNavBack"/>
 				<m:ToolbarSpacer/>
 				<ChartContainerToolbarPlaceholder></ChartContainerToolbarPlaceholder>
 			</m:OverflowToolbar>

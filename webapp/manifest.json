@@ -81,7 +81,7 @@
 				}
 			},
 			"": {
-				"dataSource": "mainService"
+				"dataSource": "ZRECIPECOST_ODATA_SRV"
 			}
 		},
 		"resources": {

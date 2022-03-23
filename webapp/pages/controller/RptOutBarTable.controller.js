@@ -56,7 +56,9 @@ sap.ui.define([
 			this._oRouter.getRoute("rptoutbartable").attachPatternMatched(this.__onRouteMatched, this);
 		},
 
-		
+		onNavBack: function(){
+			this.navBack();		
+		},
 		onExit: function() {
 		
 		},
@@ -126,23 +128,23 @@ sap.ui.define([
 					}
 					
 					
-					
-					var oDataset = new FlattenedDataset(oThis._constants.vizFrame.dataset);
-					var oGraphDataModel = new JSONModel(oStatData);
-					
-					
-					console.log(oGraphDataModel);
-					
-					vizFrame.setDataset(oDataset);
+				
+					var oGraphDataModel = new JSONModel(oStatData,"chart");
+				
 					vizFrame.setModel(oGraphDataModel);
-					oThis._addFeedItems(vizFrame, oVizFrame.feedItems);
-					
-					
-					vizFrame.setVizType(oVizFrame.type);
+				
 				
 				}
 			});
 			
+			
+			var oDataset = new FlattenedDataset(oThis._constants.vizFrame.dataset);
+			vizFrame.setDataset(oDataset);
+			var oGraphDataModel = new JSONModel(oStatData);
+			vizFrame.setModel(oGraphDataModel);
+				
+			oThis._addFeedItems(vizFrame, oVizFrame.feedItems);
+			vizFrame.setVizType(oVizFrame.type);
 
 		
 		},

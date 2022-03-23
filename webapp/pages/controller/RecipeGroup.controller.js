@@ -84,8 +84,10 @@ sap.ui.define([
 			var oBinding = oTable.getBinding("rows");
 			
 			if (oBinding) {
+				
 				oBinding.filter([this.oFilterPlant],sap.ui.model.FilterType.Application);
 			}
+			
 		},
 		onNavBack: function(){
 			this.navBack();	
@@ -108,7 +110,7 @@ sap.ui.define([
 			if (this._validateForm(oFormData)) {
 				var oData = {
 					"Werks": this.PlantID,
-					"Groupid": oFormData.Groupid,
+					"GroupID": oFormData.Groupid,
 					"Text": oFormData.Text
 				};
 
@@ -124,10 +126,11 @@ sap.ui.define([
 						}
 					});
 				} else {
-					oModel.update("/RecipeGroupSet(Werks='" + this.PlantID + "',Groupid='" + oFormData.Groupid + "')", oData, null,
+					oModel.update("/RecipeGroupSet(Werks='" + this.PlantID + "',GroupID='" + oFormData.Groupid + "')", oData, null,
 						function() {
 							this._initForm();
 							MessageToast.show("Group Successfully Edited");
+							
 						}.bind(this),
 						function(e) {
 							var oMessage = JSON.parse(e.responseText).error.message.value;
@@ -202,8 +205,9 @@ sap.ui.define([
 				var oFormModel = this.getModel("form"),
 					oFormData = oFormModel.getData();
 
+			
 				oFormData.Werks = oData.Werks;
-				oFormData.Groupid = oData.Groupid;
+				oFormData.Groupid = oData.GroupID;
 				oFormData.Text = oData.Text;
 
 				oFormModel.setProperty("/", oFormData);
