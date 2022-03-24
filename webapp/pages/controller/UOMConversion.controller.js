@@ -686,6 +686,12 @@ sap.ui.define([
 			});
 			
 			this._refreshTable();
+		
+			var aFilters = [
+				new Filter("Werks", FilterOperator.EQ, "")
+			];
+			
+			this._refreshConvertTable(aFilters);
 			
 			
 		},
