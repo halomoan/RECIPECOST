@@ -11,6 +11,9 @@ sap.ui.define([
 			var oPlantList = Core.byId("cboPlant");
 			oPlantList.bindAggregation("items", {
 				path: "/PlantSet",
+				filters :  [
+				 	new Filter({ path : 'Ekorg', operator : 'NE', value1 : ''})
+		        ],
 				sorter: new Sorter({
 					path: 'Name',
 					descending: true

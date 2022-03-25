@@ -182,7 +182,7 @@ sap.ui.define([
 		_deleteData: function(oData) {
 			var oModel = this.getModel();
 
-			oModel.remove("/RecipeGroupSet(Werks='" + this.PlantID + "',Groupid='" + oData.Groupid + "')", {
+			oModel.remove("/RecipeGroupSet(Werks='" + this.PlantID + "',GroupID='" + oData.GroupID + "')", {
 				method: "DELETE",
 				success: function(data) {
 					MessageToast.show("Group Successfully Deleted");
@@ -218,7 +218,7 @@ sap.ui.define([
 				var oThis = this;
 				oViewModel.setProperty("/Mode", "");
 
-				MessageBox.confirm(_oBundle.getText("msgCfrmDelLocation"), {
+				MessageBox.confirm(_oBundle.getText("msgCfrmDelGroup"), {
 					actions: [MessageBox.Action.YES, MessageBox.Action.CANCEL],
 					emphasizedAction: "CANCEL",
 					onClose: function(sAction) {

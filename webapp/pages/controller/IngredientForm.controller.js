@@ -9,7 +9,7 @@ sap.ui.define([
 	"sap/m/MessageToast",
 	'sap/ui/core/BusyIndicator',
 	"halo/sap/mm/RECIPECOST/model/formatter"
-], function(BaseController, JSONModel, ColumnListItem, Token, Filter, FilterOperator, MessageBox, MessageToast, BusyIndicator, formatter) {
+], function(BaseController, JSONModel, ColumnListItem, Token, Filter, FilterOperator, MessageBox, MessageToast, BusyIndicator,  formatter) {
 	"use strict";
 
 	var _oBundle;
@@ -146,7 +146,35 @@ sap.ui.define([
 			});
 
 		},
+	
+		onHowToCookPress: function(oEvent){
+			var oSource = oEvent.getSource();
+			this.showPopOverFragment(this.getView(), oSource, this._formFragments, "halo.sap.mm.RECIPECOST.fragments.HowToCookPopover", this);	
+			
+			this._initRichTextEditor(false);
+		},
+		_initRichTextEditor: function(bFlag){
+			var oThis = this;
+			sap.ui.require(["sap/ui/richtexteditor/RichTextEditor"],
+				function (RTE, EditorType) {
+					oThis.oRichTextEditor = new RTE("myRTE", {
+						//editorType: bIsTinyMCE5 ? EditorType.TinyMCE5 : EditorType.TinyMCE4,
+						width: "100%",
+						height: "600px",
+						customToolbar: true,
+						showGroupFont: true,
+						showGroupLink: true,
+						showGroupInsert: true,
+						value: "",
+						ready: function () {
+							this.addButtonGroup("styleselect").addButtonGroup("table");
+						}
+					});
 
+				oThis.getView().byId("howtocookEditor").addContent(oThis.oRichTextEditor);	
+			});	
+		},
+		
 		onUnitPress: function(oEvent) {
 			var oSource = oEvent.getSource();
 			var sPath = oSource.getBindingContext("Ingredients").getPath();

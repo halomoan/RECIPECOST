@@ -1,0 +1,14 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:l="sap.ui.layout">
+	<Popover id="howtocookpopover" title="{i18n>HowToCook} - {Name}" class="sapUiResponsivePadding--header sapUiResponsivePadding--footer"
+		placement="Right" initialFocus="howtocook">
+		<l:VerticalLayout id="howtocookEditor" class="sapUiContentPadding" width="100%">
+			
+		</l:VerticalLayout>
+		<footer>
+			<OverflowToolbar>
+				<ToolbarSpacer/>
+				<Button id="save" text="{i18n>Save}" press="onHowToCookSave"/>
+			</OverflowToolbar>
+		</footer>
+	</Popover>
+</core:FragmentDefinition>
