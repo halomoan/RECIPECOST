@@ -148,30 +148,130 @@ sap.ui.define([
 		},
 	
 		onHowToCookPress: function(oEvent){
-			var oSource = oEvent.getSource();
-			this.showPopOverFragment(this.getView(), oSource, this._formFragments, "halo.sap.mm.RECIPECOST.fragments.HowToCookPopover", this);	
+		
 			
-			this._initRichTextEditor(false);
+			
+			if (!this.getFragmentByName(this._formFragments, "halo.sap.mm.RECIPECOST.fragments.HowToCookDialog")) {
+				this.showFormDialogFragment(this.getView(), this._formFragments, "halo.sap.mm.RECIPECOST.fragments.HowToCookDialog", this);
+				this._initRichTextEditor(false);
+			} else {
+				this.showFormDialogFragment(this.getView(), this._formFragments, "halo.sap.mm.RECIPECOST.fragments.HowToCookDialog", this);
+				this._getHTC();
+			}
+			
+
+
+		},
+		onHTCSave: function(){
+			 
+			 this._saveHTC();
+	
+			 //this.byId("HTCDialog").close();	
+		},
+		onHTCChange: function(oEvent){
+			this._bHTCChanged = true;
+			
+		},
+		onHTCClose: function(){
+			
+			
+			if (this._bHTCChanged) {
+				MessageBox.confirm(_oBundle.getText("msgAlertHTCUnsaved"), {
+						actions: ["Save", "Discard"],
+						emphasizedAction: "Save",
+						onClose: function(sAction) {
+							if (sAction === 'Save') {
+								this._saveHTC();
+							} 
+							this._bHTCChanged = false;	
+            				this.byId("HTCDialog").close();
+						}.bind(this)
+				});	
+			} else {
+				this.byId("HTCDialog").close();	
+			}
+		
+		},
+		
+		_getHTC: function(){
+			var oRichText = sap.ui.getCore().byId("myRTE");
+			oRichText.setValue("");
+			var oModel = this.getModel();
+			
+		
+			//BusyIndicator.show();
+			oModel.read("/RecipeHTCSet(Werks='" + this.PlantID + "',RecipeID='" + this.RecipeID + "',Filename='HTC.txt')/$value", {
+				success: function(oData, oResponse) {
+					
+					oRichText.setValue(oData);
+					BusyIndicator.hide();
+				}.bind(this),
+				error: function(oError) {
+					BusyIndicator.hide();
+					MessageBox.error(_oBundle.getText("msgErr"));
+				}
+			});
+		},
+		
+		_saveHTC: function(){
+			var oRichText = sap.ui.getCore().byId("myRTE");
+			var sData =  oRichText.getValue();
+			
+			var oModel = this.getModel();
+			
+			 var sUrl = location.protocol + "//" + location.hostname + ":" + location.port + "/sap/opu/odata/sap/ZRECIPECOST_ODATA_SRV"
+					+ "/RecipeSet(Werks='" + this.PlantID + "',RecipeID='" + this.RecipeID +"')/HTC";
+			 
+			 $.ajaxSetup({ cache: false});
+			 BusyIndicator.show();
+			 
+			 jQuery.ajax({
+			 	url: sUrl,
+			 	async : false,
+			 	dataType: 'json',
+			 	data: sData,
+			 	type: "POST",
+			 	beforeSend: function(xhr){
+			 		xhr.setRequestHeader("X-CSRF-Token",oModel.getSecurityToken());
+			 		xhr.setRequestHeader("slug","HTC.txt");
+			 		xhr.setRequestHeader("content-type","text/plain");
+			 	},
+			 	success: function(oResponse){
+			 		
+					BusyIndicator.hide();
+					this._bHTCChanged = false;
+					MessageToast.show(_oBundle.getText("msgSuccessSaved"));
+			 	},
+			 	error: function(oResponse){
+			 		BusyIndicator.hide();
+			 		MessageToast.show("Error Detected");
+			 	}
+			 })
+			
 		},
 		_initRichTextEditor: function(bFlag){
 			var oThis = this;
 			sap.ui.require(["sap/ui/richtexteditor/RichTextEditor"],
-				function (RTE, EditorType) {
+				function (RTE) {
 					oThis.oRichTextEditor = new RTE("myRTE", {
-						//editorType: bIsTinyMCE5 ? EditorType.TinyMCE5 : EditorType.TinyMCE4,
+						editorType: sap.ui.richtexteditor.EditorType.TinyMCE4,
 						width: "100%",
 						height: "600px",
 						customToolbar: true,
 						showGroupFont: true,
 						showGroupLink: true,
 						showGroupInsert: true,
+						sanitizeValue: false,
 						value: "",
 						ready: function () {
 							this.addButtonGroup("styleselect").addButtonGroup("table");
+						},
+						change: function(oEvent){
+							oThis.onHTCChange(oEvent)
 						}
 					});
-
-				oThis.getView().byId("howtocookEditor").addContent(oThis.oRichTextEditor);	
+				oThis.getView().byId("howtocookEditor").addContent(oThis.oRichTextEditor);
+				oThis._getHTC();
 			});	
 		},
 		

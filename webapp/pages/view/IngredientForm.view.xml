@@ -14,12 +14,13 @@
 				<l:BlockLayoutRow>
 					<l:BlockLayoutCell width="1" class="sapUiNoContentPadding">
 						<l:VerticalLayout>
-						<HBox>
+						
 							<Title text="{i18n>NameOfRecipe} : {Name}" titleStyle="H1" class="sapUiTinyMarginEnd"/>
-							<tnt:InfoLabel text="{i18n>SubMaterial}" colorScheme="7" displayOnly= "true" visible="{IsSubMaterial}" class="sapUiTinyMarginTop"/>
-						</HBox>
+							
+						
 						<HBox>
 							<Label text="{i18n>ID} : {RecipeID}" class="sapUiTinyMarginTop"/>
+							<tnt:InfoLabel text="{i18n>SubMaterial}" colorScheme="7" displayOnly= "true" visible="{IsSubMaterial}" class="sapUiTinyMarginTop sapUiTinyMarginBegin"/>
 							<Button text="{i18n>HowToCook}" type="Transparent" tooltip="{i18n>HowToCook}" press=".onHowToCookPress"/>
 						</HBox>
 						<Title class="sapUiSmallMarginTop" text="{i18n>PortionProduced} : {Qty} Unit"/>

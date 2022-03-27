@@ -23,10 +23,10 @@
       "path": "/sap/opu/odata",
       "target": {
         "type": "destination",
-        "name": "f30",
+        "name": "p30",
         "entryPath": "/sap/opu/odata"
       },
-      "description": "f30"
+      "description": "p30"
     }
   ],
   "sendWelcomeFileRedirect": true
