@@ -222,6 +222,7 @@ sap.ui.define([
 			 var sUrl = location.protocol + "//" + location.hostname + ":" + location.port + "/sap/opu/odata/sap/ZRECIPECOST_ODATA_SRV"
 					+ "/RecipeSet(Werks='" + this.PlantID + "',RecipeID='" + this.RecipeID +"')/HTC";
 			 
+			 var oThis = this;
 			 $.ajaxSetup({ cache: false});
 			 BusyIndicator.show();
 			 
@@ -239,7 +240,7 @@ sap.ui.define([
 			 	success: function(oResponse){
 			 		
 					BusyIndicator.hide();
-					this._bHTCChanged = false;
+					oThis._bHTCChanged = false;
 					MessageToast.show(_oBundle.getText("msgSuccessSaved"));
 			 	},
 			 	error: function(oResponse){
