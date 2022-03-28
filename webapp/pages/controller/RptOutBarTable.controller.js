@@ -6,17 +6,19 @@ sap.ui.define([
 	'sap/m/ColumnListItem',
 	'sap/m/library',
 	'sap/viz/ui5/data/FlattenedDataset',
-	'sap/viz/ui5/controls/common/feeds/FeedItem'
-], function(BaseController,Label,Column,JSONModel,ColumnListItem,MobileLibrary,FlattenedDataset,FeedItem) {
+	'sap/viz/ui5/controls/common/feeds/FeedItem',
+	'sap/viz/ui5/format/ChartFormatter',
+	 'sap/viz/ui5/api/env/Format'
+], function(BaseController,Label,Column,JSONModel,ColumnListItem,MobileLibrary,FlattenedDataset,FeedItem,ChartFormatter,Format) {
 	"use strict";
 
 	return BaseController.extend("halo.sap.mm.RECIPECOST.pages.controller.RptOutBarTable", {
 
 		_constants: {
 			table: {
-				itemBindingPath: "/table",
+				itemBindingPath: "table>/table",
 				columnLabelTexts: ["Recipe ID", "Name", "Location", "Selling Price/Unit", "Cost/Unit"],
-				templateCellLabelTexts: ["{Recipe_ID}", "{Name}", "{Location}", "{Selling_Price}", "{Cost_Price}"]
+				templateCellLabelTexts: ["{table>Recipe_ID}", "{table>Name}", "{table>Location}", "{table>Selling_Price}", "{table>Cost_Price}"]
 			},
 			vizFrame: {
 					id: "vizFrame",
@@ -24,14 +26,14 @@ sap.ui.define([
 					dataset: {
 						dimensions: [{
 							name: 'Group',
-							value: "{group}"
+							value: "{chart>group}"
 						}],
 						measures: [{
 							name: 'Count',
-							value: '{count}'
+							value: '{chart>count}'
 						}],
 						data: {
-							path: "/aItems"
+							path: "chart>/aItems"
 						}
 					},
 					analysisObjectProps: {
@@ -52,6 +54,10 @@ sap.ui.define([
 				},
 		},
 		onInit: function() {
+			
+			Format.numericFormatter(ChartFormatter.getInstance());
+            
+            
 			this._oRouter = this.getRouter();
 			this._oRouter.getRoute("rptoutbartable").attachPatternMatched(this.__onRouteMatched, this);
 			
@@ -94,6 +100,28 @@ sap.ui.define([
 			
 			this._addFeedItems(vizFrame, oVizFrame.feedItems);
 			vizFrame.setVizType(oVizFrame.type);
+			
+			var formatPattern = ChartFormatter.DefaultPattern;
+			vizFrame.setVizProperties({
+				title: {
+					text: "Selling Price - Total By Group",
+					visible: true
+				},
+				valueAxis: {
+                    label: {
+                        formatString: formatPattern.SHORTFLOAT
+                    },
+                    title: {
+                        visible: false
+                    }
+                },
+                 plotArea: {
+                    dataLabel: {
+                        formatString: formatPattern.SHORTFLOAT_MFD2,
+                        visible: true
+                    }
+                }
+			});
 
 		},
 		
@@ -151,7 +179,7 @@ sap.ui.define([
 					
 				
 					var oGraphDataModel = new JSONModel(oStatData);
-					vizFrame.setModel(oGraphDataModel);
+					vizFrame.setModel(oGraphDataModel,"chart");
 				
 				
 				}
@@ -216,7 +244,7 @@ sap.ui.define([
 					}
 					
 					var oTableModel = new JSONModel(aItems);
-					oTable.setModel(oTableModel);
+					oTable.setModel(oTableModel,"table");
 				}
 			});	
 		},

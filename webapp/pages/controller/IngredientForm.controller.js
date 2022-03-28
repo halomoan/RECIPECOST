@@ -148,14 +148,18 @@ sap.ui.define([
 		},
 	
 		onHowToCookPress: function(oEvent){
-		
+			var oRichText = sap.ui.getCore().byId("myRTE");
 			
+			if (oRichText) {
+				oRichText.destroy();
+			}
 			
 			if (!this.getFragmentByName(this._formFragments, "halo.sap.mm.RECIPECOST.fragments.HowToCookDialog")) {
 				this.showFormDialogFragment(this.getView(), this._formFragments, "halo.sap.mm.RECIPECOST.fragments.HowToCookDialog", this);
 				this._initRichTextEditor(false);
 			} else {
 				this.showFormDialogFragment(this.getView(), this._formFragments, "halo.sap.mm.RECIPECOST.fragments.HowToCookDialog", this);
+				this._initRichTextEditor(false);
 				this._getHTC();
 			}
 			
@@ -199,7 +203,7 @@ sap.ui.define([
 			var oModel = this.getModel();
 			
 		
-			//BusyIndicator.show();
+			BusyIndicator.show();
 			oModel.read("/RecipeHTCSet(Werks='" + this.PlantID + "',RecipeID='" + this.RecipeID + "',Filename='HTC.txt')/$value", {
 				success: function(oData, oResponse) {
 					
@@ -255,7 +259,7 @@ sap.ui.define([
 			sap.ui.require(["sap/ui/richtexteditor/RichTextEditor"],
 				function (RTE) {
 					oThis.oRichTextEditor = new RTE("myRTE", {
-						editorType: sap.ui.richtexteditor.EditorType.TinyMCE4,
+						editorType: sap.ui.richtexteditor.EditorType.TinyMCE5,
 						width: "100%",
 						height: "600px",
 						customToolbar: true,
