@@ -306,18 +306,22 @@ sap.ui.define([
 
 			var oModel = this.getModel("Ingredients"),
 				oItem = oModel.getProperty(this._UnitPath);
-
+			
 			if (oItem.QtyUnit.Curr !== oData.Cookunit) {
 
 				oItem.QtyUnit.Curr = oData.Cookunit;
 				oItem.QtyRatio.Curr = oData.Cookqty;
-				oItem.QtyUnitx.Curr = oData.Cookunitx;
+				if (oItem.QtyUnitx) {
+					oItem.QtyUnitx.Curr = oData.Cookunitx;
+				} else {
+					oItem.QtyUnitx = { "Curr": oData.Cookunitx };
+				}
 
 				this._bDirty = true;
 			}
 
 			if (oItem.Peinh.Curr > 0) {
-				var iTotalCost = (oItem.QtyUsed.Curr / oItem.Peinh.Curr) * oItem.Netpr.Curr * oItem.QtyRatio.Curr;
+				var iTotalCost = (oItem.QtyUsed.Curr / oItem.Peinh.Curr) * oItem.Netpr.Curr * ( 1 / oItem.QtyRatio.Curr );
 				oItem.CalcCost.Curr = iTotalCost.toFixed(2);
 			}
 
@@ -944,7 +948,8 @@ sap.ui.define([
 			var oRow = oModel.getProperty(sPath);
 
 			if (oRow.Peinh.Curr > 0) {
-				var iTotalCost = (oRow.QtyUsed.Curr / oRow.Peinh.Curr) * oRow.Netpr.Curr * oRow.QtyRatio.Curr;
+				var iTotalCost = (oRow.QtyUsed.Curr  / oRow.Peinh.Curr) * oRow.Netpr.Curr * ( 1 / oRow.QtyRatio.Curr);
+			
 				oRow.CalcCost.Curr = iTotalCost.toFixed(2);
 			}
 
@@ -1034,6 +1039,7 @@ sap.ui.define([
 				}
 
 			}
+			
 
 			var oModel = this.getModel();
 
@@ -1044,6 +1050,7 @@ sap.ui.define([
 				success: function(oData) {
 					BusyIndicator.hide();
 					this._bDirty = false;
+					MessageToast.show(_oBundle.getText("msgSuccessSaved"));
 				}.bind(this),
 				error: function(e) {
 					BusyIndicator.hide();

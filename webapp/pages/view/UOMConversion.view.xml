@@ -92,10 +92,10 @@
 									<Text text="{Purcqty} {Purcunit}" wrapping="false"/>
 								</t:template>
 							</t:Column>
-							<t:Column width="5rem" filterProperty="Cookqty" headerSpan="2,1" hAlign="Center">
+							<t:Column width="7rem" filterProperty="Cookqty" headerSpan="2,1" hAlign="Center">
 								<Label text="{i18n>QtyCooking}"/>
 								<t:template>
-									<Input value="{Cookqty}" type="Number" change=".onCookQtyChange"/>
+									<Input value="{Cookqty}" type="Number" change=".onCookQtyChange"  textAlign="End"/>
 								</t:template>
 							</t:Column>
 							<t:Column width="3rem" filterProperty="Cookunit">
