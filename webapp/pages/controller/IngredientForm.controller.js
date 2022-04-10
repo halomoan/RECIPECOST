@@ -988,6 +988,7 @@ sap.ui.define([
 				"TotRecipeCost": 0.00,
 				"CostPerUnit": 0.00,
 				"PricePerUnit": 0.00,
+				"ProfitPerUnit": 0.00,
 				"Ingredients": []
 
 			};
@@ -1039,6 +1040,8 @@ sap.ui.define([
 				}
 
 			}
+			
+			oRecipeVersion.ProfitPerUnit = "" + (Number(oRecipeVersion.PricePerUnit) - Number(oRecipeVersion.CostPerUnit));
 			
 
 			var oModel = this.getModel();

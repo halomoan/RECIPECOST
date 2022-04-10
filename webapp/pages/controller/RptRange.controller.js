@@ -4,7 +4,7 @@ sap.ui.define([
 ], function(BaseController,JSONModel) {
 	"use strict";
 
-	return BaseController.extend("halo.sap.mm.RECIPECOST.pages.controller.RptCostPrice", {
+	return BaseController.extend("halo.sap.mm.RECIPECOST.pages.controller.RptRange", {
 
 	
 		onInit: function() {
@@ -16,7 +16,7 @@ sap.ui.define([
 			this.setModel(oViewModel, "viewData");	
 			
 			this._oRouter = this.getRouter();
-			this._oRouter.getRoute("rptcostprice").attachPatternMatched(this.__onRouteMatched, this);
+			this._oRouter.getRoute("rptrange").attachPatternMatched(this.__onRouteMatched, this);
 		},
 		
 		onRun: function(oEvent){

@@ -145,9 +145,9 @@
 					"target": "planttopurchorg"
 				},
 				{
-					"pattern": "rptcostprice",
-					"name": "rptcostprice",
-					"target": "rptcostprice"
+					"pattern": "rptrange",
+					"name": "rptrange",
+					"target": "rptrange"
 				},
 				{
 					"pattern": "rptoutbartable/{Ekorg}/{Werks}/{FilterType}/{P1}/{P2}",
@@ -176,9 +176,9 @@
 					"viewName": "ImageEditor",
 					"viewLevel": 1
 				},
-				"rptcostprice": {
-					"viewId": "rptcostprice",
-					"viewName": "RptCostPrice",
+				"rptrange": {
+					"viewId": "rptrange",
+					"viewName": "RptRange",
 					"viewLevel": 1
 				},
 				"rptoutbartable": {

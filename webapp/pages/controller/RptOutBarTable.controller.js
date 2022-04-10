@@ -80,15 +80,17 @@ sap.ui.define([
 			var oArguments = oEvent.getParameter("arguments");
 			this.PurchOrgID = oArguments.Ekorg;
 			this.PlantID = oArguments.Werks;
-			this.FilterType = oArguments.FilterType;
+			this.ReportID = oArguments.FilterType;
 			this.P1 = oArguments.P1;
 			this.P2 = oArguments.P2;
 			
 			
 			var oTable = this.getView().byId("idTable");
-			this._refreshTable(oTable);
+			this._refreshTable(oTable,this.ReportID);
+			
+			
 			var oVizFrame = this.getView().byId(this._constants.vizFrame.id);
-			this._refreshChart(oVizFrame);
+			this._refreshChart(oVizFrame,this.ReportID);
 			
 			
 		},
@@ -132,13 +134,26 @@ sap.ui.define([
 			}
 		},
 		
-		_refreshChart: function(vizFrame){
+		_refreshChart: function(vizFrame,reportID){
 			var oModel = this.getModel();
+			var statID = "";
+			
+			switch(reportID) {
+				case "PricePerUnit":
+					statID = "SellPriceByGroup";
+					break;
+				case "CostPerUnit":
+					statID = "CostByGroup";
+					break;
+				case "ProfitPerUnit":
+					statID = "ProfitByGroup";
+					break;	
+			}
 			
 			this.oFilterStatID = new sap.ui.model.Filter({
                 path: "StatID",
                 operator: sap.ui.model.FilterOperator.EQ,
-                value1: 'SellPriceByGroup'
+                value1: statID
             });
             
 	        this.oFilterWerks = new sap.ui.model.Filter({
@@ -150,7 +165,7 @@ sap.ui.define([
             this.oFilter1 = new sap.ui.model.Filter({
                 path: "Filter1",
                 operator: sap.ui.model.FilterOperator.EQ,
-                value1: this.P1,
+                value1: this.P1
             });
             
             this.oFilter2 = new sap.ui.model.Filter({
@@ -208,24 +223,30 @@ sap.ui.define([
 			
 		},
 		
-		_refreshTable: function(oTable){
+		_refreshTable: function(oTable,reportID){
 			var oModel = this.getModel();
 			
-	        this.oFilterWerks = new sap.ui.model.Filter({
+	        var oFilterWerks = new sap.ui.model.Filter({
                 path: "Werks",
                 operator: sap.ui.model.FilterOperator.EQ,
                 value1: this.PlantID
             });
             
-            this.oFilterAmount = new sap.ui.model.Filter({
-                path: "PricePerUnit",
+            var oFilterAmount = new sap.ui.model.Filter({
+                path: reportID,
                 operator: sap.ui.model.FilterOperator.BT,
                 value1: this.P1,
                 value2: this.P2
             });
             
+            var aSorter = [new sap.ui.model.Sorter({
+            	path: reportID,
+				descending: true
+			})];
+            
 			oModel.read("/RecipeSet",{
-				filters: [this.oFilterWerks,this.oFilterAmount],
+				filters: [oFilterWerks,oFilterAmount],
+				sorters: aSorter,
 				success: function(oResponse){
 					var aResult = oResponse.results;
 					

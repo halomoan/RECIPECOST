@@ -1,12 +1,12 @@
 <mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:l="sap.ui.layout"
-	controllerName="halo.sap.mm.RECIPECOST.pages.controller.RptCostPrice" xmlns:html="http://www.w3.org/1999/xhtml">
+	controllerName="halo.sap.mm.RECIPECOST.pages.controller.RptRange" xmlns:html="http://www.w3.org/1999/xhtml">
 	<l:VerticalLayout class="sapUiContentPadding customCSS" width="100%">
 		<Text text="{viewData>/PlantName} ({viewData>/PlantID})" class="fontSize2" /> 
 	
 		<HBox> 	<ComboBox id="cboReport" width="100%" selectionChange="onReportChange" selectedKey="RptSellPrice">
-			<core:ListItem key="RptSellPrice" text="{i18n>SellingPrice}"/>
-			<core:ListItem key="RptCost" text="{i18n>Cost}"/>
-			<core:ListItem key="RptProfit" text="{i18n>Profit}"/>
+			<core:ListItem key="PricePerUnit" text="{i18n>SellingPrice}"/>
+			<core:ListItem key="CostPerUnit" text="{i18n>Cost}"/>
+			<core:ListItem key="ProfitPerUnit" text="{i18n>Profit}"/>
 		</ComboBox> <Text text="{i18n>Between}" class="sapUiSmallMarginTop sapUiTinyMarginBegin italic"/></HBox>
 		<Label text="{i18n>Amount} 1" labelFor="range1" />
 		<Input id="range1" value="{viewData>/SPR/0}" showClearIcon="true"></Input>
