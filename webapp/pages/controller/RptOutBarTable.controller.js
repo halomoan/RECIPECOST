@@ -58,6 +58,12 @@ sap.ui.define([
 			
 			Format.numericFormatter(ChartFormatter.getInstance());
             
+            var oView = this.getView();
+
+			var oViewModel = new JSONModel({
+				"Title": ""
+			});
+			oView.setModel(oViewModel, "viewData");
             
 			this._oRouter = this.getRouter();
 			this._oRouter.getRoute("rptoutbartable").attachPatternMatched(this.__onRouteMatched, this);
@@ -84,12 +90,30 @@ sap.ui.define([
 			this.P1 = oArguments.P1;
 			this.P2 = oArguments.P2;
 			
+			switch(this.ReportID) {
+				case "PricePerUnit": 
+					this.ReportName = "Selling Price by Group"; break;
+				case "CostPerUnit": 
+					this.ReportName = "Cost by Group"; break;
+				case "ProfitPerUnit": 
+					this.ReportName = "Profit by Group"; break;
+			}
+			
+			
+			var oViewModel = this.getModel("viewData");
+			oViewModel.setProperty("/Title",this.ReportName);
 			
 			var oTable = this.getView().byId("idTable");
 			this._refreshTable(oTable,this.ReportID);
 			
 			
 			var oVizFrame = this.getView().byId(this._constants.vizFrame.id);
+			oVizFrame.setVizProperties({
+		        title: {
+		            text: this.ReportName
+		        }
+		    });
+			
 			this._refreshChart(oVizFrame,this.ReportID);
 			
 			
@@ -107,12 +131,12 @@ sap.ui.define([
 			var formatPattern = ChartFormatter.DefaultPattern;
 			vizFrame.setVizProperties({
 				title: {
-					text: "Selling Price - Total By Group",
+					text: "",
 					visible: true
 				},
 				valueAxis: {
                     label: {
-                        formatString: formatPattern.SHORTFLOAT
+                        formatString: formatPattern.SHORTINTEGER
                     },
                     title: {
                         visible: false
@@ -120,7 +144,7 @@ sap.ui.define([
                 },
                  plotArea: {
                     dataLabel: {
-                        formatString: formatPattern.SHORTFLOAT_MFD2,
+                        formatString: formatPattern.SHORTINTEGER,
                         visible: true
                     }
                 }
