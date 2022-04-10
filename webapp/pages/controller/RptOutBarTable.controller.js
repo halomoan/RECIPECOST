@@ -1,6 +1,7 @@
 sap.ui.define([
 	"halo/sap/mm/RECIPECOST/controller/BaseController",
 	'sap/m/Label',
+	'sap/m/ObjectNumber',
 	'sap/m/Column',
 	'sap/ui/model/json/JSONModel',
 	'sap/m/ColumnListItem',
@@ -9,7 +10,7 @@ sap.ui.define([
 	'sap/viz/ui5/controls/common/feeds/FeedItem',
 	'sap/viz/ui5/format/ChartFormatter',
 	 'sap/viz/ui5/api/env/Format'
-], function(BaseController,Label,Column,JSONModel,ColumnListItem,MobileLibrary,FlattenedDataset,FeedItem,ChartFormatter,Format) {
+], function(BaseController,Label,ObjectNumber,Column,JSONModel,ColumnListItem,MobileLibrary,FlattenedDataset,FeedItem,ChartFormatter,Format) {
 	"use strict";
 
 	return BaseController.extend("halo.sap.mm.RECIPECOST.pages.controller.RptOutBarTable", {
@@ -258,7 +259,11 @@ sap.ui.define([
 			var aLabels = this._createLabels(labels);
 			return this._createControls(Column, "header", aLabels);
 		},
+		
+		
 		_createLabels: function(labelTexts) {
+			
+			
 			return this._createControls(Label, "text", labelTexts);
 		},
 		_createControls: function(Control, prop, propValues) {
@@ -267,8 +272,38 @@ sap.ui.define([
 			var oProps = {};
 			
 			for (var i = 0; i < propValues.length; i++) {
-				oProps[prop] = propValues[i];
-				aControls.push(new Control(oProps));
+				
+				switch(propValues[i]) {
+					case "{table>Selling_Price}":
+						aControls.push(new ObjectNumber({
+							"number": propValues[i],
+							"unit" : "{table>Currency}",
+							"state" : "Warning"
+						}));
+						break;
+					case "{table>Cost_Price}":
+						aControls.push(new ObjectNumber({
+							"number": propValues[i],
+							"unit" : "{table>Currency}",
+							"state" : "Error"
+						}));
+						break;
+					case "{table>Profit}":
+						aControls.push(new ObjectNumber({
+							"number": propValues[i],
+							"unit" : "{table>Currency}",
+							"state" : "Success"
+						}));
+						break;	
+					default: 
+						oProps[prop] = propValues[i];
+						if (prop === "header" && i > 3) {
+							oProps["hAlign"] = "End";
+						}
+						aControls.push(new Control(oProps));
+						
+				} 
+				
 			}
 			
 			
