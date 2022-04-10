@@ -28,8 +28,17 @@ sap.ui.define([
 			
 			var P = oViewModel.getProperty("/SPR");
 			
-			if (this.oPlant.Ekorg && this.oPlant.Werks){
-				this._oRouter.navTo("rptoutbartable", {Ekorg: this.oPlant.Ekorg, Werks: this.oPlant.Werks, FilterType: "RptSellPrice" , P1: P[0], P2: P[1] }); 	
+			var oCboReport = this.byId("cboReport"); 
+			var reportKey = oCboReport.getSelectedKey();
+			
+			if (reportKey.length > 0) {
+				oCboReport.setValueState("None");
+				if (this.oPlant.Ekorg && this.oPlant.Werks){
+					this._oRouter.navTo("rptoutbartable", {Ekorg: this.oPlant.Ekorg, Werks: this.oPlant.Werks, FilterType: reportKey , P1: P[0], P2: P[1] }); 	
+				}
+			} else {
+				oCboReport.setValueState("Error");
+				oCboReport.setValueStateText("Please select an item");
 			}
 			
 			

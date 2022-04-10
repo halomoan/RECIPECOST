@@ -17,8 +17,8 @@ sap.ui.define([
 		_constants: {
 			table: {
 				itemBindingPath: "table>/table",
-				columnLabelTexts: ["Recipe ID", "Name", "Location", "Selling Price/Unit", "Cost/Unit"],
-				templateCellLabelTexts: ["{table>Recipe_ID}", "{table>Name}", "{table>Location}", "{table>Selling_Price}", "{table>Cost_Price}"]
+				columnLabelTexts: ["Recipe ID", "Name","Group", "Location", "Selling Price/Unit", "Cost/Unit","Profit"],
+				templateCellLabelTexts: ["{table>Recipe_ID}", "{table>Name}","{table>Group}", "{table>Location}", "{table>Selling_Price}", "{table>Cost_Price}","{table>Profit}"]
 			},
 			vizFrame: {
 					id: "vizFrame",
@@ -233,12 +233,17 @@ sap.ui.define([
 					};
 					
 					for (var i = 0; i < aResult.length ; i++){
+						var iSellPrice = Number(aResult[i].PricePerUnit).toFixed(2);
+						var iCost = Number(aResult[i].CostPerUnit).toFixed(2);
+						
 						var oItem = {
 							"Recipe_ID" : aResult[i].RecipeID,
 							"Name" : aResult[i].Name,
+							"Group" : aResult[i].GroupTxt,
 							"Location" : aResult[i].LocationTxt,
-							"Selling_Price" : Number(aResult[i].PricePerUnit).toFixed(2) + " " + aResult[i].Currency,
-							"Cost_Price" : Number(aResult[i].CostPerUnit).toFixed(2) + " " + aResult[i].Currency
+							"Selling_Price" : iSellPrice+ " " + aResult[i].Currency,
+							"Cost_Price" :iCost + " " + aResult[i].Currency,
+							"Profit" : Number(iSellPrice - iCost).toFixed(2) + " " + aResult[i].Currency
 						};
 						aItems.table.push(oItem);
 					}
@@ -249,7 +254,7 @@ sap.ui.define([
 			});	
 		},
 		_createTableColumns: function(labels) {
-		
+	
 			var aLabels = this._createLabels(labels);
 			return this._createControls(Column, "header", aLabels);
 		},
@@ -257,6 +262,7 @@ sap.ui.define([
 			return this._createControls(Label, "text", labelTexts);
 		},
 		_createControls: function(Control, prop, propValues) {
+			
 			var aControls = [];
 			var oProps = {};
 			
@@ -264,6 +270,8 @@ sap.ui.define([
 				oProps[prop] = propValues[i];
 				aControls.push(new Control(oProps));
 			}
+			
+			
 			return aControls;
 		}
 		
