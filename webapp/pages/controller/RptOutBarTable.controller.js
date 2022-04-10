@@ -101,7 +101,7 @@ sap.ui.define([
 			
 			
 			var oViewModel = this.getModel("viewData");
-			oViewModel.setProperty("/Title",this.ReportName);
+			oViewModel.setProperty("/Title","Between : " + this.P1 + " - " + this.P2);
 			
 			var oTable = this.getView().byId("idTable");
 			this._refreshTable(oTable,this.ReportID);
@@ -113,6 +113,7 @@ sap.ui.define([
 		            text: this.ReportName
 		        }
 		    });
+			
 			
 			this._refreshChart(oVizFrame,this.ReportID);
 			
@@ -136,7 +137,7 @@ sap.ui.define([
 				},
 				valueAxis: {
                     label: {
-                        formatString: formatPattern.SHORTINTEGER
+                        formatString: formatPattern.STANDARDINTEGER
                     },
                     title: {
                         visible: false
@@ -144,8 +145,13 @@ sap.ui.define([
                 },
                  plotArea: {
                     dataLabel: {
-                        formatString: formatPattern.SHORTINTEGER,
+                        formatString: formatPattern.SHORTFLOAT_MFD2,
                         visible: true
+                    },
+                    primaryScale: {
+	                    fixedRange: true,
+					//	minValue: 0,
+					//	maxValue: 10000
                     }
                 }
 			});

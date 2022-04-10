@@ -3,7 +3,7 @@
 	<l:VerticalLayout class="sapUiContentPadding customCSS" width="100%">
 		<Text text="{viewData>/PlantName} ({viewData>/PlantID})" class="fontSize2" /> 
 	
-		<HBox> 	<ComboBox id="cboReport" width="100%" selectionChange="onReportChange" selectedKey="RptSellPrice">
+		<HBox> 	<ComboBox id="cboReport" width="100%" selectionChange="onReportChange" selectedKey="ProfitPerUnit">
 			<core:ListItem key="PricePerUnit" text="{i18n>SellingPrice}"/>
 			<core:ListItem key="CostPerUnit" text="{i18n>Cost}"/>
 			<core:ListItem key="ProfitPerUnit" text="{i18n>Profit}"/>

@@ -27,6 +27,7 @@
 		<toolbar>
 			<m:OverflowToolbar id="appToolbar">
 				<m:Button icon="sap-icon://nav-back" press=".onNavBack"/>
+				<m:Title text="{viewData>/Title}"/>
 				<m:ToolbarSpacer/>
 				<ChartContainerToolbarPlaceholder></ChartContainerToolbarPlaceholder>
 			</m:OverflowToolbar>
