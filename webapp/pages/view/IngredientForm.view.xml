@@ -75,13 +75,13 @@
 			
 				<t:columns>
 					<t:Column width="7rem">
-						<Label text="Material No."/>
+						<Label text="{i18n>MaterialNo}"/>
 						<t:template>
 							<Text text="{Ingredients>Matnr}" wrapping="false"/>
 						</t:template>
 					</t:Column>
 					<t:Column width="20rem">
-						<Label text="Material."/>
+						<Label text="{i18n>Material}"/>
 						<t:template>
 							<Text text="{Ingredients>Maktx}" wrapping="false"/>
 						</t:template>
@@ -126,7 +126,7 @@
 					<t:Column width="10rem" >
 						<t:multiLabels>
 							<Label text=""/>
-							<Label text="Total Cost" design="Bold" textAlign="Center" width="100%"/>
+							<Label text="{i18n>TotalCost}" design="Bold" textAlign="Center" width="100%"/>
 						</t:multiLabels>
 						<t:template>
 							<FlexBox alignItems="Start" justifyContent="End">
@@ -168,8 +168,8 @@
 					</t:Column>
 					<t:Column width="10rem" headerSpan="2,1">
 						<t:multiLabels>
-							<Label text="Date" textAlign="Center" width="100%"/>
-							<Label text="Total Cost" textAlign="Center" width="100%"/>
+							<Label text="{i18n>Date}" textAlign="Center" width="100%"/>
+							<Label text="{i18n>TotalCost}" textAlign="Center" width="100%"/>
 						</t:multiLabels>
 						<t:template>
 							<FlexBox alignItems="Start" justifyContent="End">
@@ -182,7 +182,7 @@
 					
 					
 					<t:Column width="10rem" hAlign="Center">
-						<Label text="Last PO no."/>
+						<Label text="{i18n>LastPONo}"/>
 						<t:template>
 							<Text text="{Ingredients>Ebeln}" wrapping="false"/>
 						</t:template>

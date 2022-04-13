@@ -83,13 +83,16 @@ sap.ui.define([
 		
 		onMenuAction: function(oEvent) {
 				var oItem = oEvent.getParameter("item"),
-					sText = oItem.getText();
+					//sText = oItem.getText();
+					iIdx = oItem.getParent().indexOfItem(oItem);
+					
+					
 				
-				switch(sText){
-					case "Recipe": this.onGoToRecipe(); break;
-					case "Manage Location": this.onGotoLoc(); break;
-					case "Manage Group": this.onGotoGroup(); break;
-					case "Manage UOM": this.onGotoUOM(); break;
+				switch(iIdx){
+					case 0: this.onGoToRecipe(); break;
+					case 1: this.onGotoLoc(); break;
+					case 2: this.onGotoGroup(); break;
+					case 3: this.onGotoUOM(); break;
 				}
 				
 		},
