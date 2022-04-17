@@ -31,7 +31,7 @@
 					<l:BlockLayoutCell class="sapUiNoContentPadding">
 					
 						<FlexBox alignItems="Start" justifyContent="End">
-							<core:HTML id="videolink" visible="{device>/system/desktop}" content="lt;div id='ytv'&gt; &lt;iframe type='text/html' width='340' height='180' src='{VideoLink}' frameborder='0' allowfullscreen&gt;&lt;/iframe&gt; &lt;/div&gt;">
+							<core:HTML id="videolink" visible="{device>/system/desktop}" content="&lt;div id='ytv'&gt; &lt;iframe type='text/html' width='340' height='180' src='{VideoLink}' frameborder='0' allowfullscreen&gt;&lt;/iframe&gt; &lt;/div&gt;">
 							
 							</core:HTML>
 							<Image

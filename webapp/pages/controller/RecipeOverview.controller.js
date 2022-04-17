@@ -48,28 +48,11 @@ sap.ui.define([
 					
 		},
 		
-		toggleFullScreen: function(){
-			 if (this._fullScreen) {
-				  this._closeFullScreen();
-				  this._fullScreen = false;
-			  } else {
-				  this._openFullScreen();
-				  this._fullScreen = true;
-			  }
-			  var sIcon = (this._fullScreen ? "sap-icon://exit-full-screen" : "sap-icon://full-screen");
-			  
-			  var oFullScreen = this.byId("btnFullScreen");
-			  
-			  oFullScreen.setIcon(sIcon);
+		onClose: function(){
+			this.navBack();
 		},
 		
-		 _openFullScreen: function() {
-		  var s2Controller = this.oApplicationFacade.getApplicationModel("sharedData").getData().s2Controller;
-		  var masterPage = s2Controller.byId("page").getParent().getParent().$();
-		  masterPage.css({
-		  display: "none"
-		  });
-		},
+		 
 
 		
 		onExit: function() {

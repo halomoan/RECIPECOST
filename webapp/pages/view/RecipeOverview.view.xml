@@ -24,7 +24,8 @@
 					</l:BlockLayoutCell>
 					<l:BlockLayoutCell class="sapUiNoContentPadding">
 						<FlexBox alignItems="End" justifyContent="End">
-				<Button id="btnFullScreen" icon="sap-icon://full-screen" press=".toggleFullScreen"/>
+					<Button id="btnPrint" type="Transparent" icon="sap-icon://print" press=".onPrint"/>
+					<Button id="btnClose" icon="sap-icon://decline" press=".onClose"/>
 				</FlexBox>
 					</l:BlockLayoutCell>
 				</l:BlockLayoutRow>

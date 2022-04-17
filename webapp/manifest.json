@@ -55,7 +55,8 @@
 	"sap.ui5": {
 		"rootView": {
 			"viewName": "halo.sap.mm.RECIPECOST.view.App",
-			"type": "XML"
+			"type": "XML",
+			"id": "app"
 		},
 		"dependencies": {
 			"minUI5Version": "1.30.0",
@@ -96,7 +97,7 @@
 				"routerClass": "sap.m.routing.Router",
 				"viewType": "XML",
 				"viewPath": "halo.sap.mm.RECIPECOST.pages.view",
-				"controlId": "app",
+				"controlId": "idApp",
 				"controlAggregation": "pages",
 				"async": true,
 				"bypassed": {
@@ -104,6 +105,14 @@
 				}
 			},
 			"routes": [
+				{
+					"pattern": "",
+					"name": "default",
+					"target": [
+						"recipehome"
+					]
+				},
+				
 				{
 					"pattern": "recipehome",
 					"name": "recipehome",
@@ -166,25 +175,44 @@
 				}
 			],
 			"targets": {
+				"masterdetail": {
+					"viewName": "MasterDetail",
+					"viewLevel": 1,
+					"controlId": "idApp",
+					"controlAggregation": "pages",
+					"viewId": "masterdetail"
+				},
 				"recipehome": {
+					"parent": "masterdetail",
 					"viewId": "recipehome",
 					"viewName": "RecipeHome",
-					"viewLevel": 1
+					"viewLevel": 1,
+					"controlId": "app",
+					"controlAggregation": "pages"
 				},
 				"recipes": {
+					"parent": "masterdetail",
 					"viewId": "recipes",
 					"viewName": "Recipes",
-					"viewLevel": 1
+					"viewLevel": 1,
+					"controlId": "app",
+					"controlAggregation": "pages"
 				},
 				"imageeditor": {
+					"parent": "masterdetail",
 					"viewId": "imageeditor",
 					"viewName": "ImageEditor",
-					"viewLevel": 1
+					"viewLevel": 1,
+					"controlId": "app",
+					"controlAggregation": "pages"
 				},
 				"rptrange": {
+					"parent": "masterdetail",
 					"viewId": "rptrange",
 					"viewName": "RptRange",
-					"viewLevel": 1
+					"viewLevel": 1,
+					"controlId": "app",
+					"controlAggregation": "pages"
 				},
 				"rptoutbartable": {
 					"viewId": "rptoutbartable",
@@ -192,19 +220,28 @@
 					"viewLevel": 1
 				},
 				"recipeloc": {
+					"parent": "masterdetail",
 					"viewId": "recipieloc",
 					"viewName": "RecipeLocation",
-					"viewLevel": 1
+					"viewLevel": 1,
+					"controlId": "app",
+					"controlAggregation": "pages"
 				},
 				"recipegroup": {
+					"parent": "masterdetail",
 					"viewId": "recipiegroup",
 					"viewName": "RecipeGroup",
-					"viewLevel": 1
+					"viewLevel": 1,
+					"controlId": "app",
+					"controlAggregation": "pages"
 				},
 				"recipegrouptiles": {
+					"parent": "masterdetail",
 					"viewId": "recipiegrouptiles",
 					"viewName": "RecipeGroupTiles",
-					"viewLevel": 1
+					"viewLevel": 1,
+					"controlId": "app",
+					"controlAggregation": "pages"
 				},
 				"recipeoverview": {
 					"viewId": "recipeoverview",
@@ -212,19 +249,28 @@
 					"viewLevel": 1
 				},
 				"uomconversion": {
+					"parent": "masterdetail",
 					"viewId": "uomconversion",
 					"viewName": "UOMConversion",
-					"viewLevel": 1
+					"viewLevel": 1,
+					"controlId": "app",
+					"controlAggregation": "pages"
 				},
 				"planttopurchorg": {
+					"parent": "masterdetail",
 					"viewId": "planttopurchorg",
 					"viewName": "PlantToPurchOrg",
-					"viewLevel": 1
+					"viewLevel": 1,
+					"controlId": "app",
+					"controlAggregation": "pages"
 				},
 				"ingredientForm": {
+					"parent": "masterdetail",
 					"viewId": "ingredientForm",
 					"viewName": "IngredientForm",
-					"viewLevel": 1
+					"viewLevel": 1,
+					"controlId": "app",
+					"controlAggregation": "pages"
 				},
 				"notFound": {
 					"viewId": "notFound",

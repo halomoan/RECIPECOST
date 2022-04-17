@@ -37,13 +37,14 @@ sap.ui.define([
 		},
 			
 		navBack : function() {
-				var sPreviousHash = History.getInstance().getPreviousHash();
+			var sPreviousHash = History.getInstance().getPreviousHash();
 
-					if (sPreviousHash !== undefined) {
-					history.go(-1);
-				} else {
-					this.getRouter().navTo("recipehome", {}, true);
-				}
+				if (sPreviousHash !== undefined) {
+				history.go(-1);
+			} else {
+				this.getRouter().navTo("recipehome", {}, true);
+			}
+	
 		},
 		
 		
