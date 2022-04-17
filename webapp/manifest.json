@@ -135,6 +135,11 @@
 					"target": "recipegrouptiles"
 				},
 				{
+					"pattern": "recipeoverview/{Ekorg}/{Werks}/{RecipeID}",
+					"name": "recipeoverview",
+					"target": "recipeoverview"
+				},
+				{
 					"pattern": "uomconversion/{Ekorg}/{Werks}",
 					"name": "uomconversion",
 					"target": "uomconversion"
@@ -199,6 +204,11 @@
 				"recipegrouptiles": {
 					"viewId": "recipiegrouptiles",
 					"viewName": "RecipeGroupTiles",
+					"viewLevel": 1
+				},
+				"recipeoverview": {
+					"viewId": "recipeoverview",
+					"viewName": "RecipeOverview",
 					"viewLevel": 1
 				},
 				"uomconversion": {

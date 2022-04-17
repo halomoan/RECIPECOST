@@ -1,0 +1,39 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:tnt="sap.tnt"
+	controllerName="halo.sap.mm.RECIPECOST.pages.controller.RecipeOverview" xmlns:html="http://www.w3.org/1999/xhtml">
+	<ScrollContainer class="sapUiContentPadding" height="100%" width="100%" vertical="true" focusable="true">
+		<l:BlockLayout>
+			<l:BlockLayoutRow>
+				<l:BlockLayoutCell width="2" class="sapUiNoContentPadding">
+					<l:HorizontalLayout>
+						<Image
+							src="{= '/sap/opu/odata/sap/zrecipecost_odata_srv/RecipePhotoSet(Werks=\'' + ${Werks} + '\',RecipeID=\'' + ${RecipeID} + '\')/$value' }"
+							width="400px" height="280px" press="onSelectImage" class="sapUiSmallMarginBegin"/>
+						
+							<l:VerticalLayout class="sapUiSmallMarginBegin">
+								<Title text="{Name}" titleStyle="H1" class="sapUiTinyMarginEnd"/>
+								<HBox>
+									<Label text="{i18n>ID} : {RecipeID}" class="sapUiTinyMarginTop"/>
+									<tnt:InfoLabel text="{i18n>SubMaterial}" colorScheme="7" displayOnly="true" visible="{IsSubMaterial}"
+										class="sapUiTinyMarginTop sapUiTinyMarginBegin"/>
+								</HBox>
+								<Title class="sapUiSmallMarginTop" text="{i18n>PortionProduced} : {Qty} Unit"/>
+								<Title text="{i18n>Location} : {LocationTxt}"/>
+								<Title text="{i18n>CreatedBy} : {CreatedBy}"/>
+							</l:VerticalLayout>
+						</l:HorizontalLayout>
+					</l:BlockLayoutCell>
+					<l:BlockLayoutCell class="sapUiNoContentPadding">
+						<FlexBox alignItems="End" justifyContent="End">
+				<Button id="btnFullScreen" icon="sap-icon://full-screen" press=".toggleFullScreen"/>
+				</FlexBox>
+					</l:BlockLayoutCell>
+				</l:BlockLayoutRow>
+			</l:BlockLayout>
+			<Panel id="HTCPanel" style="Clear" expandable="true" headerText="{i18n>HowToCook}" width="auto" class="">
+				<content>
+					<core:HTML id="HTC" visible="{device>/system/desktop}" content="" preferDOM="true"></core:HTML>
+					<!--<core:HTML id="HTC" visible="{device>/system/desktop}" content="{= '&lt;object data=' + '/sap/opu/odata/sap/zrecipecost_odata_srv/RecipeHTCSet(Werks=\'' + ${Werks} + '\',RecipeID=\'' + ${RecipeID} + '\',Filename=\'HTC.txt\')/$value' + '&gt;&lt;/object&gt;' }" preferDOM="false"></core:HTML>-->
+				</content>
+			</Panel>
+		</ScrollContainer>
+	</mvc:View>

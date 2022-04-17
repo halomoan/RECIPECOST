@@ -146,6 +146,14 @@ sap.ui.define([
 			});
 
 		},
+		
+		onOverView: function(oEvent){			
+			this._oRouter.navTo("recipeoverview", {
+				Ekorg: this.PurchOrgID,
+				Werks: this.PlantID,
+				RecipeID: this.RecipeID
+			});
+		},
 	
 		onHowToCookPress: function(oEvent){
 			var oRichText = sap.ui.getCore().byId("myRTE");
