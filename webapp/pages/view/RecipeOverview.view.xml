@@ -1,6 +1,6 @@
 <mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:tnt="sap.tnt" xmlns:t="sap.ui.table"
 	controllerName="halo.sap.mm.RECIPECOST.pages.controller.RecipeOverview" xmlns:html="http://www.w3.org/1999/xhtml">
-	<ScrollContainer id="PageContent" class="sapUiContentPadding" height="100%" width="100%" vertical="true" focusable="true">
+	<ScrollContainer id="PageContent" class="PageContent sapUiContentPadding" height="100%" width="100%" vertical="true" focusable="true">
 		
 		<!--<l:VerticalLayout id="SAPUI5content" class="sapUiContentPadding">-->
 		<l:BlockLayout>
@@ -44,17 +44,13 @@
 		
 		</Panel>
 		
-			<t:Table id="ingredienttbl" rows="{Ingredients>/Items}"  visibleRowCount="15" paste="onPaste" selectionMode="None">
+			<t:Table id="ingredienttbl" rows="{Ingredients>/Items}"  visibleRowCount="{= ${Ingredients>/Items}.length }" paste="onPaste" selectionMode="None">
 				
 				<t:extension>
 					<OverflowToolbar style="Clear">
 						<Title text="{i18n>Ingredient}"/>
 					</OverflowToolbar>
 				</t:extension>
-				
-				<t:rowSettingsTemplate>
-					<t:RowSettings highlight="{Ingredients>Status}"/>
-				</t:rowSettingsTemplate>
 			
 				<t:columns>
 					<t:Column width="7rem">
@@ -63,7 +59,7 @@
 							<Text text="{Ingredients>Matnr}" wrapping="false"/>
 						</t:template>
 					</t:Column>
-					<t:Column width="20rem">
+					<t:Column>
 						<Label text="{i18n>Material}"/>
 						<t:template>
 							<Text text="{Ingredients>Maktx}" wrapping="false"/>
