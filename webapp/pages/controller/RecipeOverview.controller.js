@@ -89,37 +89,37 @@ sap.ui.define([
 		// 	this.getView().getModel("viewData").setProperty("/DoPrint", false);
 		// },
 		
-		// onPrint: function(){
+		onPrint: function(){
 			
 			
 			
-		// 	var iHeight = $('.sapUiView').height();
+			var iHeight = $('.sapUiView').height();
 		
-		// 	console.log(iHeight);
-		// 	this.getView().getModel("viewData").setProperty("/DoPrint", true);
+			console.log(iHeight);
+			this.getView().getModel("viewData").setProperty("/DoPrint", true);
 			
 			
 			
-		// 	// var css = '@page { size: 100% ' + iHeight + 'px; }',
-		// 	//      head = document.head || document.getElementsByTagName('head')[0],
-		// 	//      style = document.createElement('style');
+			// var css = '@page { size: 100% ' + iHeight + 'px; }',
+			//      head = document.head || document.getElementsByTagName('head')[0],
+			//      style = document.createElement('style');
 			    
-		// 	// // console.log(css);
+			// // console.log(css);
 			
-		// 	// style.type = 'text/css';
-		// 	// style.media = 'print';
+			// style.type = 'text/css';
+			// style.media = 'print';
 			
-		// 	// if (style.styleSheet){
-		// 	//   style.styleSheet.cssText = css;
-		// 	//  } else {
-		// 	//   style.appendChild(document.createTextNode(css));
-		// 	// }
+			// if (style.styleSheet){
+			//   style.styleSheet.cssText = css;
+			//  } else {
+			//   style.appendChild(document.createTextNode(css));
+			// }
 			
-		// 	// head.appendChild(style);
-		// 	window.print();	
+			// head.appendChild(style);
+			window.print();	
 			
-		// 	this.getView().getModel("viewData").setProperty("/DoPrint", false);
-		// },
+			this.getView().getModel("viewData").setProperty("/DoPrint", false);
+		},
 		
 // 		onPrint: function(){
 			
