@@ -27,6 +27,9 @@ sap.ui.define([
 				return 0;
 			}
 
+		},
+		SpaceInBetween: function(sValue1,sValue2){
+			return sValue1 + " " + sValue2;
 		}
 	};
 });

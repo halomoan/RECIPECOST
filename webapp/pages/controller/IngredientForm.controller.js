@@ -8,14 +8,14 @@ sap.ui.define([
 	"sap/m/MessageBox",
 	"sap/m/MessageToast",
 	'sap/ui/core/BusyIndicator',
-	"halo/sap/mm/RECIPECOST/model/formatter"
-], function(BaseController, JSONModel, ColumnListItem, Token, Filter, FilterOperator, MessageBox, MessageToast, BusyIndicator,  formatter) {
+	
+], function(BaseController, JSONModel, ColumnListItem, Token, Filter, FilterOperator, MessageBox, MessageToast, BusyIndicator) {
 	"use strict";
 
 	var _oBundle;
 
 	return BaseController.extend("halo.sap.mm.RECIPECOST.pages.controller.IngredientForm", {
-		formatter: formatter,
+		
 		_formFragments: {},
 
 		_VHMaterialColumns: {

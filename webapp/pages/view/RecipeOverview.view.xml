@@ -1,6 +1,8 @@
 <mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:tnt="sap.tnt" xmlns:t="sap.ui.table"
 	controllerName="halo.sap.mm.RECIPECOST.pages.controller.RecipeOverview" xmlns:html="http://www.w3.org/1999/xhtml">
-	<ScrollContainer class="sapUiContentPadding" height="100%" width="100%" vertical="true" focusable="true">
+	<ScrollContainer id="PageContent" class="sapUiContentPadding" height="100%" width="100%" vertical="true" focusable="true">
+		
+		<!--<l:VerticalLayout id="SAPUI5content" class="sapUiContentPadding">-->
 		<l:BlockLayout>
 			<l:BlockLayoutRow>
 				<l:BlockLayoutCell width="2" class="sapUiNoContentPadding">
@@ -25,30 +27,28 @@
 					<FlexBox alignItems="Start" justifyContent="End">
 						<Image src="img/pphg_logo.svg" width="220px"/>
 						<VBox class="sapUiSmallMarginBegin">
-							<Button id="btnClose" type="Transparent" icon="sap-icon://decline" press=".onClose"/>
-							<Button id="btnPrint" type="Transparent" icon="sap-icon://print" press=".onPrint"/>
+							<Button id="btnClose" type="Transparent" icon="sap-icon://decline" press=".onClose" visible="{= ! ${viewData>/DoPrint} }"/>
+							<Button id="btnPrint" type="Transparent" icon="sap-icon://print" press=".onPrint" visible="{= ! ${viewData>/DoPrint} }"/>
 						</VBox>
 					</FlexBox>
 				</l:BlockLayoutCell>
 			</l:BlockLayoutRow>
 		</l:BlockLayout>
+		
 		<Panel id="HTCPanel" style="Clear" expandable="true" headerText="{i18n>HowToCook}" width="auto" class="">
+		
 			<content>
 				<core:HTML id="HTC" visible="{device>/system/desktop}" content="" preferDOM="true"></core:HTML>
 				<!--<core:HTML id="HTC" visible="{device>/system/desktop}" content="{= '&lt;object data=' + '/sap/opu/odata/sap/zrecipecost_odata_srv/RecipeHTCSet(Werks=\'' + ${Werks} + '\',RecipeID=\'' + ${RecipeID} + '\',Filename=\'HTC.txt\')/$value' + '&gt;&lt;/object&gt;' }" preferDOM="false"></core:HTML>-->
 			</content>
+		
 		</Panel>
 		
-			<t:Table id="ingredienttbl" rows="{Ingredients>/Items}"  visibleRowCount="15" paste="onPaste" ariaLabelledBy="title">
-				
+			<t:Table id="ingredienttbl" rows="{Ingredients>/Items}"  visibleRowCount="15" paste="onPaste" selectionMode="None">
 				
 				<t:extension>
 					<OverflowToolbar style="Clear">
 						<Title text="{i18n>Ingredient}"/>
-						
-						<ToolbarSpacer/>
-					
-						
 					</OverflowToolbar>
 				</t:extension>
 				
@@ -78,13 +78,15 @@
 							<FlexBox
 								alignItems="Start"
 								justifyContent="SpaceBetween">
-							<Input textAlign="End" value="{ parts: [{path: 'Ingredients>QtyUsed/Curr'}, {path: 'Ingredients>QtyUnit'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: false,maxFractionDigits:3 } }" visible="{= ${Ingredients>Netpr/Curr} !== null }" change=".onQtyChanged" width="5rem"/>
-							<Link
-								text="{Ingredients>QtyUnit/Curr}"
-								press="onUnitPress"
-								class="sapUiTinyMarginTop sapUiTinyMarginBegin"
-								tooltip="{Ingredients>QtyUnitx/Curr}"
-								ariaHasPopup="Dialog"/>
+							<!--<Input textAlign="End" value="{ parts: [{path: 'Ingredients>QtyUsed/Curr'}, {path: 'Ingredients>QtyUnit'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: false,maxFractionDigits:3 } }" visible="{= ${Ingredients>Netpr/Curr} !== null }" change=".onQtyChanged" width="5rem"/>-->
+							<Label textAlign="End" text="{ parts: [{path: 'Ingredients>QtyUsed/Curr'}, {path: 'Ingredients>QtyUnit'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: false,maxFractionDigits:3 } }" visible="{= ${Ingredients>Netpr/Curr} !== null }"  width="5rem"/>
+							<!--<Link-->
+							<!--	text="{Ingredients>QtyUnit/Curr}"-->
+							<!--	press="onUnitPress"-->
+							<!--	class="sapUiTinyMarginTop sapUiTinyMarginBegin"-->
+							<!--	tooltip="{Ingredients>QtyUnitx/Curr}"-->
+							<!--	ariaHasPopup="Dialog"/>-->
+							<Label text="{Ingredients>QtyUnit/Curr}" class="sapUiTinyMarginBegin"/>
 							</FlexBox>
 						</t:template>
 					</t:Column>
@@ -114,60 +116,12 @@
 						<t:template>
 							<FlexBox alignItems="Start" justifyContent="End">
 								<Text text="{ parts: [{path: 'Ingredients>CalcCost/Curr'}, {path: 'Ingredients>Waers'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: true, minFractionDigits:2, maxFractionDigits:2 } }" wrapping="false" visible="{= ${Ingredients>Matnr} !== null  }"/>
-								<Input textAlign="End" value="{ parts: [{path: 'Ingredients>AddMisc/Curr'}, {path: 'Ingredients>Waers'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: false } }" description="{Ingredients>Waers}" visible="{= ${Ingredients>ID} === 'AddMisc' }" change="onAddMiscChanged"/>
-								<Input textAlign="End" value="{ parts: [{path: 'Ingredients>SellPrice/Curr'}, {path: 'Ingredients>Waers'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: false } }" description="{Ingredients>Waers}" visible="{= ${Ingredients>ID} === 'PricePerUnit' }" change="onUnitSellPriceChanged"/>
+								<!--<Input textAlign="End" value="{ parts: [{path: 'Ingredients>AddMisc/Curr'}, {path: 'Ingredients>Waers'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: false } }" description="{Ingredients>Waers}" visible="{= ${Ingredients>ID} === 'AddMisc' }" change="onAddMiscChanged"/>-->
+								<Label text="{ parts: [{path: 'Ingredients>AddMisc/Curr'}, {path: 'Ingredients>Waers'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: false } }" visible="{= ${Ingredients>ID} === 'AddMisc' }"/> <Label text="{Ingredients>Waers}" visible="{= ${Ingredients>ID} === 'AddMisc' }" class="sapUiTinyMarginBegin"></Label>
+								<!--<Input enabled="false" textAlign="End" value="{ parts: [{path: 'Ingredients>SellPrice/Curr'}, {path: 'Ingredients>Waers'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: false } }" description="{Ingredients>Waers}" visible="{= ${Ingredients>ID} === 'PricePerUnit' }" change="onUnitSellPriceChanged"/>-->
+								<Label text="{ parts: [{path: 'Ingredients>SellPrice/Curr'}, {path: 'Ingredients>Waers'}], type: 'sap.ui.model.type.Currency', formatter: '.formatter.SpaceInBetween' }" visible="{= ${Ingredients>ID} === 'PricePerUnit' }"/>
 								
 							</FlexBox>
-						</t:template>
-					</t:Column>
-					
-					
-					<t:Column width="10rem" hAlign="End" headerSpan="4,1">
-						<t:multiLabels>
-							<Label text="{path: 'viewData>/Date/Prev1', type: 'sap.ui.model.type.DateTime', formatOptions: { pattern: 'dd-MMM-yyyy' }  }" textAlign="Center" width="100%"/>
-							<Label text="{i18n>QtyUsed}" textAlign="Center" width="100%"/>
-						</t:multiLabels>
-						<t:template>
-							<Text text="{Ingredients>QtyUsed/Prev1} {Ingredients>QtyUnit/Prev1}" wrapping="false"/>
-						</t:template>
-					</t:Column>
-					<t:Column width="10rem" hAlign="End">
-						<t:multiLabels>
-							<Label text=""/>
-							<Label text="{i18n>QtyPurchased}" textAlign="Center" width="100%"/>
-						</t:multiLabels>
-						<t:template>
-							<Text text="{Ingredients>Peinh/Prev1} {Ingredients>Bprme}" wrapping="false"/>
-						</t:template>
-					</t:Column>
-					<t:Column width="10rem" hAlign="End">
-						<t:multiLabels>
-							<Label text=""/>
-							<Label text="{i18n>UnitCost}" textAlign="Center" width="100%"/>
-						</t:multiLabels>
-						<t:template>
-							<Text text="{Ingredients>Netpr/Prev1} {Ingredients>Waers}" wrapping="false" visible="{= ${Ingredients>Netpr/Prev1} !== null }"/>
-						</t:template>
-					</t:Column>
-					<t:Column width="10rem" headerSpan="2,1">
-						<t:multiLabels>
-							<Label text="{i18n>Date}" textAlign="Center" width="100%"/>
-							<Label text="{i18n>TotalCost}" textAlign="Center" width="100%"/>
-						</t:multiLabels>
-						<t:template>
-							<FlexBox alignItems="Start" justifyContent="End">
-								<Text text="{ parts: [{path: 'Ingredients>CalcCost/Prev1'}, {path: 'Ingredients>Waers'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: true, minFractionDigits:2, maxFractionDigits:2 } }"  visible="{= ${Ingredients>Matnr} !== null  }"/>
-								<Text text="{ parts: [{path: 'Ingredients>AddMisc/Prev1'}, {path: 'Ingredients>Waers'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: true, minFractionDigits:2, maxFractionDigits:2 } }"  visible="{= ${Ingredients>ID} === 'AddMisc' }"/>
-								<Text text="{ parts: [{path: 'Ingredients>SellPrice/Prev1'}, {path: 'Ingredients>Waers'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: true, minFractionDigits:2, maxFractionDigits:2 } }"  visible="{= ${Ingredients>ID} === 'PricePerUnit' }"/>								
-							</FlexBox>
-						</t:template>
-					</t:Column>
-					
-					
-					<t:Column width="10rem" hAlign="Center">
-						<Label text="{i18n>LastPONo}"/>
-						<t:template>
-							<Text text="{Ingredients>Ebeln}" wrapping="false"/>
 						</t:template>
 					</t:Column>
 				</t:columns>
@@ -175,5 +129,7 @@
 				<!--	<Label text="Total"/>-->
 				<!--</t:footer>-->
 			</t:Table>
+			
+		<!--</l:VerticalLayout>	-->
 	</ScrollContainer>
 </mvc:View>
