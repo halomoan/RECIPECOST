@@ -3,9 +3,10 @@ sap.ui.define([
 	'sap/ui/model/json/JSONModel',
 	'sap/ui/core/BusyIndicator',
 	"sap/m/MessageBox",
+	//"halo/sap/mm/RECIPECOST/libs/html2pdf",
 	"halo/sap/mm/RECIPECOST/model/formatter"
-	
 ], function(BaseController,JSONModel,BusyIndicator,MessageBox,formatter) {
+   //function(BaseController,JSONModel,BusyIndicator,MessageBox,formatter,html2pdfjs) {
 	"use strict";
 	
 
@@ -83,7 +84,8 @@ sap.ui.define([
 		// 	    pagebreak: { avoid: 'tr' }
 		// 	};
 			
-		// 	const element1 = this.getView().byId("SAPUI5content").getDomRef();
+		// 	//const element1 = this.getView().byId("PageContent").getDomRef();
+		// 	const element1 = document.getElementById("__component0---recipeoverview--PageContent-scroll");
 		// 	await html2pdf().set(oOptions).from(element1).save();
 			
 		// 	this.getView().getModel("viewData").setProperty("/DoPrint", false);
@@ -91,59 +93,13 @@ sap.ui.define([
 		
 		onPrint: function(){
 			
-			
-			
-			var iHeight = $('.sapUiView').height();
-		
-			console.log(iHeight);
 			this.getView().getModel("viewData").setProperty("/DoPrint", true);
 			
-			
-			
-			// var css = '@page { size: 100% ' + iHeight + 'px; }',
-			//      head = document.head || document.getElementsByTagName('head')[0],
-			//      style = document.createElement('style');
-			    
-			// // console.log(css);
-			
-			// style.type = 'text/css';
-			// style.media = 'print';
-			
-			// if (style.styleSheet){
-			//   style.styleSheet.cssText = css;
-			//  } else {
-			//   style.appendChild(document.createTextNode(css));
-			// }
-			
-			// head.appendChild(style);
 			window.print();	
 			
 			this.getView().getModel("viewData").setProperty("/DoPrint", false);
 		},
 		
-// 		onPrint: function(){
-			
-// 			var hContent = '<html><head></head><body>';
-// 			var bodyContent = $(".PageContent").html();
-// 			var closeContent = "</body></html>";
-// 			var htmlpage = hContent + bodyContent + closeContent;
-
-// 			var win = window.open("", "PrintWindow");
-// 			$.each(document.styleSheets, function(index, oStyleSheet) {
-//   if(oStyleSheet.href){
-//     var link = document.createElement("link");
-//     link.type = oStyleSheet.type;
-//     link.rel = "stylesheet";
-//     link.href = oStyleSheet.href;
-//     //win.document.head.appendChild(link); --> this doesn't work in IE
-//     win.document.getElementsByTagName("head")[0].innerHTML = win.document.getElementsByTagName("head")[0].innerHTML + link.outerHTML;
-//   }
-// });
-// 			win.document.write(htmlpage);
-// 			win.print();
-// 			win.stop();
-      
-// 		},
 		
 		_refreshTable: function(){
 			var oModel = this.getModel();
