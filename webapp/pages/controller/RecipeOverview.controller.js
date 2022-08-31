@@ -94,9 +94,48 @@ sap.ui.define([
 		onPrint: function(){
 			
 			this.getView().getModel("viewData").setProperty("/DoPrint", true);
+			var printContents = document.getElementById("__component0---recipeoverview--PageContent").innerHTML;
+			//var printContents = this.getView().byId("PageContent").innerHTML();
 			
-			window.print();	
+			var win = window.open("", "PrintWindow");
 			
+			win.document.write("<div class='page'>" + printContents + "</div>");
+	      
+	      	$.each(document.styleSheets, function(index, oStyleSheet) {
+					
+				  if(oStyleSheet.href){
+				    var link = document.createElement("link");
+				    link.type = oStyleSheet.type;
+				    link.rel = "stylesheet";
+				    link.href = oStyleSheet.href;
+				    var head = win.document.head || win.document.getElementsByTagName('head')[0];
+				    head.appendChild(link);
+				  }
+			});
+      
+		//	$.each(document.scripts, function(index, oScript) {
+		// 	  if(oScript.src){
+		// 	    var script = document.createElement("script");
+		// 	    script.src = oScript.src;
+
+		// 		script.onload = function() {
+		// 		  alert("Script loaded and ready");
+		// 		};
+
+		// 	    var head = win.document.head || win.document.getElementsByTagName('head')[0];
+		// 	    head.appendChild(script);
+			    
+		// 	  }
+		// });
+			
+			
+			setTimeout(function() {
+				win.print();
+				win.close();
+			}, 500);
+				
+			
+				
 			this.getView().getModel("viewData").setProperty("/DoPrint", false);
 		},
 		

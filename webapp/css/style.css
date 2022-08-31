@@ -1,10 +1,6 @@
 /* Enter your custom styles here */
-
 @media print {
-      #content, #__component0---app--idApp {
-        width: 100%;
-        height: 250rem;
-      } 
+ 
 }
 
 /*.sapUiView {*/

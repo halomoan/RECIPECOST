@@ -35,7 +35,7 @@
 			</l:BlockLayoutRow>
 		</l:BlockLayout>
 		
-		<Panel id="HTCPanel" style="Clear" expandable="true" headerText="{i18n>HowToCook}" width="auto" class="">
+		<Panel id="HTCPanel" style="Clear" expandable="true" expanded="false" headerText="{i18n>HowToCook}" width="auto" class="">
 		
 			<content>
 				<core:HTML id="HTC" visible="{device>/system/desktop}" content="" preferDOM="true"></core:HTML>
