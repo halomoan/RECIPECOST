@@ -95,9 +95,8 @@ sap.ui.define([
 			
 			this.getView().getModel("viewData").setProperty("/DoPrint", true);
 			var printContents = document.getElementById("__component0---recipeoverview--PageContent").innerHTML;
-			//var printContents = this.getView().byId("PageContent").innerHTML();
-			
 			var win = window.open("", "PrintWindow");
+		
 			
 			win.document.write("<div class='page'>" + printContents + "</div>");
 	      
@@ -112,6 +111,8 @@ sap.ui.define([
 				    head.appendChild(link);
 				  }
 			});
+			
+			win.document.title = "Printing...";
       
 		//	$.each(document.scripts, function(index, oScript) {
 		// 	  if(oScript.src){
