@@ -53,7 +53,8 @@ sap.ui.define([
 
 		onInit: function() {
 			var oViewData = {
-					"Mode": "New"
+					"Mode": "New",
+					"CookUnit" : "",
 				};
 				
 				
@@ -160,14 +161,15 @@ sap.ui.define([
 			sap.ui.getCore().getMessageManager().removeAllMessages();
 			
 			
+			
 			if (this._validateForm(oFormData)) {
+				
 				var oData = {
 					"Werks": this.PlantID,
 					"Msehi": oFormData.Msehi,
 					"Text": oFormData.Text
 				};
 
-				
 				if (sMode === "New") {
 					oModel.create("/CookingUnitSet", oData, {
 						method: "POST",
@@ -210,6 +212,7 @@ sap.ui.define([
 					}
 					
 					//Save Material Unit Conversion
+					
 					if (this.aMatUnitCvr.length > 0) {
 						oModel.setUseBatch(true);
 						oModel.setDeferredGroups(["batchMatCookingUnit"]);
@@ -227,6 +230,7 @@ sap.ui.define([
 								"Matnr" : oObject.Matnr,
 								"Cookunit" : oObject.Cookunit,
 								"Cookqty" : oObject.Cookqty,
+								"Calqty": oObject.Calqty,
 								// "Purcunit" : oObject.Purcunit,
 								// "Purcqty" : oObject.Purcqty,
 								// "Maktx": "",
@@ -259,6 +263,8 @@ sap.ui.define([
 			if (oItem.getText() === "Edit") {
 				
 				oViewModel.setProperty("/Mode", "Edit");
+				
+				oViewModel.setProperty("/CookUnit", oData.Msehi);
 				
 				if (this.aMatUnitCvr.length > 0 || this.bIsDirty ){
 						
@@ -365,6 +371,7 @@ sap.ui.define([
 				"Matnr": oData.Matnr,
 				"Cookunit": oData.Cookunit,
 				"Cookqty": sValue,
+				"Calqty": oData.Calqty
 				// "Purcunit": oData.Purcunit,
 				// "Purcqty": oData.Purcqty
 				
@@ -378,6 +385,32 @@ sap.ui.define([
 			    this.aMatUnitCvr.push(oRecord);
 			}
 				
+		},
+		
+		onCalQtyChange: function(oEvent){
+				var oSource = oEvent.getSource(),
+				sValue = oSource.getValue(),
+				oParent = oSource.getParent();
+			var oData = oParent.getBindingContext().getObject();
+			
+			var oRecord = {
+				"Werks" : oData.Werks,
+				"Matnr": oData.Matnr,
+				"Cookunit": oData.Cookunit,
+				"Cookqty": oData.Cookqty,
+				"Calqty": sValue
+				// "Purcunit": oData.Purcunit,
+				// "Purcqty": oData.Purcqty
+				
+			};
+			
+			var idx = this.aMatUnitCvr.findIndex(item => item.Matnr === oRecord.Matnr);
+			
+			if(idx > -1) {
+				this.aMatUnitCvr[idx] = oRecord;	
+			} else {	
+			    this.aMatUnitCvr.push(oRecord);
+			}
 		},
 		onMsehiChange:function(oEvent){
 			var input = oEvent.getSource();
