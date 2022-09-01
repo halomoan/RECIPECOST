@@ -311,7 +311,9 @@ sap.ui.define([
 		onCookUnitSelect: function(oEvent) {
 			var oSource = oEvent.getSource(),
 				oData = oSource.getBindingContext().getObject();
-
+				
+				
+		
 			var oModel = this.getModel("Ingredients"),
 				oItem = oModel.getProperty(this._UnitPath);
 			
@@ -319,6 +321,8 @@ sap.ui.define([
 
 				oItem.QtyUnit.Curr = oData.Cookunit;
 				oItem.QtyRatio.Curr = oData.Cookqty;
+			
+				
 				if (oItem.QtyUnitx) {
 					oItem.QtyUnitx.Curr = oData.Cookunitx;
 				} else {
@@ -332,7 +336,13 @@ sap.ui.define([
 				var iTotalCost = (oItem.QtyUsed.Curr / oItem.Peinh.Curr) * oItem.Netpr.Curr * ( 1 / oItem.QtyRatio.Curr );
 				oItem.CalcCost.Curr = iTotalCost.toFixed(2);
 			}
-
+			
+			if (oData.Calqty) {
+				oItem.QtyCal.Curr = (parseFloat(oData.Calqty) * oItem.QtyUsed.Curr) ;
+				oItem.CalRatio.Curr = oData.Calqty;
+				oItem.CalUnit.Curr = oData.Cookunit;
+			}
+			
 			oModel.setProperty(this._UnitPath, oItem);
 			this._calcTotals();
 
@@ -484,6 +494,8 @@ sap.ui.define([
 				oVersion = aVersions[0];
 
 				aIngredients = oVersion.Ingredients.results;
+				
+				
 
 				for (i = 0; i < aIngredients.length; i++) {
 					oMaterial = {
@@ -503,6 +515,18 @@ sap.ui.define([
 						"Ebeln": aIngredients[i].Ebeln,
 						"QtyUsed": {
 							Curr: aIngredients[i].QtyUsed,
+							Prev1: 0
+						},
+						"QtyCal": {
+							Curr: aIngredients[i].QtyCal,
+							Prev1: 0
+						},
+						"CalUnit": {
+							Curr: aIngredients[i].CalUnit,
+							Prev1: 0
+						},
+						"CalRatio": {
+							Curr: aIngredients[i].CalRatio,
 							Prev1: 0
 						},
 						"QtyUnit": {
@@ -541,6 +565,9 @@ sap.ui.define([
 							oMaterial.Netpr.Prev1 = aIngredients[i].Netpr;
 							oMaterial.QtyUsed.Prev1 = aIngredients[i].QtyUsed;
 							oMaterial.CalcCost.Prev1 = aIngredients[i].CalcCost;
+							oMaterial.QtyCal.Prev1 = aIngredients[i].QtyCal;
+							oMaterial.CalUnit.Prev1 = aIngredients[i].CalUnit;
+							oMaterial.CalRatio.Prev1 = aIngredients[i].CalRatio;
 
 						} else {
 							oMaterial = {
@@ -562,6 +589,19 @@ sap.ui.define([
 									Curr: null,
 									Prev1: aIngredients[i].QtyUsed
 								},
+								"QtyCal": {
+									Curr: null,
+									Prev1: aIngredients[i].QtyCal
+								},
+								"CalUnit": {
+									Curr: null,
+									Prev1: aIngredients[i].CalUnit
+								},
+								"CalRatio": {
+									Curr: null,
+									Prev1: aIngredients[i].CalRatio
+								},
+								
 								"QtyUnit": {
 									Curr: null,
 									Prev1: aIngredients[i].QtyUnit
@@ -586,6 +626,7 @@ sap.ui.define([
 				this._showSubTotal(aMaterials, aVersions);
 			}
 			oIngredientModel.setProperty("/Items", aMaterials);
+			
 		},
 
 		onValueHelpOkPress: function(oEvent) {
@@ -960,6 +1001,10 @@ sap.ui.define([
 			
 				oRow.CalcCost.Curr = iTotalCost.toFixed(2);
 			}
+			
+			if (oRow.QtyUnit.Curr === oRow.CalUnit.Curr){
+				oRow.QtyCal.Curr = 	oRow.QtyUsed.Curr * oRow.CalRatio.Curr;
+			}
 
 			oModel.setProperty(sPath, oRow);
 			this._calcTotals();
@@ -1021,7 +1066,10 @@ sap.ui.define([
 							"CalcCost": oRows[i].CalcCost.Curr,
 							"QtyUsed": "" + oRows[i].QtyUsed.Curr,
 							"QtyUnit": oRows[i].QtyUnit.Curr,
-							"QtyRatio": "" + oRows[i].QtyRatio.Curr
+							"QtyRatio": "" + oRows[i].QtyRatio.Curr,
+							"QtyCal": "" + oRows[i].QtyCal.Curr,
+							"CalUnit": oRows[i].CalUnit.Curr,
+							"CalRatio": "" + oRows[i].CalRatio.Curr
 						};
 
 						oRecipeVersion.Ingredients.push(oIngredient);

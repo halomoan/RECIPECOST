@@ -105,6 +105,28 @@
 							</FlexBox>
 						</t:template>
 					</t:Column>
+					
+					<t:Column width="7rem" hAlign="End">
+						<t:multiLabels>
+							<Label text=""/>
+							<HBox>
+								<Label text="{i18n>Calories}" design="Bold" width="100%"/>
+								<core:Icon
+								class="sapUiTinyMarginBegin"
+								src="sap-icon://nutrition-activity"
+								color="#ff0000"
+								>
+							</core:Icon>
+							</HBox>
+						</t:multiLabels>
+						<t:template>							
+								
+							<Input textAlign="End" value="{ path: 'Ingredients>QtyCal/Curr' , type: 'sap.ui.model.type.Float', formatOptions: {showMeasure: false,minFractionDigits:2 }  }" visible="{= ${Ingredients>Netpr/Curr} !== null }" change=".onCalChanged" width="5rem"/>
+						
+								
+						</t:template>
+					</t:Column>
+					
 					<t:Column width="10rem" hAlign="End">
 						<t:multiLabels>
 							<Label text=""/>
@@ -148,6 +170,17 @@
 							<Text text="{Ingredients>QtyUsed/Prev1} {Ingredients>QtyUnit/Prev1}" wrapping="false"/>
 						</t:template>
 					</t:Column>
+					
+					<t:Column width="7rem" hAlign="End">
+						<t:multiLabels>
+							<Label text=""/>
+							<Label text="{i18n>Calories}" design="Standard" textAlign="Center" width="100%"/>
+						</t:multiLabels>
+						<t:template>							
+							<Text text="{Ingredients>QtyCal/Prev1}" wrapping="false"></Text>
+						</t:template>
+					</t:Column>
+					
 					<t:Column width="10rem" hAlign="End">
 						<t:multiLabels>
 							<Label text=""/>
