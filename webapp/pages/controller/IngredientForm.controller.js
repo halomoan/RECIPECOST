@@ -61,7 +61,8 @@ sap.ui.define([
 				"Date": {
 					"Curr": "",
 					"Prev1": ""
-				}
+				},
+				"QtyCal": 0
 
 			});
 			this.getView().setModel(oViewModel, "viewData");
@@ -675,6 +676,10 @@ sap.ui.define([
 							Curr: 0.00,
 							Prev1: 0.00
 						},
+						"QtyCal" : {
+							Curr: 0.00,
+							Prev1: "0.00"
+						},
 						"Status": "Success"
 					}
 
@@ -1010,6 +1015,10 @@ sap.ui.define([
 			this._calcTotals();
 
 		},
+		
+		onCalChanged: function(oEvent){
+			this._calcTotals();
+		},
 
 		onAddMiscChanged: function(oEvent) {
 
@@ -1188,9 +1197,14 @@ sap.ui.define([
 
 			//SubTotal
 			var iSubTotal = 0.00;
+			var iCalTotal = 0;
+			
 			for (var i = 0; i < oRows.length - 7; i++) {
 				if (oRows[i].CalcCost.Curr) {
-					iSubTotal = parseFloat(iSubTotal) + parseFloat(oRows[i].CalcCost.Curr);
+					iSubTotal = iSubTotal + parseFloat(oRows[i].CalcCost.Curr);
+				}
+				if (oRows[i].QtyCal.Curr) {
+					iCalTotal = iCalTotal + parseFloat(oRows[i].QtyCal.Curr);
 				}
 			}
 
@@ -1230,6 +1244,9 @@ sap.ui.define([
 			//oModel.setProperty("/Items/" + (oRows.length - 1), oRowCostPctg);
 
 			oModel.setProperty("/Items", oRows);
+			
+			var oViewModel = this.getModel("viewData");
+			oViewModel.setProperty("/QtyCal",iCalTotal);
 
 		},
 

@@ -14,16 +14,17 @@
 				<l:BlockLayoutRow>
 					<l:BlockLayoutCell width="1" class="sapUiNoContentPadding">
 						<l:VerticalLayout>
-						
+						 <HBox>
 							<Title text="{i18n>NameOfRecipe} : {Name}" titleStyle="H1" class="sapUiTinyMarginEnd"/>
-							
-						
+							<Title  text=" {viewData>/QtyCal} {i18n>Calories}" class="green bold sapUiTinyMarginTop"/>
+						</HBox>
 						<HBox>
 							<Label text="{i18n>ID} : {RecipeID}" class="sapUiTinyMarginTop"/>
 							<tnt:InfoLabel text="{i18n>SubMaterial}" colorScheme="7" displayOnly= "true" visible="{IsSubMaterial}" class="sapUiTinyMarginTop sapUiTinyMarginBegin"/>
 							<Button text="{i18n>HowToCook}" type="Transparent" tooltip="{i18n>HowToCook}" press=".onHowToCookPress"/>
 						</HBox>
 						<Title class="sapUiSmallMarginTop" text="{i18n>PortionProduced} : {Qty} Unit"/>
+						
 						<Title text="{i18n>Location} : {LocationTxt}"/>
 						<Title text="{i18n>CreatedBy} : {CreatedBy}"/>
 						</l:VerticalLayout>
@@ -106,24 +107,23 @@
 						</t:template>
 					</t:Column>
 					
-					<t:Column width="7rem" hAlign="End">
+					<t:Column width="7.5rem" hAlign="End">
 						<t:multiLabels>
 							<Label text=""/>
-							<HBox>
-								<Label text="{i18n>Calories}" design="Bold" width="100%"/>
-								<core:Icon
-								class="sapUiTinyMarginBegin"
+							<Label text="{i18n>Calories}" design="Bold" width="100%"/>
+						</t:multiLabels>
+						<t:template>							
+							
+							<HBox visible="{= ${Ingredients>Netpr/Curr} !== null }">
+							<Input textAlign="End" value="{ path: 'Ingredients>QtyCal/Curr' , type: 'sap.ui.model.type.Float', formatOptions: {showMeasure: false,minFractionDigits:2 }  }"  change=".onCalChanged" width="5rem"/>
+							<core:Icon
+							
+								class="sapUiTinyMarginBegin sapUiTinyMarginTop"
 								src="sap-icon://nutrition-activity"
-								color="#ff0000"
+								color="#008000"
 								>
 							</core:Icon>
 							</HBox>
-						</t:multiLabels>
-						<t:template>							
-								
-							<Input textAlign="End" value="{ path: 'Ingredients>QtyCal/Curr' , type: 'sap.ui.model.type.Float', formatOptions: {showMeasure: false,minFractionDigits:2 }  }" visible="{= ${Ingredients>Netpr/Curr} !== null }" change=".onCalChanged" width="5rem"/>
-						
-								
 						</t:template>
 					</t:Column>
 					
