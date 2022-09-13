@@ -15,8 +15,15 @@
 					<l:BlockLayoutCell width="1" class="sapUiNoContentPadding">
 						<l:VerticalLayout>
 						 <HBox>
-							<Title text="{i18n>NameOfRecipe} : {Name}" titleStyle="H1" class="sapUiTinyMarginEnd"/>
-							<Title  text=" {viewData>/QtyCal} {i18n>Calories}" class="green bold sapUiTinyMarginTop"/>
+							<Title text="{i18n>NameOfRecipe} : {Name}" titleStyle="H1" class="sapUiSmallMarginEnd"/>
+							<Title  text=" {viewData>/QtyCal}" class="fontSize2 green bold"/>
+								<core:Icon
+							
+								class="sapUiTinyMarginBegin sapUiTinyMarginTop"
+								src="sap-icon://nutrition-activity"
+								color="#008000"
+								>
+							</core:Icon>
 						</HBox>
 						<HBox>
 							<Label text="{i18n>ID} : {RecipeID}" class="sapUiTinyMarginTop"/>
