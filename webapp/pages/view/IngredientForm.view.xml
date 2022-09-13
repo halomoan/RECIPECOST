@@ -110,7 +110,7 @@
 					<t:Column width="7.5rem" hAlign="End">
 						<t:multiLabels>
 							<Label text=""/>
-							<Label text="{i18n>Calories}" design="Bold" width="100%"/>
+							<Label text="{i18n>Calories}" design="Bold"  textAlign="Center"  width="100%"/>
 						</t:multiLabels>
 						<t:template>							
 							
