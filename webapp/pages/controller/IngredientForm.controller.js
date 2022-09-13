@@ -313,10 +313,11 @@ sap.ui.define([
 			var oSource = oEvent.getSource(),
 				oData = oSource.getBindingContext().getObject();
 				
-				
+			
 		
 			var oModel = this.getModel("Ingredients"),
 				oItem = oModel.getProperty(this._UnitPath);
+			
 			
 			if (oItem.QtyUnit.Curr !== oData.Cookunit) {
 
@@ -339,8 +340,10 @@ sap.ui.define([
 			}
 			
 			if (oData.Calqty) {
+				
 				oItem.QtyCal.Curr = (parseFloat(oData.Calqty) * oItem.QtyUsed.Curr) ;
 				oItem.CalRatio.Curr = oData.Calqty;
+				
 				oItem.CalUnit.Curr = oData.Cookunit;
 			}
 			
@@ -668,7 +671,15 @@ sap.ui.define([
 							Curr: oObject.Bprme,
 							Prev1: oObject.Bprme
 						},
+						"CalUnit" : {
+							Curr: oObject.Bprme,
+							Prev1: ""
+						},
 						"QtyRatio": {
+							Curr: 1.00,
+							Prev1: 0.00
+						},
+						"CalRatio" : {
 							Curr: 1.00,
 							Prev1: 0.00
 						},
