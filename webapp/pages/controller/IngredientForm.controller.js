@@ -137,6 +137,7 @@ sap.ui.define([
 					}
 					this._showMaterial(aVersions);
 
+					this._calcTotals();
 					BusyIndicator.hide();
 
 				}.bind(this),
