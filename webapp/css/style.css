@@ -11,10 +11,10 @@
     color: green;
 }
 
-.customCSS .fontSize1 {
+.fontSize1 {
     font-size: 1rem;
 }
-.customCSS .fontSize1_5 {
+.fontSize1_5 {
     font-size: 1.5rem;
 }
 
@@ -22,10 +22,10 @@
     font-size: 2rem;
 }
 
-.customCSS .fontSize3 {
+.fontSize3 {
     font-size: 3rem;
 }
-.customCSS .fontSize5 {
+.fontSize5 {
     font-size: 5rem;
 }
 

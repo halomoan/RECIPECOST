@@ -24,6 +24,7 @@
 				<Button text="{i18n>Edit}" type="Transparent" tooltip="Edit Recipe" press=".onEditRecipe" visible="{viewData>/IsListSelected}"/>
 				<Button text="{i18n>Delete}" type="Transparent" tooltip="Delete Recipe" press=".onDeleteRecipe" visible="{viewData>/IsListSelected}"/>
 				<Button text="{i18n>ChangeGrp}" type="Transparent" tooltip="Change Group" press=".onChangeGrpRecipe" visible="{viewData>/IsListSelected}"/>
+				<Button text="{i18n>POSInt}" type="Transparent" tooltip="POS Integration" press=".onPOSInt" visible="{viewData>/IsListSelected}"/>
 				
 				<SearchField change="onSearchRecipe">
 					<layoutData><OverflowToolbarLayoutData maxWidth="300px" shrinkable="true" priority="NeverOverflow"/></layoutData>
@@ -51,6 +52,9 @@
 				<Text text="{i18n>PortionProduced}"/>
 			</Column>
 			<Column minScreenWidth="Tablet" demandPopin="true">
+				<Text text="{i18n>Calories}"/>
+			</Column>
+			<Column minScreenWidth="Tablet" demandPopin="true">
 				<Text text="{i18n>CostPerPortion}"/>
 			</Column>
 			<Column minScreenWidth="Tablet" demandPopin="true">
@@ -70,6 +74,7 @@
 					<ObjectIdentifier title="{GroupTxt}" text=""/>
 					<ObjectIdentifier title="{LocationTxt}" text=""/>
 					<ObjectIdentifier title="{Qty}" text="{Unit}" />
+					<ObjectIdentifier title="{Calories}" text="" class="green" />
 					<ObjectNumber number="{ parts:[{path:'CostPerUnit'},{path:'Currency'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: false} }"
 						unit="{Currency}" state="Error"/>
 					<ObjectNumber number="{ parts:[{path:'PricePerUnit'},{path:'Currency'}], type: 'sap.ui.model.type.Currency', formatOptions: {showMeasure: false} }"

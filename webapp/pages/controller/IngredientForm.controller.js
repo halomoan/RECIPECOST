@@ -1049,7 +1049,8 @@ sap.ui.define([
 			var oRows = oIngredientModel.getProperty("/Items");
 			var sPath = this.getView().getBindingContext().getPath();
 			var oRecipeData = this.getModel().getProperty(sPath);
-
+			var fTotalCalQty = 0.00;
+			
 			var oRecipeVersion = {
 				"Werks": this.PlantID,
 				"RecipeID": this.RecipeID,
@@ -1063,6 +1064,7 @@ sap.ui.define([
 				"CostPerUnit": 0.00,
 				"PricePerUnit": 0.00,
 				"ProfitPerUnit": 0.00,
+				"CalQty": 0.00,
 				"Ingredients": []
 
 			};
@@ -1094,6 +1096,8 @@ sap.ui.define([
 						};
 
 						oRecipeVersion.Ingredients.push(oIngredient);
+						
+						fTotalCalQty += parseFloat(oRows[i].QtyCal.Curr);
 					}
 
 				} else {
@@ -1117,6 +1121,8 @@ sap.ui.define([
 				}
 
 			}
+			
+			oRecipeVersion.CalQty = "" + fTotalCalQty;
 			
 			oRecipeVersion.ProfitPerUnit = "" + (Number(oRecipeVersion.PricePerUnit) - Number(oRecipeVersion.CostPerUnit));
 			
